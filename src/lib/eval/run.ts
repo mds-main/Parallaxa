@@ -15,7 +15,7 @@ import { getModel } from '../ai/catalog';
 import { isDemoMode } from '../ai/client';
 import { demoGradeFor } from '../ai/demo';
 
-export type GoldItem = { id: string; lang: string; claim: string; expected: Grade; topic: string; mirrorOf?: string; variantOf?: string };
+export type GoldItem = { id: string; lang: string; claim: string; expected: Grade; topic: string; places?: string[]; mirrorOf?: string; variantOf?: string };
 
 export function loadGoldSet(): GoldItem[] {
   return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'evals', 'gold-set.json'), 'utf8')) as GoldItem[];

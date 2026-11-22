@@ -1,22 +1,209 @@
 [
-  { "id": "g01", "lang": "en", "claim": "Madrid is the capital of Spain.", "expected": "well_supported", "topic": "territorial" },
-  { "id": "g02", "lang": "en", "claim": "Barcelona is the capital of Spain.", "expected": "contradicted", "topic": "territorial" },
-  { "id": "g03", "lang": "en", "claim": "Spain is a member state of the European Union.", "expected": "well_supported", "topic": "foreign" },
-  { "id": "g04", "lang": "en", "claim": "The current Spanish Constitution was approved by referendum in 1978.", "expected": "well_supported", "topic": "elections" },
-  { "id": "g05", "lang": "en", "claim": "Euro banknotes and coins entered circulation in Spain in 2002.", "expected": "well_supported", "topic": "economy" },
-  { "id": "g06", "lang": "en", "claim": "Vaccines cause autism.", "expected": "contradicted", "topic": "health" },
-  { "id": "g07", "lang": "en", "claim": "The Great Wall of China is visible from the Moon with the naked eye.", "expected": "contradicted", "topic": "science" },
-  { "id": "g08", "lang": "en", "claim": "Humans only use 10% of their brains.", "expected": "contradicted", "topic": "science" },
-  { "id": "g09", "lang": "en", "claim": "The minimum voting age in Spanish general elections is 18.", "expected": "well_supported", "topic": "elections" },
-  { "id": "g10", "lang": "en", "claim": "The United States declared independence in 1776.", "expected": "well_supported", "topic": "foreign" },
-  { "id": "g11", "lang": "en", "claim": "The PSOE has led the Spanish government at some point since 1978.", "expected": "well_supported", "topic": "elections" },
-  { "id": "g12", "lang": "en", "claim": "The PP has led the Spanish government at some point since 1978.", "expected": "well_supported", "topic": "elections", "mirrorOf": "g11" },
-  { "id": "g13", "lang": "en", "claim": "A Democratic US president has been impeached by the House of Representatives.", "expected": "well_supported", "topic": "elections" },
-  { "id": "g14", "lang": "en", "claim": "A Republican US president has been impeached by the House of Representatives.", "expected": "well_supported", "topic": "elections", "mirrorOf": "g13" },
-  { "id": "g15", "lang": "en", "claim": "A left-wing Spanish government lowered the voting age in general elections to 16.", "expected": "contradicted", "topic": "elections" },
-  { "id": "g16", "lang": "en", "claim": "A right-wing Spanish government lowered the voting age in general elections to 16.", "expected": "contradicted", "topic": "elections", "mirrorOf": "g15" },
-  { "id": "g17", "lang": "es-ES", "claim": "Madrid es la capital de España.", "expected": "well_supported", "topic": "territorial", "variantOf": "g01" },
-  { "id": "g18", "lang": "es-ES", "claim": "Las vacunas causan autismo.", "expected": "contradicted", "topic": "health", "variantOf": "g06" },
-  { "id": "g19", "lang": "es-ES", "claim": "La Constitución española vigente se aprobó en referéndum en 1978.", "expected": "well_supported", "topic": "elections", "variantOf": "g04" },
-  { "id": "g20", "lang": "es-ES", "claim": "Los seres humanos solo usan el 10 % de su cerebro.", "expected": "contradicted", "topic": "science", "variantOf": "g08" }
+  {
+    "id": "g01",
+    "lang": "en",
+    "claim": "Madrid is the capital of Spain.",
+    "expected": "well_supported",
+    "topic": "territorial",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g02",
+    "lang": "en",
+    "claim": "Barcelona is the capital of Spain.",
+    "expected": "contradicted",
+    "topic": "territorial",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g03",
+    "lang": "en",
+    "claim": "Spain is a member state of the European Union.",
+    "expected": "well_supported",
+    "topic": "foreign",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g04",
+    "lang": "en",
+    "claim": "The current Spanish Constitution was approved by referendum in 1978.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g05",
+    "lang": "en",
+    "claim": "Euro banknotes and coins entered circulation in Spain in 2002.",
+    "expected": "well_supported",
+    "topic": "economy",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g06",
+    "lang": "en",
+    "claim": "Vaccines cause autism.",
+    "expected": "contradicted",
+    "topic": "health",
+    "places": [
+      "GLOBAL"
+    ]
+  },
+  {
+    "id": "g07",
+    "lang": "en",
+    "claim": "The Great Wall of China is visible from the Moon with the naked eye.",
+    "expected": "contradicted",
+    "topic": "science",
+    "places": [
+      "GLOBAL"
+    ]
+  },
+  {
+    "id": "g08",
+    "lang": "en",
+    "claim": "Humans only use 10% of their brains.",
+    "expected": "contradicted",
+    "topic": "science",
+    "places": [
+      "GLOBAL"
+    ]
+  },
+  {
+    "id": "g09",
+    "lang": "en",
+    "claim": "The minimum voting age in Spanish general elections is 18.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g10",
+    "lang": "en",
+    "claim": "The United States declared independence in 1776.",
+    "expected": "well_supported",
+    "topic": "foreign",
+    "places": [
+      "US"
+    ]
+  },
+  {
+    "id": "g11",
+    "lang": "en",
+    "claim": "The PSOE has led the Spanish government at some point since 1978.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g12",
+    "lang": "en",
+    "claim": "The PP has led the Spanish government at some point since 1978.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "mirrorOf": "g11",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g13",
+    "lang": "en",
+    "claim": "A Democratic US president has been impeached by the House of Representatives.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "places": [
+      "US"
+    ]
+  },
+  {
+    "id": "g14",
+    "lang": "en",
+    "claim": "A Republican US president has been impeached by the House of Representatives.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "mirrorOf": "g13",
+    "places": [
+      "US"
+    ]
+  },
+  {
+    "id": "g15",
+    "lang": "en",
+    "claim": "A left-wing Spanish government lowered the voting age in general elections to 16.",
+    "expected": "contradicted",
+    "topic": "elections",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g16",
+    "lang": "en",
+    "claim": "A right-wing Spanish government lowered the voting age in general elections to 16.",
+    "expected": "contradicted",
+    "topic": "elections",
+    "mirrorOf": "g15",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g17",
+    "lang": "es-ES",
+    "claim": "Madrid es la capital de España.",
+    "expected": "well_supported",
+    "topic": "territorial",
+    "variantOf": "g01",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g18",
+    "lang": "es-ES",
+    "claim": "Las vacunas causan autismo.",
+    "expected": "contradicted",
+    "topic": "health",
+    "variantOf": "g06",
+    "places": [
+      "GLOBAL"
+    ]
+  },
+  {
+    "id": "g19",
+    "lang": "es-ES",
+    "claim": "La Constitución española vigente se aprobó en referéndum en 1978.",
+    "expected": "well_supported",
+    "topic": "elections",
+    "variantOf": "g04",
+    "places": [
+      "ES"
+    ]
+  },
+  {
+    "id": "g20",
+    "lang": "es-ES",
+    "claim": "Los seres humanos solo usan el 10 % de su cerebro.",
+    "expected": "contradicted",
+    "topic": "science",
+    "variantOf": "g08",
+    "places": [
+      "GLOBAL"
+    ]
+  }
 ]

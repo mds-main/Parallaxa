@@ -25,6 +25,7 @@ export default async function LedgerPage({ params, searchParams }: { params: Pro
   const scores = list.length ? await db.select().from(actorDimensionScores).where(eq(actorDimensionScores.dimension, 'factual_reliability')) : [];
   const places = await getPlaces();
   const countries = [...new Set(list.map((a) => a.country))];
+  const types = [...new Set(list.map((a) => a.type))];
   return (
     <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
@@ -35,6 +36,14 @@ export default async function LedgerPage({ params, searchParams }: { params: Pro
           <Link href="/ledger" className="chip no-underline">{t('filters.all')}</Link>
           {countries.map((c) => (
             <Link key={c} href={{ pathname: '/ledger', query: { country: c } }} className="chip no-underline">{places.find((p) => p.id === c)?.names[locale] ?? c}</Link>
+          ))}
+        </nav>
+      )}
+      {types.length > 1 && (
+        <nav className="flex flex-wrap gap-2" aria-label={t('filters.type')}>
+          <Link href={{ pathname: '/ledger', query: sp.country ? { country: sp.country } : {} }} className="chip no-underline">{t('filters.all')}</Link>
+          {types.map((ty) => (
+            <Link key={ty} href={{ pathname: '/ledger', query: { ...(sp.country ? { country: sp.country } : {}), type: ty } }} className={`chip no-underline ${sp.type === ty ? 'bg-ink text-paper' : ''}`}>{t(`types.${ty}`)}</Link>
           ))}
         </nav>
       )}

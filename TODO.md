@@ -419,7 +419,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 17.3 [P1] Dimension scoring jobs: factual reliability (n ≥ 10), correction behaviour, data integrity, integrity record (final rulings only), influence-operation links (sourced, with confidence), civility of conduct; prediction calibration (Brier score) in P2. Sample size and confidence on each; no overall score.
 - [x] 17.4 [P1] Actor page: dimension tiles with n and confidence, analyzed claims, positive conduct, actor reply, appeal status; conduct-only phrasing in English and Spanish (natively and legally reviewed).
 - [ ] 17.5 [P1] Read-only launch scope: parties and national leaders in Spain and the US; legal review of the first 100 profiles (needs: 2.6, 2.10).
-- [ ] 17.6 [P1] Filters by country, region and topic.
+- [x] 17.6 [P1] Filters by country, region and topic.
 - [ ] 17.7 [P2] Right of reply: verified-contact "Respond" channel, ≤ 300 words + links, published within 5 business days; a rebuttal with new evidence triggers re-review within 10 business days.
 - [ ] 17.8 [P2] Appeals: stage 1 editorial re-review by a different reviewer and model pair; stage 2 panel decision published with reasons.
 - [ ] 17.9 [P2] Statutory rectification workflow (LO 2/1984 deadlines) and equivalents for new countries.
@@ -514,7 +514,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 23.2 [P1] Even-handedness suite: mirror pairs (parity ±0.1), refusal symmetry by side and by slot, outcome reporting by side.
 - [x] 23.2b [P1] Per-slot model metrics: agreement matrix between slots, grade distribution by side of claim origin, refusal and abstention rates, conflict-of-interest exclusions, cost and latency; nightly, surfaced in the admin console (22.16).
 - [x] 23.3 [P1] Language parity suite: the same claims in every supported language (en and es-ES at launch); ≥ 98% cross-language grade agreement; native fluency and terminology ratings ≥ 4.5/5 (es-ES raters for Spanish); es-ES lexicon check (4.18).
-- [ ] 23.4 [P1] Tag accuracy evals: country ≥ 95%, region and topic ≥ 90%.
+- [x] 23.4 [P1] Tag accuracy evals: country ≥ 95%, region and topic ≥ 90%.
 - [x] 23.5 [P1] Nightly regression on the gold set, with alerts.
 - [x] 23.6 [P1] Release gate in CI: no prompt or model change ships if accuracy drops > 1 point or any symmetry or language-parity metric regresses beyond tolerance.
 - [ ] 23.7 [P2] Perceived-slant panels (Westwood-style) stratified by ideology in ES, US, UK and MX, then each country added with a new language; goal: no significant perceived slant on ≥ 80% of topics.
@@ -522,7 +522,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 
 ## 24. Security and abuse prevention
 - [ ] 24.1 [P1] Rate limits and quotas (WAF + app level), BotID on expensive and write routes, account age and reputation signals.
-- [ ] 24.2 [P1] Anomaly detection for rating bursts, coordinated reports and brigading on errors and appeals.
+- [x] 24.2 [P1] Anomaly detection for rating bursts, coordinated reports and brigading on errors and appeals.
 - [x] 24.3 [P1] Secrets: environment-scoped Vercel env vars, quarterly rotation runbook, no secrets in client bundles (CI check).
 - [ ] 24.4 [P1] Abuse reporting channel; no bulk API in the MVP.
 - [ ] 24.5 [P1] Third-party penetration test before public launch (focus: SSRF, prompt injection, auth, RLS); fix all high and critical findings.
