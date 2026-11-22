@@ -28,6 +28,8 @@
     "@electric-sql/pglite": "0.5.17",
     "@neondatabase/serverless": "1.2.1",
     "@opentelemetry/api": "^1.10.0",
+    "@simplewebauthn/browser": "^14.0.0",
+    "@simplewebauthn/server": "^14.1.0",
     "@vercel/edge-config": "1.5.1",
     "@vercel/otel": "^2.3.0",
     "drizzle-orm": "0.45.4",

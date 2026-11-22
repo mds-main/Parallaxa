@@ -195,7 +195,7 @@ export async function investigate(input: InvestigateInput): Promise<SlotVerdict 
         checked.push(ok ? s : { ...s, stance: 'context' });
       }
     }
-    sources = checked;
+    sources = checked.map((s) => ({ ...s, contentHash: ctx.pageCache.get(s.url)?.hash ?? undefined }));
     const decisive = sources.filter((s) => s.stance !== 'context' && s.tier <= 3);
     const strong = decisive.filter((s) => s.tier <= 2);
     if (grade && grade !== 'not_checkable' && decisive.length === 0) {

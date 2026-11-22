@@ -1,12 +1,100 @@
 {
   "title": "Your Parallaxa",
   "intro": "Choose where and what you care about. We narrow by place and topic only, never by side: every story still shows every side.",
-  "places": { "title": "Places", "help": "Up to 5. One is your home (used for the perception quiz and local context).", "add": "Add a place", "search": "Search countries and regions", "home": "Home", "makeHome": "Make home", "focus": "Only this place", "include": "Include", "remove": "Remove", "global": "Include global news", "max": "You can choose up to 5 places." },
-  "topics": { "title": "Topics", "help": "Followed topics come first. Muted topics are left out of the briefing and alerts, never out of Check.", "follow": "Follow", "neutral": "Neutral", "mute": "Mute" },
-  "briefing": { "title": "Daily briefing", "length": "Stories", "time": "Delivery time", "days": "Days", "weekdays": "Weekdays only", "everyday": "Every day", "depth": "Depth", "quick": "Quick (~3 min)", "standard": "Standard (~6 min)", "plain": "Plain-language mode", "outside": "Keep one “outside your filters” story", "outsideHelp": "A major event outside your places or topics, so personalization doesn't become a bubble." },
-  "notifications": { "title": "Notifications", "help": "At most one routine notification a day, plus updates you asked for (up to 3).", "enable": "Turn on notifications", "enabled": "Notifications are on", "unsupported": "This browser doesn't support notifications. On iPhone, add Parallaxa to your home screen first.", "quiet": "Quiet hours", "pause": "Pause for a week" },
-  "language": { "title": "Language" },
-  "privacy": { "title": "Privacy", "help": "Without an account, everything here stays on this device.", "export": "Download my data", "delete": "Delete everything on this device", "deleted": "Deleted." },
+  "places": {
+    "title": "Places",
+    "help": "Up to 5. One is your home (used for the perception quiz and local context).",
+    "add": "Add a place",
+    "search": "Search countries and regions",
+    "home": "Home",
+    "makeHome": "Make home",
+    "focus": "Only this place",
+    "include": "Include",
+    "remove": "Remove",
+    "global": "Include global news",
+    "max": "You can choose up to 5 places."
+  },
+  "topics": {
+    "title": "Topics",
+    "help": "Followed topics come first. Muted topics are left out of the briefing and alerts, never out of Check.",
+    "follow": "Follow",
+    "neutral": "Neutral",
+    "mute": "Mute"
+  },
+  "briefing": {
+    "title": "Daily briefing",
+    "length": "Stories",
+    "time": "Delivery time",
+    "days": "Days",
+    "weekdays": "Weekdays only",
+    "everyday": "Every day",
+    "depth": "Depth",
+    "quick": "Quick (~3 min)",
+    "standard": "Standard (~6 min)",
+    "plain": "Plain-language mode",
+    "outside": "Keep one “outside your filters” story",
+    "outsideHelp": "A major event outside your places or topics, so personalization doesn't become a bubble."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "help": "At most one routine notification a day, plus updates you asked for (up to 3).",
+    "enable": "Turn on notifications",
+    "enabled": "Notifications are on",
+    "unsupported": "This browser doesn't support notifications. On iPhone, add Parallaxa to your home screen first.",
+    "quiet": "Quiet hours",
+    "pause": "Pause for a week"
+  },
+  "language": {
+    "title": "Language"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "help": "Without an account, everything here stays on this device.",
+    "export": "Download my data",
+    "delete": "Delete everything on this device",
+    "deleted": "Deleted."
+  },
   "preview": "With these settings, today's briefing would include:",
-  "saved": "Saved on this device."
+  "saved": "Saved on this device.",
+  "account": {
+    "title": "Account (optional)",
+    "intro": "You don't need an account. Create one only to keep your places, topics and follows in sync across devices. We store no email address, only a keyed hash of it.",
+    "disabled": "Accounts are not enabled on this server.",
+    "email": "Email address",
+    "send": "Email me a sign-in link",
+    "sent": "Check your inbox for a sign-in link (valid for 15 minutes).",
+    "devLink": "Development mode: open the sign-in link",
+    "passkey": "Sign in with a passkey",
+    "addPasskey": "Add a passkey to this account",
+    "passkeyAdded": "Passkey added.",
+    "passkeys": "{count, plural, =0 {No passkeys yet} one {# passkey} other {# passkeys}}",
+    "signedIn": "You are signed in.",
+    "signOut": "Sign out",
+    "syncUp": "Save this device's settings to my account",
+    "syncDown": "Load my account's settings on this device",
+    "synced": "Done.",
+    "export": "Download my account data",
+    "delete": "Delete my account",
+    "deleteConfirm": "Type DELETE to permanently delete your account. This cannot be undone.",
+    "deleted": "Your account was deleted.",
+    "selfTitle": "Political self-placement (optional)",
+    "selfIntro": "Helps us check that Parallaxa is trusted equally across the spectrum. Stored separately and encrypted, used only in anonymous groups of at least 50 people, and deletable at any time.",
+    "selfConsent": "I explicitly consent to Parallaxa storing my political self-placement for these aggregate statistics.",
+    "selfSave": "Save",
+    "selfDelete": "Delete my self-placement",
+    "selfSaved": "Saved.",
+    "placements": {
+      "left": "Left",
+      "centre_left": "Centre-left",
+      "centre": "Centre",
+      "centre_right": "Centre-right",
+      "right": "Right",
+      "none": "I prefer not to say"
+    },
+    "verifyTitle": "Finish signing in",
+    "verifyButton": "Sign in",
+    "verifyFailed": "This link is invalid or has expired. Request a new one.",
+    "emailSubject": "Your Parallaxa sign-in link",
+    "emailBody": "Open this link to sign in to Parallaxa (valid for 15 minutes): {link}\n\nIf you didn't ask for it, ignore this email."
+  }
 }

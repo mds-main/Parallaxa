@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { useStoredPreferences } from '@/lib/prefs/hooks';
+import { useSessionScope, useStoredPreferences } from '@/lib/prefs/hooks';
 import { savePreferences } from '@/lib/prefs/storage';
 import { markEngaged } from './InstallPrompt';
 import { defaultPreferences } from '@/lib/prefs/types';
@@ -22,7 +22,13 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
   const t = useTranslations('today');
   const locale = useLocale();
   const stored = useStoredPreferences();
-  const prefs = useMemo(() => stored ?? defaultPreferences(), [stored]);
+  const session = useSessionScope();
+  const prefs = useMemo(() => {
+    const base = stored ?? defaultPreferences();
+    if (!session) return base;
+    // Session-only scope from the header chip narrows places for this visit without saving anything.
+    return { ...base, places: base.places.filter((p) => session.includes(p.id)), global: session.includes('GLOBAL') };
+  }, [stored, session]);
   const [index, setIndex] = useState(0);
   useEffect(() => {
     fetch('/api/usage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'briefing_opened', lang: locale }) }).catch(() => undefined);

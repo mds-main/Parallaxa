@@ -9,9 +9,10 @@ import { inferTier, quoteAppears } from './sources';
 import { getDb } from '../db/client';
 import { analyses, claims } from '../db/schema';
 import { VERDICT_PARAMETERS } from './json';
+import { saveSnapshot } from './snapshots';
 
 export type ToolContext = {
-  pageCache: Map<string, { title: string; text: string }>;
+  pageCache: Map<string, { title: string; text: string; hash?: string | null }>;
   counters: { web: number; x: number; scrape: number; toolCalls: number };
   budget: { maxWebSearches: number; maxScrapes: number };
 };
@@ -101,7 +102,8 @@ async function fetchPage(ctx: ToolContext, url: string) {
       if (res.ok) {
         const j = (await res.json()) as { content?: string };
         const page = { title: (j.content?.match(/^#\s+(.+)$/m)?.[1] ?? '').slice(0, 200), text: j.content ?? '' };
-        ctx.pageCache.set(url, page);
+        const hash = page.text ? await saveSnapshot(url, page.title, page.text) : null;
+        ctx.pageCache.set(url, { ...page, hash });
         return page;
       }
     } catch {
@@ -110,7 +112,8 @@ async function fetchPage(ctx: ToolContext, url: string) {
   }
   const page = await safeFetch(url);
   const out = { title: page.title, text: page.text };
-  ctx.pageCache.set(url, out);
+  const hash = out.text ? await saveSnapshot(url, out.title, out.text) : null;
+  ctx.pageCache.set(url, { ...out, hash });
   return out;
 }
 

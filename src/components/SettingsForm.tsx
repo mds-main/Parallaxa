@@ -6,6 +6,7 @@ import { useIsClient, usePushSupport, useStoredPreferences } from '@/lib/prefs/h
 import { defaultPreferences, MAX_PLACES, type Preferences, type TopicState } from '@/lib/prefs/types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { enablePush } from '@/lib/prefs/push';
+import { Link } from '@/i18n/navigation';
 import { assembleBriefing, type EditionStory } from '@/lib/briefing/assemble';
 
 export type PlaceOption = { id: string; parentId: string | null; level: string; names: Record<string, string>; localName: string | null; coverageLevel: string };
@@ -213,6 +214,7 @@ export function SettingsForm({ places, topics, editions = [] }: { places: PlaceO
       <section className="card space-y-3 p-5">
         <h2 className="text-xl font-semibold">{t('privacy.title')}</h2>
         <p className="text-sm muted">{t('privacy.help')}</p>
+        <p className="text-sm"><Link href="/account">{t('account.title')}</Link></p>
         <div className="flex flex-wrap gap-2">
           <button
             className="btn btn-ghost"

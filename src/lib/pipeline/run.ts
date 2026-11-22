@@ -331,7 +331,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
       for (const p of tags.places) await tx.insert(s.claimPlaces).values({ analysisId, placeId: p.id, confidence: p.confidence }).onConflictDoNothing();
       for (const t of tags.topics) await tx.insert(s.claimTopics).values({ analysisId, topicId: t.id, confidence: t.confidence }).onConflictDoNothing();
       for (const src of sources) {
-        const [row] = await tx.insert(s.sources).values({ url: src.url, title: src.title, tier: src.tier, lang: src.lang ?? null, publishedAt: src.publishedAt && !Number.isNaN(Date.parse(src.publishedAt)) ? new Date(src.publishedAt) : null }).returning({ id: s.sources.id });
+        const [row] = await tx.insert(s.sources).values({ url: src.url, title: src.title, tier: src.tier, lang: src.lang ?? null, contentHash: src.contentHash ?? null, snapshotKey: src.contentHash ?? null, publishedAt: src.publishedAt && !Number.isNaN(Date.parse(src.publishedAt)) ? new Date(src.publishedAt) : null }).returning({ id: s.sources.id });
         await tx.insert(s.analysisSources).values({ analysisId, sourceId: row!.id, tier: src.tier, quote: src.quoteVerified ? src.quote ?? null : null, quoteVerified: Boolean(src.quoteVerified), stance: src.stance }).onConflictDoNothing();
       }
       await tx.insert(s.analysisRenderings).values({ analysisId, version: 1, lang, body: rendered.body, model: rendered.model, promptVersion: rendered.promptHash, consistencyCheck: rendered.consistency }).onConflictDoNothing();

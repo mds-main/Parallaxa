@@ -513,3 +513,41 @@ export const alertsLog = pgTable('alerts_log', {
   at: createdAt(),
   acknowledgedAt: ts('acknowledged_at'),
 });
+
+/** Private, dated, hashed text snapshots of cited pages (TODO 11.7): protects against link rot and stealth edits. */
+export const sourceSnapshots = pgTable('source_snapshots', {
+  hash: text('hash').primaryKey(),
+  url: text('url').notNull(),
+  title: text('title'),
+  text: text('text').notNull(),
+  fetchedAt: ts('fetched_at').notNull().defaultNow(),
+});
+
+// ── Optional accounts (PRD 9.3: only for sync, notifications and community review) ──
+export const userSessions = pgTable('user_sessions', {
+  id: text('id').primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: createdAt(),
+  expiresAt: ts('expires_at').notNull(),
+  revokedAt: ts('revoked_at'),
+});
+
+/** Single-use sign-in links. Only a hash of the token and of the email are stored. */
+export const magicLinks = pgTable('magic_links', {
+  tokenHash: text('token_hash').primaryKey(),
+  emailHash: text('email_hash').notNull(),
+  lang: text('lang').notNull(),
+  createdAt: createdAt(),
+  expiresAt: ts('expires_at').notNull(),
+  usedAt: ts('used_at'),
+});
+
+export const passkeys = pgTable('passkeys', {
+  id: text('id').primaryKey(), // credential id (base64url)
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  publicKey: text('public_key').notNull(), // base64url
+  counter: integer('counter').notNull().default(0),
+  transports: jsonb('transports').$type<string[]>().notNull().default([]),
+  createdAt: createdAt(),
+  lastUsedAt: ts('last_used_at'),
+});

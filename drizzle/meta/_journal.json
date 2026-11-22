@@ -15,6 +15,20 @@
       "when": 1795387546449,
       "tag": "0001_push_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795389202298,
+      "tag": "0002_source_snapshots",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795389265944,
+      "tag": "0003_accounts",
+      "breakpoints": true
     }
   ]
 }

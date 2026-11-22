@@ -7,6 +7,7 @@ import { clientIp, hashIp } from '@/lib/security/ip';
 import { underSpendCeiling } from '@/lib/ai/spend';
 import { isLocale, DEFAULT_LOCALE } from '@/i18n/languages';
 import { recordUsage } from '@/lib/metrics/usage';
+import { getUserSession } from '@/lib/accounts/session';
 
 export const maxDuration = 300;
 
@@ -30,7 +31,10 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: 'invalid' }, { status: 400 });
 
   const ipHash = await hashIp(clientIp(req.headers));
-  const rl = await rateLimit(`check:${ipHash}`, config.limits.checksPerHourAnonymous, 3600);
+  const user = await getUserSession();
+  const rl = user
+    ? await rateLimit(`check:user:${user.userId}`, config.limits.checksPerHourSignedIn, 3600)
+    : await rateLimit(`check:${ipHash}`, config.limits.checksPerHourAnonymous, 3600);
   if (!rl.ok) return NextResponse.json({ error: 'rate_limited' }, { status: 429, headers: { 'Retry-After': '3600' } });
   if (!(await underSpendCeiling(config.limits.dailySpendCeilingUsd))) return NextResponse.json({ error: 'spend_limit' }, { status: 402 });
 

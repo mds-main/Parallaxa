@@ -23,6 +23,8 @@ export default defineConfig({
           ADMIN_PASSWORD: 'e2e-password-0123456789-abcdef',
           ADMIN_SESSION_SECRET: 'e2e-session-secret-0123456789-abcdefghijklmnop',
           PARALLAXA_DB: 'memory',
+          USER_SESSION_SECRET: 'e2e-user-session-secret-0123456789-abcdefghij',
+          AUTH_DEV_LINKS: '1',
         },
       },
 });

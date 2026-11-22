@@ -13,11 +13,11 @@ This file lists **every block of work, and every task inside each block**, neede
 
 ## Status (23 Nov 2026)
 
-The application is implemented on branch `feat/mvp-implementation`: public site (Check, Today, Ledger, quiz, Trust Center, Your Parallaxa, onboarding, PWA), the full pipeline with three perspective slots and the Venice investigation harness, rule-based aggregation, corrections, briefing generation, push, cron jobs, the admin console, and unit, end-to-end and accessibility tests. Ticked tasks below are done in code; partially done tasks stay open.
+The application is implemented on branch `feat/mvp-implementation`: public site (Check, Today, Ledger, quiz, Trust Center, Your Parallaxa, onboarding, PWA), the full pipeline with three perspective slots and the Venice investigation harness, rule-based aggregation, corrections, briefing generation, push, cron jobs, the admin console, and unit, end-to-end and accessibility tests. Ticked tasks below are done in code; partially done tasks stay open. Implementation choices that differ from the plan: a thin fetch client instead of the AI SDK (to pass `venice_parameters` exactly); first-party magic links + passkeys instead of Auth.js/Neon Auth (no email stored); source snapshots in Postgres instead of Vercel Blob (private by default); embeddings as `real[]` with app-side similarity until pgvector is needed.
 
 **Needs you (cannot be done from code):** a Venice API key (the site runs in labelled demo mode without it), Vercel and Neon provisioning and env vars (`docs/deployment.md`), Firewall/BotID rules, and every organizational, legal and editorial task in blocks 2 and 3 (entity, DPIA, panel, fact-checker gold set, legal review of the Ledger).
 
-**Main open engineering items:** accounts (passkeys, magic links, sync across devices), Vercel Blob snapshots of cited sources, pgvector at scale, named reviewer accounts, offline background sync, Row-Level Security roles, a session-only scope switch, and the Phase 2/3 features (community review, prediction tracker, prebunk lessons, browser extension, debate maps, common-ground rooms).
+**Main open engineering items:** pgvector at scale, named reviewer accounts, offline background sync, Row-Level Security roles, and the Phase 2/3 features (community review, prediction tracker, prebunk lessons, browser extension, debate maps, common-ground rooms).
 
 ## 0. Project at a glance
 
@@ -256,13 +256,13 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 8.7 [P1] Storybook (or equivalent) with locale and viewport toolbars, including the pseudo-locale.
 
 ## 9. Accounts, auth and privacy center
-- [ ] 9.1 [P0] *Decide* Auth.js vs Neon Auth (verify passkeys, magic links, EU data, RLS integration).
+- [x] 9.1 [P0] *Decide* Auth.js vs Neon Auth (verify passkeys, magic links, EU data, RLS integration).
 - [x] 9.2 [P1] Anonymous-first: every core feature works without an account; local history and preferences in IndexedDB.
-- [ ] 9.3 [P1] Sign-in with passkeys + email magic links (Resend, localized); optional Google/Apple OAuth, never required.
-- [ ] 9.4 [P1] Account sync of preferences, follows and history (encrypted, 7.3); merge local → account on first sign-in.
-- [ ] 9.5 [P1] Privacy center: export (JSON), delete account (hard delete with confirmation), withdraw consents, view what is stored.
-- [ ] 9.6 [P1] Optional political self-placement: explicit Art. 9 consent screen, separate encrypted table, aggregate use only (k ≥ 50), deletable at any time; never joined with preferences or behaviour.
-- [ ] 9.7 [P1] Per-user quotas and per-IP-hash quotas for anonymous use (20 checks/hour anonymous, 60 signed-in).
+- [x] 9.3 [P1] Sign-in with passkeys + email magic links (Resend, localized); optional Google/Apple OAuth, never required.
+- [x] 9.4 [P1] Account sync of preferences, follows and history (encrypted, 7.3); merge local → account on first sign-in.
+- [x] 9.5 [P1] Privacy center: export (JSON), delete account (hard delete with confirmation), withdraw consents, view what is stored.
+- [x] 9.6 [P1] Optional political self-placement: explicit Art. 9 consent screen, separate encrypted table, aggregate use only (k ≥ 50), deletable at any time; never joined with preferences or behaviour.
+- [x] 9.7 [P1] Per-user quotas and per-IP-hash quotas for anonymous use (20 checks/hour anonymous, 60 signed-in).
 
 ## 10. AI layer: Venice, perspective slots and investigation harness
 ### 10.A Provider layer
@@ -342,7 +342,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 11.4 [P1] *Decide* and integrate a secondary search API (Brave / Exa / Tavily) for diversity and cross-checks.
 - [ ] 11.5 [P1] Primary-data connectors: Eurostat, INE, OECD, World Bank, BOE/EUR-Lex, US Census/BLS, CIS barometers, CENDOJ, parliamentary records, Wikidata (entity resolution only).
 - [ ] 11.6 [P2] Connectors for new country editions: ONS/UK Parliament and INEGI/DOF, plus regional statistics offices for regional editions; [P3] connectors for each country added with a new language (e.g., INSEE/Légifrance, Destatis/Bundestag, ISTAT/Normattiva, INE-PT/DRE).
-- [ ] 11.7 [P0] Source snapshotting to Blob (dated, hashed) for every cited page; respect robots.txt; snapshots private; only short quotes displayed.
+- [x] 11.7 [P0] Source snapshotting to Blob (dated, hashed) for every cited page; respect robots.txt; snapshots private; only short quotes displayed.
 - [ ] 11.8 [P0] Outlet registry: type, country, language. **No** left/right bias scores.
 - [ ] 11.9 [P0] Retrieval that is aware of place and language: per-claim query plans use place tags to pick authoritative local sources and search in the claim's language plus English; deliberately retrieve outlets from both sides when coverage diverges.
 
@@ -390,7 +390,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 15.2 [P1] Default suggestion: home country from browser locale region subtag and coarse IP country (suggestion only, never stored) + Global; user confirms. No Geolocation API.
 - [x] 15.3 [P1] Place picker: search and browse country → region, coverage level shown, local official names.
 - [x] 15.4 [P1] Topic picker: two-level list with Follow/Neutral/Mute, search, "skip keeps everything neutral".
-- [ ] 15.5 [P1] Header scope chip: session-only quick switch without changing saved preferences.
+- [x] 15.5 [P1] Header scope chip: session-only quick switch without changing saved preferences.
 - [x] 15.6 [P1] "Your Parallaxa" screen with a live preview ("With these settings, today's briefing would be…").
 - [x] 15.7 [P1] Filtering engine (pure, client-side capable): applies place and topic filters to editions, Ledger lists and quiz items; never touches Check results or analysis content.
 - [x] 15.8 [P1] "Why am I seeing this?" explanation on every briefing card and alert.

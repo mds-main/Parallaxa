@@ -55,6 +55,8 @@ export type VerdictSource = {
   lang?: string;
   /** Where it came from: shared pool, a slot's own search, or X search (always T4). */
   origin?: 'pool' | 'web_search' | 'x_search' | 'scrape' | 'primary_data';
+  /** SHA-256 of the archived text snapshot (source_snapshots). */
+  contentHash?: string;
 };
 
 export type AtomicClaim = {

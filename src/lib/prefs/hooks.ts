@@ -66,3 +66,32 @@ export function usePushSupport(): 'unsupported' | 'off' | 'on' | null {
     () => null,
   );
 }
+
+const SCOPE_KEY = 'plx:scope:session';
+
+function subscribeSession(cb: () => void) {
+  window.addEventListener('plx:scope', cb);
+  return () => window.removeEventListener('plx:scope', cb);
+}
+
+/** Session-only scope (PRD F6 header chip): place ids to show for this visit, or null for saved settings. */
+export function useSessionScope(): string[] | null {
+  const raw = useSyncExternalStore(subscribeSession, () => {
+    try {
+      return sessionStorage.getItem(SCOPE_KEY);
+    } catch {
+      return null;
+    }
+  }, () => null);
+  return useMemo(() => (raw ? (JSON.parse(raw) as string[]) : null), [raw]);
+}
+
+export function setSessionScope(ids: string[] | null) {
+  try {
+    if (ids === null) sessionStorage.removeItem(SCOPE_KEY);
+    else sessionStorage.setItem(SCOPE_KEY, JSON.stringify(ids));
+    window.dispatchEvent(new Event('plx:scope'));
+  } catch {
+    /* ignore */
+  }
+}
