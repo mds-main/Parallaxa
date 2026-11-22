@@ -4,11 +4,6 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { ENABLED_LANGUAGES, getLanguage, prefixFor, type Locale } from '@/i18n/languages';
-import { SiteHeader } from '@/components/SiteHeader';
-import { BottomNav } from '@/components/BottomNav';
-import { SiteFooter } from '@/components/SiteFooter';
-import { getActiveConfig } from '@/lib/config/store';
-import { isDemoMode } from '@/lib/ai/client';
 import { ServiceWorker } from '@/components/ServiceWorker';
 import '../globals.css';
 
@@ -45,8 +40,6 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   setRequestLocale(locale);
   const lang = getLanguage(locale)!;
   const t = await getTranslations('common');
-  const { config } = await getActiveConfig();
-  const banner = config.content.maintenanceBanner[locale as Locale] ?? config.content.maintenanceBanner.en;
   return (
     <html lang={locale} dir={lang.dir}>
       <body className="bg-paper text-ink antialiased">
@@ -54,22 +47,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
           {t('skipToContent')}
         </a>
         <NextIntlClientProvider>
-          {isDemoMode() && (
-            <div role="note" className="bg-accent/20 px-4 py-1.5 text-center text-sm text-ink">
-              {t('demoBanner')}
-            </div>
-          )}
-          {banner && (
-            <div role="status" className="border-b border-line bg-paper-2 px-4 py-2 text-center text-sm">
-              {banner}
-            </div>
-          )}
-          <SiteHeader />
-          <main id="main" className="mx-auto w-full max-w-6xl px-4 pt-6">
-            {children}
-          </main>
-          <SiteFooter />
-          <BottomNav />
+          {children}
           <ServiceWorker prefix={prefixFor(locale as Locale)} />
         </NextIntlClientProvider>
       </body>
