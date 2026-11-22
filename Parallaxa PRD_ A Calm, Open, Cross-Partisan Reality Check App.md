@@ -5,8 +5,10 @@ Parallaxa should be built as an open, model-plural, evidence-first web app/PWA t
 ## TL;DR
 
 - **What to build:** a Next.js PWA on Vercel + Neon Postgres. The core is a transparent truth-seeking pipeline: claim decomposition, primary sources first, graded evidence, and facts kept separate from values and predictions. It is surfaced through three entry points: **Check** (reactive: paste, share or ask), **Daily Parallax** (proactive: a finite briefing of at most five stories), and **Ledger** (behaviour-based actor track records with right of reply). Venice AI is the primary model provider and Vercel AI Gateway is a circuit-broken fallback.
+- **Made for each person:** every user chooses *where* they care about (global, one or more countries, or a region within a country) and *what* they care about (topics to follow or mute, actors and stories to follow), plus how much, when and how they want it. Personalization narrows by **place and topic only, never by side**: every story still shows every side, and Check is never filtered (F6).
+- **Speaks your language:** full support from launch for the six most widely spoken Western European languages: **English (`en`), Spanish from Spain (`es-ES`, not Latin American Spanish), French (`fr-FR`), German (`de-DE`), Italian (`it-IT`) and Portuguese (`pt-PT`)**. The language is picked automatically from the browser's language settings and falls back to English when none match. Users can change it at any time, and AI output is written natively in each language, not machine-translated after the fact (F7).
 - **Why this design:** the evidence says facts *can* move people. Corrections rarely backfire (Wood & Porter 2019; Nyhan 2021). Tailored AI dialogues cut belief in participants' chosen conspiracy theory by 16.8 points more than a control, roughly a 20% reduction, and the effect held for at least two months (Costello, Pennycook & Rand, *Science* 385, eadq1814, 2024). Brief interventions also reduce partisan animosity (23 of 25 in the Stanford megastudy, *Science* 2024). But messenger distrust is the binding constraint: users of all parties perceive mainstream LLMs as left-leaning (Westwood, Grimmer & Hall 2025). So trust has to be *engineered*: several models of different national origin, published prompts, symmetric "mirror tests," cross-partisan review, and visible uncertainty.
-- **What to expect honestly:** an app cannot "fix" polarization. Realistic goals are measurable gains in calibration, smaller perception gaps, and lower animosity among users, plus a reputation for being *right against both sides when warranted*. The name "Parallaxa" was chosen because parallax is how you measure true position by looking from two viewpoints. It does not say "truth" or "fact-check," and it reads in English and Spanish. Domain and trademark availability could **not** be fully verified and must be cleared before launch.
+- **What to expect honestly:** an app cannot "fix" polarization. Realistic goals are measurable gains in calibration, smaller perception gaps, and lower animosity among users, plus a reputation for being *right against both sides when warranted*. The name "Parallaxa" was chosen because parallax is how you measure true position by looking from two viewpoints. It does not say "truth" or "fact-check," and it reads naturally in all six launch languages. Domain and trademark availability could **not** be fully verified and must be cleared before launch.
 
 ---
 
@@ -71,6 +73,8 @@ Parallaxa should be built as an open, model-plural, evidence-first web app/PWA t
 9. **Calm by design.** No infinite feed, outrage ranking, streaks, or "dunk" sharing. A finite briefing respects the exhausted majority.\[39\]
 10. **Privacy as a trust signal.** No ads, no tracking pixels; political views optional and minimal (GDPR Art. 9).
 11. **Accountability for the app itself.** Public corrections log, bias audits, cross-partisan panel, published funding.
+12. **Relevant to *you*, without a bubble.** A national briefing that ignores your region, or covers topics you never care about, wastes the limited attention the app asks for. Users choose their places and topics explicitly. Filters work on *where* and *what*, never on *which side* or *which outlets*, so personalization cannot turn into an echo chamber. A small "outside your filters" slot keeps major events visible, and every filter decision is explainable ("Why am I seeing this?").
+13. **Native in every language.** Trust drops when an app feels foreign or machine-translated. Every launch language gets native UI copy, natively generated analyses, native reviewers and its own style guide, and the same quality and even-handedness bar (language parity is a release gate).
 
 ---
 
@@ -79,8 +83,14 @@ Parallaxa should be built as an open, model-plural, evidence-first web app/PWA t
 ### 3.1 Recommendation: **Parallaxa**
 - **Meaning:** Parallax is how astronomers and surveyors find an object's *true* position by observing it from two viewpoints.\[40\] That is the product thesis: look from both sides to locate reality, which may not sit in the middle.
 - **Why non-obvious:** no "truth," "fact," "check," "real," "neutral," or partisan words. It sounds like an observatory, not a referee.
-- **Cross-language:** "parallax" (EN), "paralaje" (ES), "parallasse" (IT), "Parallaxe" (DE/FR). The "-a" ending reads naturally in Spanish, Italian, and Portuguese.
-- **Tagline (EN):** "See it from both sides. Find where it really stands." **(ES):** "Míralo desde ambos lados. Descubre dónde está de verdad."
+- **Cross-language:** "parallax" (EN), "paralaje" (ES), "parallaxe" (FR), "Parallaxe" (DE), "parallasse" (IT), "paralaxe" (PT). The "-a" ending reads naturally in Spanish, Italian, and Portuguese. The brand name is never translated.
+- **Tagline** (EN and ES final; the others are drafts for native copywriter review):
+  - **EN:** "See it from both sides. Find where it really stands."
+  - **ES (es-ES):** "Míralo desde ambos lados. Descubre dónde está de verdad."
+  - **FR:** "Regardez des deux côtés. Découvrez où en sont vraiment les choses."
+  - **DE:** "Sieh es von beiden Seiten. Finde heraus, wo es wirklich steht."
+  - **IT:** "Guardalo da entrambi i lati. Scopri dove si trova davvero."
+  - **PT (pt-PT):** "Vê dos dois lados. Descobre onde as coisas realmente estão."
 
 ### 3.2 Availability: what was and was not verified
 | Candidate | Findings | Status |
@@ -95,7 +105,7 @@ Parallaxa should be built as an open, model-plural, evidence-first web app/PWA t
 ### 3.3 Visual identity (non-partisan by construction)
 - **Avoid as primary/semantic colours:** red and blue (US parties; PP blue and PSOE red in Spain), purple (Podemos), green (Vox; Greens across Europe), orange (Ciudadanos) and teal (Reform UK). Never colour-code "left" and "right."
 - **Palette:** warm neutral base (paper #F7F5F0, ink #1C1F24) with one **ochre/amber accent (#C98A1B)**. Evidence grades use **shape + label + monochrome intensity**, not traffic-light red/green.
-- **Tone of voice:** curious, plain, non-humiliating, dry rather than snarky. Talk about *claims*, never mock *people*: "This claim is not supported by the data, because…", never "FALSE!!". In Spanish, "tú" in the UI.
+- **Tone of voice:** curious, plain, non-humiliating, dry rather than snarky. Talk about *claims*, never mock *people*: "This claim is not supported by the data, because…", never "FALSE!!". The same tone holds in every language, set in a per-language style guide that native reviewers validate. Form of address: "tú" in es-ES (Spain usage, never Latin American "ustedes"/voseo forms or vocabulary), "vous" in fr-FR, "du" in de-DE, "tu" in it-IT, "tu" in pt-PT (European Portuguese conventions), and a direct "you" in English.
 
 ---
 
@@ -117,6 +127,8 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 3. "When someone influential claims credibility, show me their track record on *both* honesty and good conduct."
 4. "When I argue with family, help me understand the strongest version of their view, and mine."
 5. "Show me I'm not being manipulated by *this app* either."
+6. "Focus on the places I live in or care about (my region, my country, or the whole world) and on the topics I follow, and leave out what I don't."
+7. "Tell me when something I'm following changes (a story I checked, a politician I watch, a topic I care about), without nagging me."
 
 ### 4.3 Non-goals
 - Not a social network: no comment section, no follower counts.
@@ -124,6 +136,7 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 - No verdicts on pure value questions (abortion, monarchy vs republic, immigration levels as such); it maps arguments and facts *within* them.
 - No engagement maximization, infinite scroll, outrage ranking, or ads.
 - Does not moderate or remove content on other sites.
+- No personalization by ideology: users can never filter by "side," hide one side's arguments, or pick outlets by political lean. Interests are never inferred silently from behaviour (MVP uses only explicit choices).
 
 ---
 
@@ -145,8 +158,10 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 | **Browser extension, debate maps** | Context at exposure; structure for deep divers | Maintenance, effort | Share target in MVP; both **Phase 3** |
 | **Common-ground rooms** (Habermas-style) | Strong consensus evidence | Moderation burden | **Phase 3 pilot** |
 | **Notifications** | Retention | Annoyance | Opt-in, max 1/day + requested follow-ups |
+| **Place & topic personalization** (global / country / region; follow & mute topics, actors, stories) | Relevance; respects limited attention; serves regional politics, which national coverage misses | Filter bubbles; thin regional sources; preferences can reveal political interest | **MVP core** (global + country + region filtering; regional editions where coverage allows), side-neutral by construction, local-first storage |
+| **Six languages from day one** (en, es-ES, fr-FR, de-DE, it-IT, pt-PT) | Reach across Western Europe; native feel builds trust | Translation errors; reviewer cost per language | **MVP core**, language-neutral analyses rendered natively, parity release gate |
 
-**Recommendation:** MVP = **Check + Daily Parallax + Side-by-side card + Push back + Perception-gap quiz + limited Ledger + Trust Center**, as a PWA with share target. Reactive checks earn credibility claim by claim; the briefing builds a healthy habit; the Ledger and quiz are where accountability and depolarization value compound.
+**Recommendation:** MVP = **Check + Daily Parallax + Side-by-side card + Push back + Perception-gap quiz + limited Ledger + Trust Center + place & topic personalization + six languages**, as a PWA with share target. Reactive checks earn credibility claim by claim; the briefing builds a healthy habit; the Ledger and quiz are where accountability and depolarization value compound.
 
 ---
 
@@ -156,8 +171,9 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 **User story:** As any user, I paste a claim, link, screenshot, or video URL and get a clear, sourced assessment in under 60 seconds (p50 under 25 s for cached-similar claims).
 
 **Pipeline stages (each a durable workflow step):**
-1. **Ingest & normalize:** fetch URL (sandboxed), extract text/OCR, detect language, canonicalize, hash for cache (exact + pgvector similarity ≥ 0.92 → reuse with "previously analyzed on <date>, refresh?").
+1. **Ingest & normalize:** fetch URL (sandboxed), extract text/OCR, detect the source language (any language can be *checked*; output is in the user's language), canonicalize, hash for cache (exact + pgvector similarity ≥ 0.92 → reuse with "previously analyzed on <date>, refresh?").
 2. **Claim decomposition:** split into atomic claims classified as **Fact**, **Value**, **Prediction**, **Attribution** ("X said Y"), or **Framing** (loaded language, selective statistics).
+2b. **Place & topic tagging:** tag each claim with the places it concerns (ISO 3166-1 country and ISO 3166-2 region codes, or "global/multi-country") and with 1–3 topics from the published taxonomy (F6). Tags drive briefings, filters, subscriptions and regional context in retrieval ("which statistics office is authoritative here?"). Tagging is a small-model step with a confidence score; low-confidence tags fall back to the parent place or topic.
 3. **Retrieval (primary-source first):** per-claim query plan with source tiers:
    - T1: primary data and documents (INE, Eurostat, BLS, Census, OECD, WHO; court rulings; legislation; full transcripts/videos; peer-reviewed papers).
    - T2: systematic reviews, reputable research institutes, wire services.
@@ -168,7 +184,7 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 5. **Manipulation-technique detection:** cherry-picked window, base-rate neglect, misleading chart axis, correlation→causation, out-of-context quote/clip, AI-generated media (probability language, never certainty).
 6. **Multi-model adjudication:** two models of different origin grade independently; a third reconciles. Disagreement above threshold → "Models disagree" banner + both rationales + human review queue.
 7. **Symmetry ("mirror") test:** for contested political claims, generate the structurally equivalent claim from the opposite side and check the rubric scores it consistently. Results are logged and published in aggregate.
-8. **Composition:** plain summary (≤ 80 words), "What's true / missing / wrong," "What each side gets right" (only with evidence), sources with quotes ≤ 25 words, collapsed reasoning trace, model+prompt version, timestamp.
+8. **Composition:** plain summary (≤ 80 words), "What's true / missing / wrong," "What each side gets right" (only with evidence), sources with quotes ≤ 25 words, collapsed reasoning trace, model+prompt version, timestamp. The analysis itself is stored as a **language-neutral structured object** (claims, grades, confidence, source IDs, reasoning steps). The prose is then **rendered natively** in the requested language from that object, using per-language prompts and style guides, cached per (analysis version, language). Rendering never changes grades, confidence or sources. Quotes stay in the source's original language, followed by a translation labelled as such.
 9. **Versioning & corrections:** analyses are immutable and versioned; corrections create a new version with a public diff and reason; the corrections log is public and RSS-able.
 
 **Acceptance criteria:**
@@ -177,12 +193,15 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 - Values are never graded true/false; UI shows "Values question: here are the strongest arguments."
 - Model disagreement, fallback provider use, and stale data (> 12 months) are always disclosed.
 - Corrections published within 72 h of a validated error report.
+- Every analysis can be read in all six launch languages, with identical grades, confidence, sources and side-by-side structure in each. Translations of quotes are always labelled, and the original is one tap away.
 
 ### 6.2 F2: Daily Parallax (proactive)
-- 3–5 stories/day per locale (es-ES, en-US, en-GB, es-MX), chosen by **published rules**: cross-outlet salience on both sides, virality of contested claims, upcoming decisions. A weekly **symmetry audit** reports whose claims were checked and why.
-- Each card: what happened, what's disputed, where each side is right/wrong, one perception-gap fact; ≤ 6 minutes total.
+- **Editions, then assembly.** Stories are produced in shared, human-reviewed **editions**: one Global edition, one per supported country, and one per supported region where coverage allows (F6). Each edition holds a ranked pool of 5–10 candidate stories chosen by **published rules**: cross-outlet salience on both sides, virality of contested claims, upcoming decisions. Each user's briefing of 3–5 stories is then **assembled** from the editions that match their places, weighted by followed topics and minus muted ones, with the "outside your filters" slot. Assembly is deterministic, rule-based and needs no model call, so personalization adds almost no cost and no per-user AI output.
+- **Fallbacks:** if a user's regional edition has fewer than 2 qualifying stories, the briefing fills from the parent country, then Global, and says so.
+- A weekly **symmetry audit** per edition reports whose claims were checked and why.
+- Each card: what happened, where (place tag), topic, what's disputed, where each side is right/wrong, one perception-gap fact, "Why am I seeing this?"; ≤ 6 minutes total (≈ 3 in Quick depth).
 - It ends: "You're up to date. See you tomorrow." No feed below.
-- Generated by cron at 05:00 local, reviewed by an editor plus at least one cross-partisan reviewer before 07:00 (Phase 1: one human minimum; always disclosed).
+- Editions are generated by cron at 05:00 in the place's local time and reviewed by an editor plus at least one cross-partisan reviewer before 07:00 (Phase 1: one human minimum; always disclosed). Delivery time per user follows their settings.
 
 ### 6.3 F3: Actor Ledger (accountability + recognizing good actors)
 **Scope:** politicians, parties, governments/countries, public figures, influencers (≥ 100k followers or demonstrable reach), companies, entrepreneurs, media outlets.
@@ -199,6 +218,7 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 | Civility of conduct | Documented dehumanizing language or incitement (quoted, linked) | Documented good-faith engagement with opponents |
 
 - **No single "good/bad" score.** Each dimension shows sample size and confidence; comparisons only within type.
+- **Browse and follow by place and topic:** the Ledger can be filtered by country, region (regional presidents, governments and parliaments; regional outlets) and topic ("who makes claims about Housing in Catalunya?"). Users can follow actors to hear about new analyses, replies and appeal results.
 - **Language rules:** describe conduct, not character: "7 of 12 analyzed claims were contradicted by evidence," never "liar" or "corrupt" unless quoting a final court ruling.
 - **Right of reply:** verified-contact "Respond" channel; replies (≤ 300 words + links) published alongside the record within 5 business days of verification. A rebuttal with new evidence triggers re-review within 10 business days.
 - **Appeals:** (1) editorial re-review by a different reviewer and model pair; (2) cross-partisan panel decision, published with reasons.
@@ -212,7 +232,7 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 
 ### 6.4 F4: Depolarization mechanics
 - **Side-by-side card:** "What [Left/Progressive] voices get right · What [Right/Conservative] voices get right · What the evidence says." Labels adapt per country (in Spain "izquierda/derecha" plus party families; never logos or party colours). Sections can be empty; no fabricated balance.
-- **Perception-gap quiz:** "What % of [other side] do you think support X?" → real survey value with source and margin of error → reflection prompt. Published surveys only (More in Common, CIS, Pew, Eurobarometer).
+- **Perception-gap quiz:** "What % of [other side] do you think support X?" → real survey value with source and margin of error → reflection prompt. Published surveys only (More in Common, CIS, Pew, Eurobarometer, plus regional institutes such as CEO in Catalonia where they exist). Survey question wording is shown in the user's language with a link to the original wording. Items match the user's home place and followed topics; regional items are used only when published regional samples have an adequate margin of error, otherwise country items are shown.
 - **Steelman:** for value questions, the strongest version of each position, written to be endorsed by its holders; Phase 2 validation by cross-partisan raters (bridging score).
 - **Moral reframing hints:** explain why a fact matters across moral foundations (fairness, care, liberty, loyalty, authority) without changing the fact.
 - **"Push back" dialogue:** the AI responds with evidence and concedes where the user is right. No persuasion goals, max 10 turns, accuracy-first prompt, every factual statement cited.
@@ -223,6 +243,93 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 - **Audits:** quarterly political-symmetry audit (mirror tests, story mix, Ledger outcomes by party family) with raw data; annual external audit by a university team from another country.
 - **Cross-partisan review panel:** ≥ 9 paid, rotating members balanced across left, centre, and right, recruited with academic partners (Spain, US, LatAm), bios published. Decisions require at least one member from each bloc.
 - **Independence & funding:** non-profit foundation (Spanish *fundación* or Dutch *stichting*); no donor > 10% of annual budget; no party, government, or platform-company funding; donors above €1,000 published; no model vendor > 50% of adjudication volume.
+
+### 6.6 F6: Personalization by place and topic ("Your Parallaxa")
+**User story:** As any user, I tell Parallaxa *where* and *what* I care about, so the briefing, Ledger, quiz and alerts focus on that, and I can change it in one tap at any time.
+
+**Geographic scope**
+- **Levels:** **Global**, **Country** (ISO 3166-1), **Region** (ISO 3166-2 first-level subdivision: Spanish autonomous communities, US states, UK nations, Mexican states, German Länder, etc.). Nothing finer than region in MVP (no cities, no GPS). Municipal scope is a Phase 3 open question.
+- **Multiple places:** up to 5 places, mixing levels (e.g., "Andalucía + Spain + Global", or "Spain + Mexico" for someone with family in both). One place is marked **home** and is used for perception-gap data and local context.
+- **Mode per place:** **Focus** (only this place) or **Include** (this place alongside the others). Global can be on or off. Default suggestion: home country + global, from browser locale and coarse IP country. The suggestion is shown to the user to confirm, and the IP is never stored or used beyond that suggestion. The browser Geolocation API is never used.
+- **Coverage honesty:** each place shows a coverage level (Full · Partial · Limited) based on primary-data connectors, regional outlets across the spectrum, and reviewer capacity. When regional coverage is thin, the app says so and fills from the parent country, labelled "Not enough regional coverage today; showing Spain-wide stories."
+- **Quick switcher:** a scope chip in the header ("Andalucía · Spain · Global ▾") changes the view for this session without changing saved preferences.
+
+**Topics**
+- **Published two-level taxonomy** (~20 topics, ~150 subtopics, versioned in the public repo, translated in every locale). Examples: Economy & jobs, Housing, Health, Pensions & welfare, Immigration, Climate & energy, Education, Justice & corruption, Elections & democracy, Territorial organization, Foreign affairs & war, Security & crime, Technology & AI, Science, Equality & rights, Media & information, Agriculture & rural life. Country-specific subtopics are allowed (e.g., "Regional financing" in Spain), each mapped to a neutral parent topic.
+- **Topic names are neutral and descriptive** ("Immigration," not "Invasion" or "Open borders"). The cross-partisan panel reviews the taxonomy, and changes go through the corrections log.
+- **Follow / Neutral / Mute** per topic or subtopic. Followed topics get priority; muted topics are left out of the briefing and alerts. Muting is never applied to Check results or to search.
+
+**Following and subscriptions**
+- **Follow targets:** topics, places, Ledger actors, and individual stories or analyses (to hear when a check is updated, corrected or resolved).
+- **Channels (all opt-in):** the Daily Parallax (default), Web Push, a weekly email digest (Phase 2), and per-topic and per-place **RSS feeds** that need no account.
+- **Notification budget:** at most 1 routine notification per day in total (the briefing), plus follow-ups the user explicitly asked for (e.g., "this check was corrected," "this actor replied"), capped at 3 per day. Users can set quiet hours and pause everything for a set time.
+
+**Briefing and reading settings**
+- Length (3 or 5 stories), delivery time, days of the week (e.g., weekdays only), depth (Quick ~3 min / Standard ~6 min), and plain-language mode. Content is always shown in the user's chosen language whatever the place (a French-speaking user following Spain reads Spain's edition in French). Users can optionally show sources' original-language text alongside.
+- The settings stay calm by design: no "more stories" option beyond 5, and no endless feed.
+
+**Guardrails against bubbles and manipulation**
+- **No side filters.** Personalization never removes a side, an outlet, or the "What each side gets right" card. It narrows *where* and *what*, never *who is right*.
+- **Outside your filters:** by default, 1 briefing slot is reserved for a major story outside the user's places or topics, chosen by published salience rules. Users can turn it off, and the app reminds them once every 90 days that it is off.
+- **Explicit choices only in MVP.** No behavioural inference of interests. Phase 2 may *suggest* topics computed on-device, shown as suggestions the user must accept.
+- **"Why am I seeing this?"** on every briefing card and alert names the matching place, topic or follow ("You follow Housing · Comunidad de Madrid").
+- **Same content for everyone:** analyses, grades and side-by-side cards are identical whatever a user's preferences. Personalization changes *selection and order*, never *what an analysis says*.
+
+**Privacy**
+- Anonymous users' preferences live only on the device (IndexedDB). Signing in syncs them, encrypted at application level with the same key class as political self-placement, because topic and place choices can reveal political opinions (GDPR Art. 9).
+- Preferences are never sent to model providers, never used for profiling, and appear in analytics only as k-anonymous aggregates (k ≥ 50). Export and delete are included in the self-service data tools.
+
+**Acceptance criteria:**
+- Users can set Global, any supported country, or any ISO 3166-2 region of a supported country in ≤ 3 taps, and change it from the header in 1 tap.
+- 100% of analyses and briefing stories carry place and topic tags. A tag-accuracy eval on the gold set reaches ≥ 95% for country and ≥ 90% for region and topic.
+- Muted topics never appear in the briefing or in alerts except through the "outside your filters" slot, which is labelled as such.
+- Check results, grades and side-by-side cards are byte-identical across preference profiles (automated test).
+- A user with no account and no preferences gets a sensible default (home country + global) and can use every feature.
+
+### 6.7 F7: Languages and localization
+**User story:** As any user, I open Parallaxa and it already speaks my language, reads naturally, and treats my language as a first-class citizen. If my browser language isn't supported, I get English and can switch in one tap.
+
+**Supported languages at launch (all six, same feature set):**
+| Language | Locale | Notes |
+|---|---|---|
+| English | `en` | One English locale for every `en-*` browser; the style guide fixes one spelling convention |
+| Spanish | `es-ES` | **Spain Spanish only.** No Latin American variant (`es-419`, `es-MX`, etc.); every `es-*` browser gets `es-ES`. Vocabulary, form of address ("tú", "vosotros"), and number/date formats follow Spain |
+| French | `fr-FR` | Every `fr-*` browser (incl. `fr-BE`, `fr-CA`, `fr-CH`) gets `fr-FR` |
+| German | `de-DE` | Every `de-*` browser (incl. `de-AT`, `de-CH`) gets `de-DE` |
+| Italian | `it-IT` | Every `it-*` browser gets `it-IT` |
+| Portuguese | `pt-PT` | European Portuguese; every `pt-*` browser (incl. `pt-BR`) gets `pt-PT` |
+
+**Choosing the language (in priority order):**
+1. A locale in the URL path (`/en`, `/es`, `/fr`, `/de`, `/it`, `/pt`), e.g. from a shared link, a search result or a bookmark.
+2. The user's explicit choice: a saved setting (account) or a `NEXT_LOCALE` cookie (anonymous). An explicit choice always wins over detection.
+3. **Browser settings:** the `Accept-Language` header, read in order of the user's preference (q-values). Each entry is matched on its primary language subtag (`es-MX` → `es-ES`, `pt-BR` → `pt-PT`, `de-CH` → `de-DE`). The first supported language wins, so a browser set to "Catalan, Spanish, English" gets `es-ES`.
+4. **Fallback:** English (`en`) when nothing matches.
+- Detection runs only when no URL locale or saved choice exists, and it never uses IP address or place settings: language and place are independent (a German speaker living in Spain can follow Andalucía in German).
+- The installed PWA opens in the last chosen language. The language switcher lives in the header menu, in Settings and in onboarding. Each language is shown by its own name ("Español", "Deutsch"…), never by a flag.
+
+**What is localized:**
+- **All UI copy** in ICU message catalogs (plurals, gender, select), with English as the source language and professional translation plus native review for the other five. No hard-coded strings; CI fails on missing or unused keys.
+- **AI output:** analyses, briefings, Push back dialogue, steelmen, Ledger texts and quiz explanations are **rendered natively** in each language from language-neutral structured data (F1 stage 8), with per-language prompts and few-shot examples. Push back replies in the language the user writes in, if supported, otherwise in the UI language.
+- **Editorial and reference content:** topic taxonomy, place names (CLDR/ISO names; regions also shown in their official local form where it differs, e.g. "Catalunya"), grade names and definitions, methodology, Trust Center, corrections log, audits, onboarding, emails, push notifications, share cards and RSS feeds.
+- **Legal texts:** terms, privacy policy, AI disclosures and rectification and reply procedures, as legally reviewed translations. The governing version is stated on each page.
+- **Formats:** dates, times, numbers, currencies, percentages and lists via `Intl` APIs for the active locale; time zones follow the user's device.
+- **Input:** Check accepts text, images (OCR) and voice in all six languages. Content in other languages can still be checked, with the result shown in the UI language.
+
+**Quality and review:**
+- **Per-language style guides and glossaries** (grade names, technique names, neutral political vocabulary per country). For example, the Spanish glossary uses Spain's terms ("autonomía", "Congreso de los Diputados", "ordenador"), never Latin American alternatives.
+- **Native reviewers for each language** take part in briefing and Ledger review. Every Ledger text and every legally sensitive phrase is reviewed natively before publication. For other AI-rendered prose, automated cross-language consistency checks (a second model confirms meaning, grades and numbers match the structured analysis) run on 100% of output, plus sampled native review.
+- **Language parity** is an even-handedness requirement: the same gold-set claims must get the same grades whatever the input and output language (9.6).
+- **Typography and layout:** UI tolerates ~35% text expansion (German, French), uses `hyphens: auto` with correct `lang` attributes, and tags mixed-language content (e.g., an original-language quote) with its own `lang`. The architecture stays RTL-ready for later languages.
+
+**SEO and sharing:**
+- Locale-prefixed URLs for all public pages, `hreflang` alternates for all six languages plus `x-default` → English, localized `<title>` and Open Graph metadata, and share cards rendered in the sharer's language.
+
+**Acceptance criteria:**
+- A first visit with `Accept-Language: es-MX,es;q=0.9` renders `es-ES`; `pt-BR` renders `pt-PT`; `ca,es;q=0.8,en;q=0.5` renders `es-ES`; `ja,zh` renders `en`; no header renders `en`.
+- An explicit language choice persists across visits, reloads and the installed PWA, and overrides browser detection.
+- 0 missing message keys in any of the six locales in CI. Pseudo-localization and the German/French text-expansion snapshot tests pass at every breakpoint.
+- Spanish UI copy and output pass an es-ES lexicon check (no Latin American-only terms or forms such as "ustedes" for informal plural, "computadora", "celular", "carro").
+- Gold-set grade agreement across languages ≥ 98% for the same claim and evidence.
 
 ---
 
@@ -248,15 +355,16 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 - **Progressive disclosure:** headline → three-line summary → evidence → reasoning trace → raw sources.
 - **Calm aesthetics:** generous whitespace, editorial typography, subtle motion (respects `prefers-reduced-motion`).
 - **Accessibility:** WCAG 2.2 AA: contrast ≥ 4.5:1, visible focus, targets ≥ 24×24 px, full keyboard and screen-reader support, no colour-only meaning, captions, plain-language mode (B1).
-- **Internationalisation:** next-intl with ICU messages; es-ES, en, es-419 at launch; pt-BR, fr, de, it next. Model outputs generated natively per locale, not translated afterwards; localized formats; RTL-ready architecture.
+- **Internationalisation:** next-intl with ICU messages; six languages at launch: `en`, `es-ES` (Spain Spanish, no Latin American variant), `fr-FR`, `de-DE`, `it-IT`, `pt-PT`. Language picked from browser settings with English as fallback; model outputs rendered natively per locale, not translated afterwards; localized formats; RTL-ready architecture. Full spec in F7 (6.7).
 
 ### 8.2 Key screens
-1. **Home:** input (text, URL, image, voice), "Today's Parallax" card, recent checks (local unless signed in).
+1. **Home:** scope chip and language menu in the header (e.g., "Andalucía · Spain · Global ▾"), input (text, URL, image, voice), "Today's Parallax" card, updates on things you follow, recent checks (local unless signed in).
 2. **Result:** verdict chip (shape + words), 3-line summary, true/missing/wrong, "Each side gets right," sources with tier badges, model agreement, Push back, Report an error, Re-run with other models, version history.
 3. **Daily Parallax:** ≤ 5 cards (swipe on mobile, arrow keys on desktop); "You're up to date" end state.
 4. **Actor page:** dimension tiles with n and confidence, analyzed claims, positive conduct, actor's reply, appeal status.
 5. **Perception-gap quiz:** slider guess → reveal → source.
-6. **Trust Center** and **Settings/Privacy** (language, notifications, export/delete, optional political self-placement with explicit consent, aggregate use only).
+6. **Your Parallaxa:** places (search or browse country → region, coverage level shown), topics (follow / neutral / mute on a two-level list), followed actors and stories, briefing settings, channels and notification budget, and a live preview: "With these settings, today's briefing would be…".
+7. **Trust Center** and **Settings/Privacy** (language, notifications, export/delete, optional political self-placement with explicit consent, aggregate use only).
 
 ### 8.3 Responsive layouts
 - **Mobile (< 640 px):** single column, bottom nav (Check · Today · Ledger · More), thumb-reachable actions.
@@ -264,10 +372,10 @@ The same archetypes apply in the Americas (e.g., Ohio, Mexico City).
 - **Desktop (> 1024 px):** three columns (claims · evidence · sources); shortcuts (`/` focus input, `j/k` navigate).
 
 ### 8.4 Onboarding (≤ 60 seconds, skippable, no sign-up)
-Three panels ("We check claims from every side with the same rules, and show our work"), an optional topic picker with no political identity question, a demo where *each* side had one claim right and one wrong, and the hook: "Don't trust us? Good. Open the Trust Center or re-run any answer with a different AI."
+The language is already detected from the browser and shown at the top with a one-tap switcher. Three panels ("We check claims from every side with the same rules, and show our work"); a **place picker** (pre-filled with the suggested home country + Global; add a region or other countries, or keep it global); an optional **topic picker** (follow or mute, no political identity question; "skip" keeps everything neutral); a demo where *each* side had one claim right and one wrong, and the hook: "Don't trust us? Good. Open the Trust Center or re-run any answer with a different AI."
 
 ### 8.5 PWA
-- **Manifest:** name, short_name "Parallaxa", icons 192/512 + maskable, `display: standalone`, `share_target` (POST text/url/images) → `/check`.
+- **Manifest:** name, short_name "Parallaxa", icons 192/512 + maskable, `display: standalone`, `share_target` (POST text/url/images) → `/check`. One manifest per language (localized `description`, `lang`, shortcuts), with `start_url` set to the user's chosen language.
 - **Service worker** (Serwist or equivalent): precache shell; network-first for API; stale-while-revalidate for the briefing; offline reading of the last 3 briefings and saved checks; background-sync queue for offline checks.
 - **Web Push:** VAPID; opt-in after the second meaningful session, never on first visit. **iOS:** web push works only for Home-Screen PWAs (iOS/iPadOS 16.4+), so prompt only inside the installed app.
 - **Install reminders:**
@@ -284,9 +392,9 @@ Three panels ("We check claims from every side with the same rules, and show our
 - **Framework:** Next.js (App Router, RSC, TypeScript strict) on **Vercel Pro** (Hobby is non-commercial with tight allowances).
 - **Compute:** Vercel Functions on **Fluid compute** (Node.js). Active CPU pricing bills CPU only while code runs: $0.128 per Active CPU-hour and $0.0106 per GB-hour of provisioned memory in the base US region, higher elsewhere.\[53\]\[54\] This suits I/O-bound LLM orchestration, since waiting on model calls bills no CPU.\[54\]\[55\] Pin functions to **fra1 (Frankfurt)** to colocate with Neon EU and keep personal data in the EU.
 - **Durable pipelines:** **Vercel Workflow** for the multi-step analysis (retries, step persistence, resumable) and **Vercel Queues** (beta at time of writing, priced per API operation) for retrieval fan-out.\[56\] If unavailable in region/plan, use a Postgres job table + cron drain.
-- **Cron Jobs:** briefing generation per locale (05:00 local), nightly evals, health checks, cache warmers, retention purge.
-- **Caching:** ISR/`use cache` for public analysis, actor, and briefing pages (tag revalidation on new versions); results content-addressed (claim hash + model set + prompt version); edge caching for anonymous traffic.
-- **Routing Middleware:** locale negotiation, A/B bucketing (cookie, no PII), bot checks on expensive routes.
+- **Cron Jobs:** briefing edition generation per place (05:00 in the place's local time), nightly evals, health checks, cache warmers, retention purge.
+- **Caching:** ISR/`use cache` for public analysis, actor, and briefing-edition pages (tag revalidation on new versions); results content-addressed (claim hash + model set + prompt version); edge caching for anonymous traffic. Personal briefings are **assembled on the client** from cached editions using the locally stored preferences, so anonymous personalization never sends preferences to the server and every edition stays cacheable. Signed-in assembly for push and email runs server-side in a function, never in an LLM call.
+- **Routing Middleware:** locale negotiation (URL prefix → saved choice/cookie → `Accept-Language` primary-subtag match → `en`; F7), A/B bucketing (cookie, no PII), bot checks on expensive routes.
 - **Storage:** **Vercel Blob** for screenshots and archived source snapshots (private, signed URLs). **Edge Config** for feature flags, model routing table, circuit-breaker overrides, kill switches.
 - **Security edge:** **Vercel Firewall/WAF** custom rules + rate limiting on `/api/check`, `/api/dialogue`, `/api/rate`; **BotID** on write and LLM-triggering endpoints; attack challenge mode on demand.
 - **Observability:** Vercel Observability, **Speed Insights**, cookieless **Web Analytics**; OpenTelemetry traces per pipeline step (model, latency, tokens, cost).
@@ -311,13 +419,22 @@ analysis_sources(analysis_id, source_id, tier, quote, quote_verified, stance)
 sources(id, url, outlet_id, published_at, snapshot_blob_key, content_hash)
 actors(id, type, name, country, public_role, verified_contact)
 actor_dimension_scores(actor_id, dimension, value, n, confidence, rubric_version, computed_at)
-corrections / actor_claims / actor_replies / appeals / briefings / quiz_items / quiz_responses(no user_id) / audit_log
+places(id ISO 3166-1/3166-2 code, parent_id, level enum(global,country,region), names jsonb, timezone, coverage_level, active)
+topics(id, parent_id, slug, names jsonb, country_code null, taxonomy_version, active)
+claim_places(claim_id, place_id, confidence) / claim_topics(claim_id, topic_id, confidence)
+actors(+ home_place_id) / actor_places(actor_id, place_id)
+analysis_renderings(analysis_id, version, lang enum(en,es-ES,fr-FR,de-DE,it-IT,pt-PT), body jsonb, model, prompt_version, consistency_check jsonb, native_reviewed, created_at)
+briefing_editions(id, place_id, date, status, reviewed_by jsonb) -- rendered per language via analysis_renderings / edition_stories(edition_id, analysis_id, rank, salience jsonb)
+user_preferences(user_id unique, prefs_ciphertext, key_id, version, updated_at) -- places, topics, briefing settings; encrypted, Art.9 key class
+subscriptions(id, user_id, target_type enum(topic,place,actor,analysis), target_id, channel enum(push,email,in_app), created_at)
+corrections / actor_claims / actor_replies / appeals / quiz_items(+ place_id, topic_id) / quiz_responses(no user_id) / audit_log
 llm_calls(id, analysis_id, provider, model, step, tokens_in, tokens_out, cost_usd, latency_ms, error_class)
 ```
 
 ### 9.3 Privacy & data protection (GDPR)
 - **Anonymous by default:** checks work without an account; history stays local (IndexedDB). Accounts only for sync, notifications, and community review.
 - **Art. 9:** political self-placement is optional, explicit-consent, encrypted with a separate key, used only for aggregate metrics (k-anonymity ≥ 50), withdrawable and deletable anytime.
+- **Place & topic preferences:** treated as potentially revealing political opinions. On-device only for anonymous users; encrypted at application level when synced; never joined with political self-placement, never sent to model providers, never used for targeting. Location granularity stops at ISO 3166-2 region; no GPS, no city, and IP is used only for a one-time, unstored country suggestion.
 - **Minimisation:** IPs only as daily-salted hashes kept 7 days; no third-party trackers; account-linked query text de-linked after 90 days; logs kept 30 days.
 - **Encryption & rights:** TLS; Neon encryption at rest; AES-256-GCM application-level encryption for push subscriptions and self-ID; self-service export/delete; DPIA before launch; EU residency for personal data; DPAs with Vercel, Neon, Venice, Gateway providers; never send user identifiers to model providers.
 
@@ -359,8 +476,8 @@ llm_calls(id, analysis_id, provider, model, step, tokens_in, tokens_out, cost_us
 - **Source handling:** outlet metadata (type, country; *not* left/right bias scores); every cited page snapshotted to Blob (dated, hashed) against link rot and stealth edits; robots.txt and copyright respected (snapshots private; only short quotes displayed).
 
 ### 9.6 Evaluation & benchmarks
-- **Accuracy gold set:** ≥ 1,000 claims balanced across left/right origin, countries, languages, expert-graded with fact-checkers of *different* orientations plus academics. Metrics: grade accuracy, macro-F1, calibration (ECE), citation precision, source-tier quality.
-- **Even-handedness suite:** (a) mirror pairs with grade parity within ±0.1 on an ordinal scale where evidence is equivalent; (b) Westwood-style perceived-slant panels stratified by ideology in ES/US/UK/MX, with no significant perceived slant on ≥ 80% of topics; (c) refusal symmetry across sides; (d) es/en language parity.
+- **Accuracy gold set:** ≥ 1,000 claims balanced across left/right origin, countries and all six launch languages (each claim also available as a professionally translated variant in the other five), expert-graded with fact-checkers of *different* orientations plus academics. Metrics: grade accuracy, macro-F1, calibration (ECE), citation precision, source-tier quality.
+- **Even-handedness suite:** (a) mirror pairs with grade parity within ±0.1 on an ordinal scale where evidence is equivalent; (b) Westwood-style perceived-slant panels stratified by ideology in ES/US/UK/MX, with no significant perceived slant on ≥ 80% of topics; (c) refusal symmetry across sides; (d) language parity across all six languages (same grade for the same claim and evidence whatever the input and output language, ≥ 98% agreement), plus native-speaker fluency and terminology ratings per language (es-ES raters for Spanish).
 - **Release gate:** no prompt/model change ships if accuracy drops > 1 point or any symmetry metric regresses beyond tolerance. Eval results published.
 
 ### 9.7 Security, testing & CI/CD
@@ -386,6 +503,12 @@ llm_calls(id, analysis_id, provider, model, step, tokens_in, tokens_out, cost_us
 | Depolarization | Affective polarization (feeling thermometer), users vs control, at 2 and 8 weeks | Significant reduction; report effect sizes honestly, including nulls |
 | Depolarization | Perception-gap error before vs after quiz | ≥ 30% reduction in absolute error |
 | Wellbeing | "I felt respected" / "I felt calmer" | ≥ 80% |
+| Relevance | "Today's briefing was relevant to me" (opt-in micro-survey) | ≥ 75% |
+| Language quality | Cross-language grade agreement on the gold set; native fluency rating per language | ≥ 98%; ≥ 4.5/5 in every language |
+| Language quality | Users who manually switch away from the detected language | < 10% (higher suggests detection or translation problems) |
+| Relevance | Users who set at least one place or topic beyond the default | ≥ 40% |
+| Relevance | Briefings that needed a regional→country fallback, per region | Published; < 20% for regions marked Full coverage |
+| Anti-bubble guardrail | Users keeping "outside your filters" on; topic diversity of briefings seen | Alarm if < 60% keep it on, or if a cohort's median topic diversity falls below the edition baseline |
 
 **Explicitly excluded as goals:** time-on-site, daily sessions, shares, streaks. They are guardrails only (alarm if average session exceeds 15 minutes). **Experimentation:** pre-registered RCTs with academic partners, opt-in research consent, ethics review, all results published including nulls, benchmarked against the megastudy's best performers.
 
@@ -393,7 +516,7 @@ llm_calls(id, analysis_id, provider, model, step, tokens_in, tokens_out, cost_us
 
 ## 11. Cost estimate (indicative, USD/month)
 
-Assumptions: a fresh analysis uses about 30k input + 5k output tokens (model mix $0.15–$2 per 1M input, $0.3–$10 output) plus 3 web-search requests (~$0.03), roughly **$0.08–$0.15 per fresh analysis**. Cache-hit rate rises from 30% to 70% with scale. Briefings cost about $5/day per locale.
+Assumptions: a fresh analysis uses about 30k input + 5k output tokens (model mix $0.15–$2 per 1M input, $0.3–$10 output) plus 3 web-search requests (~$0.03), roughly **$0.08–$0.15 per fresh analysis**. Cache-hit rate rises from 30% to 70% with scale. Briefings cost about $5/day per edition (country or Global) and about $2/day per regional edition, since regional editions reuse country analyses. Personal assembly is rule-based, so the number of users does not change briefing cost. Pilot assumes ~5 editions; Growth ~25 (e.g., Spain's 17 autonomous communities added); Scale ~80. The binding constraint for regional editions is **human review capacity**, not model cost. Rendering an analysis into another language costs about $0.005–$0.01 (small structured-to-prose step, cached per version and language, done on first request), so six languages add roughly 5–10% to LLM spend. Professional UI translation and native reviewers (about €40k–€80k/year for five non-English languages) are excluded below, like other staff costs.
 
 | Tier | MAU | Fresh analyses/mo | LLM + search | Vercel (Pro + usage) | Neon | Other | Total |
 |---|---|---|---|---|---|---|---|
@@ -409,10 +532,10 @@ Levers: semantic caching, small models for decomposition, prompt caching, briefi
 
 | Phase | Timing | Scope |
 |---|---|---|
-| **0. Foundations** | Months 0–2 | Legal entity & funding policy, name clearance, methodology v1, gold set v1 (500 claims), panel recruited, DPIA |
-| **1. MVP (closed beta)** | Months 2–5 | Check, Daily Parallax (es-ES, en-US), side-by-side card, Push back, perception-gap quiz (ES/US), Trust Center, PWA + share target, read-only Ledger (parties + national leaders), Venice + fallback |
-| **2. Public launch** | Months 5–9 | Full Ledger with reply and appeals, invite-only bridging community review, prediction tracker, prebunk lessons, en-GB and es-MX, first symmetry audit, first RCT |
-| **3. Expansion** | Months 9–18 | Browser extension, debate maps, common-ground rooms pilot, pt-BR/fr/de/it, institutional licences, external audit |
+| **0. Foundations** | Months 0–2 | Legal entity & funding policy, name clearance, methodology v1, gold set v1 (500 claims, with place and topic tags), panel recruited, DPIA, topic taxonomy v1 reviewed by the panel, place list (ISO 3166-1/2) and coverage-level criteria for launch countries, style guides and glossaries for the six languages, translators and native reviewers contracted |
+| **1. MVP (closed beta)** | Months 2–5 | Check, Daily Parallax (Global + Spain + US editions), side-by-side card, Push back, perception-gap quiz (ES/US), Trust Center, PWA + share target, read-only Ledger (parties + national leaders), Venice + fallback. **Your Parallaxa:** global/country/region scope, follow/mute topics, follow stories, briefing settings, region filtering of tagged stories, regional editions for 2–3 pilot Spanish autonomous communities. **All six languages** (`en`, `es-ES`, `fr-FR`, `de-DE`, `it-IT`, `pt-PT`) with browser-based detection and English fallback |
+| **2. Public launch** | Months 5–9 | Full Ledger with reply and appeals, regional actors, invite-only bridging community review, prediction tracker, prebunk lessons, country editions for the UK, France, Germany, Italy, Portugal and Mexico (content in all six languages), first symmetry audit, first RCT. Regional editions for all Spanish autonomous communities and the largest US states (as review capacity allows), follow actors, weekly email digest, RSS per topic/place, on-device topic suggestions |
+| **3. Expansion** | Months 9–18 | Browser extension, debate maps, common-ground rooms pilot, regional editions for France, Germany, Italy and Portugal, evaluation of further languages, municipal scope pilot, institutional licences, external audit |
 
 ---
 
@@ -426,6 +549,11 @@ Levers: semantic caching, small models for decomposition, prompt caching, briefi
 | Low adoption by the wings | High / High | Start with distrustful-but-curious users; partner with creators across the spectrum; publish usage balance |
 | Effects fade (as in research) | High / Medium | Daily habit, spaced repetition of perception-gap facts, honest reporting |
 | State-actor attacks or Venice outage | Medium / High | BotID, WAF, bridging weights, anomaly detection; Gateway fallback, quotas, spend ceilings |
+| Personalization becomes a filter bubble | Medium / High | Place/topic filters only, never side or outlet; "outside your filters" slot on by default; identical analyses for everyone; diversity guardrail metric |
+| Thin or one-sided regional coverage | High / Medium | Coverage levels shown; fallback to country with disclosure; regional editions launched only after symmetry and source checks pass; regional reviewers on the panel |
+| A translation changes meaning (wrong nuance, grade or number) | Medium / High | Language-neutral analyses; rendering cannot change grades or numbers; automated cross-language consistency checks; native review of Ledger and legal text; language-parity release gate |
+| Defamation exposure differs by language and country | Medium / High | Per-language legal review of Ledger phrasing and grade names; conduct-only wording in every glossary |
+| Preferences leak political interest | Low / High | Local-first storage, application-level encryption, no provider exposure, k-anonymous aggregates only |
 
 ---
 
@@ -433,7 +561,7 @@ Levers: semantic caching, small models for decomposition, prompt caching, briefi
 - **Evidence limits:** most depolarization effects are small and fade within weeks; the Costello et al. study carries an Editorial Expression of Concern; social media's causal role remains disputed.\[14\] Parallaxa should present itself as one helpful tool, not a cure.
 - **Volatile details:** Venice models/prices, Vercel Queues/Workflow beta status, Neon Auth, and AI Gateway fees change frequently; re-verify at build time. Some figures come from third-party captures of official pages and are marked as such.
 - **Name:** parallaxa.app availability and trademark clearance remain unverified.
-- **Open questions:** Which legal home (Spain, Netherlands, Ireland) best balances defamation exposure and funding? How are left/right labels defined in multiparty systems? Should the panel have veto power over Ledger entries, or only appeals? What minimum human-review capacity is needed before a public Ledger? Which academic partners will co-own the RCT and audit program?
+- **Open questions:** Which legal home (Spain, Netherlands, Ireland) best balances defamation exposure and funding? How are left/right labels defined in multiparty systems? Should the panel have veto power over Ledger entries, or only appeals? What minimum human-review capacity is needed before a public Ledger? Which academic partners will co-own the RCT and audit program? What coverage threshold qualifies a region for its own edition, and in which order should regions launch? Should users be allowed to turn off the "outside your filters" slot permanently? Is municipal scope worth its source and review cost? Should Spain's co-official languages (Catalan, Basque, Galician) be added after launch, given the Spanish regional editions? Which English spelling convention should the style guide fix?
 
 ## Fuentes
 
