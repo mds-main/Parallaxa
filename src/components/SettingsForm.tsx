@@ -6,6 +6,7 @@ import { useIsClient, usePushSupport, useStoredPreferences } from '@/lib/prefs/h
 import { defaultPreferences, MAX_PLACES, type Preferences, type TopicState } from '@/lib/prefs/types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { enablePush } from '@/lib/prefs/push';
+import { assembleBriefing, type EditionStory } from '@/lib/briefing/assemble';
 
 export type PlaceOption = { id: string; parentId: string | null; level: string; names: Record<string, string>; localName: string | null; coverageLevel: string };
 export type TopicOption = { id: string; parentId: string | null; names: Record<string, string>; countryCode: string | null };
@@ -112,7 +113,7 @@ export function TopicPicker({ topics, value, onChange }: { topics: TopicOption[]
   );
 }
 
-export function SettingsForm({ places, topics }: { places: PlaceOption[]; topics: TopicOption[] }) {
+export function SettingsForm({ places, topics, editions = [] }: { places: PlaceOption[]; topics: TopicOption[]; editions?: { placeId: string; stories: EditionStory[] }[] }) {
   const t = useTranslations('settings');
   const isClient = useIsClient();
   const stored = useStoredPreferences();
@@ -127,8 +128,19 @@ export function SettingsForm({ places, topics }: { places: PlaceOption[]; topics
     setStatus(t('saved'));
   };
   const b = prefs.briefing;
+  const locale = document.documentElement.lang;
+  const parents = Object.fromEntries(places.map((p) => [p.id, p.parentId]));
+  const preview = editions.length ? assembleBriefing(editions, prefs, (id) => parents[id] ?? null).stories : [];
   return (
     <div className="space-y-8">
+      {preview.length > 0 && (
+        <section className="card p-5" aria-live="polite">
+          <h2 className="font-semibold">{t('preview')}</h2>
+          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">
+            {preview.map((s) => <li key={s.analysisId}>{s.headline[locale] ?? s.headline.en}{s.claim ? ` — “${s.claim.slice(0, 90)}”` : ''}</li>)}
+          </ol>
+        </section>
+      )}
       <p role="status" aria-live="polite" className="sr-only">{status}</p>
       <section className="card space-y-3 p-5">
         <h2 className="text-xl font-semibold">{t('places.title')}</h2>

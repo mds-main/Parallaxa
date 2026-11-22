@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { addHistory } from '@/lib/prefs/storage';
+import { useIsClient } from '@/lib/prefs/hooks';
 
 type Tab = 'text' | 'link' | 'image';
 const MAX_IMAGE = 5 * 1024 * 1024;
@@ -18,6 +19,46 @@ export function CheckForm({ initialText = '' }: { initialText?: string }) {
   const [image, setImage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [listening, setListening] = useState(false);
+  const textRef = useRef<HTMLTextAreaElement>(null);
+  const recRef = useRef<{ stop: () => void } | null>(null);
+  const isClient = useIsClient();
+  const speechSupported = isClient && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+
+  // "/" focuses the input (PRD 8.3 desktop shortcut).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === '/' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+        e.preventDefault();
+        setTab('text');
+        textRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  function dictate() {
+    if (listening) {
+      recRef.current?.stop();
+      return;
+    }
+    type Rec = { lang: string; interimResults: boolean; continuous: boolean; start: () => void; stop: () => void; onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void };
+    const Ctor = (window as unknown as { SpeechRecognition?: new () => Rec; webkitSpeechRecognition?: new () => Rec }).SpeechRecognition ?? (window as unknown as { webkitSpeechRecognition?: new () => Rec }).webkitSpeechRecognition;
+    if (!Ctor) return;
+    const rec = new Ctor();
+    rec.lang = locale;
+    rec.interimResults = false;
+    rec.continuous = false;
+    rec.onresult = (e) => {
+      const said = Array.from(e.results).map((r) => r[0]?.transcript ?? '').join(' ');
+      setText((prev) => `${prev ? `${prev} ` : ''}${said}`.trim());
+    };
+    rec.onend = () => setListening(false);
+    recRef.current = rec;
+    setListening(true);
+    rec.start();
+  }
 
   async function onFile(file: File | undefined) {
     setError(null);
@@ -72,6 +113,7 @@ export function CheckForm({ initialText = '' }: { initialText?: string }) {
         <label className="block">
           <span className="label mb-2 block text-base">{t('inputLabel')}</span>
           <textarea
+            ref={textRef}
             className="field min-h-36 resize-y text-lg"
             value={text}
             maxLength={8000}
@@ -82,6 +124,11 @@ export function CheckForm({ initialText = '' }: { initialText?: string }) {
             }}
             autoFocus
           />
+          {speechSupported && (
+            <button type="button" className="btn btn-ghost mt-2 !min-h-9 !py-1 text-sm" onClick={dictate} aria-pressed={listening}>
+              🎙 {listening ? t('listening') : t('dictate')}
+            </button>
+          )}
         </label>
       )}
       {tab === 'link' && (

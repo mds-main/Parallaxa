@@ -11,7 +11,7 @@ import { recordUsage } from '@/lib/metrics/usage';
 export const maxDuration = 300;
 
 const body = z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('text'), text: z.string().trim().min(8).max(8000), lang: z.string().optional() }),
+  z.object({ kind: z.literal('text'), text: z.string().trim().min(8).max(8000), lang: z.string().optional(), rerunOf: z.string().uuid().optional() }),
   z.object({ kind: z.literal('url'), url: z.string().url().max(2000), lang: z.string().optional() }),
   z.object({ kind: z.literal('image'), dataUrl: z.string().regex(/^data:image\/(png|jpeg|webp);base64,/).max(7_000_000), lang: z.string().optional() }),
 ]);
@@ -38,8 +38,10 @@ export async function POST(req: Request) {
   const input = parsed.data.kind === 'text' ? { kind: 'text' as const, text: parsed.data.text } : parsed.data.kind === 'url' ? { kind: 'url' as const, url: parsed.data.url } : { kind: 'image' as const, dataUrl: parsed.data.dataUrl };
   const id = await createPendingAnalysis(input, lang);
   await recordUsage('check_started', { lang });
+  // "Re-run with current models" skips the similar-claim cache so today's lineup investigates again.
+  const skipCache = parsed.data.kind === 'text' && Boolean(parsed.data.rerunOf);
   after(async () => {
-    await runAnalysis(id, input, lang);
+    await runAnalysis(id, input, lang, { skipCache });
   });
   return NextResponse.json({ id }, { status: 202 });
 }

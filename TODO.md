@@ -17,7 +17,7 @@ The application is implemented on branch `feat/mvp-implementation`: public site 
 
 **Needs you (cannot be done from code):** a Venice API key (the site runs in labelled demo mode without it), Vercel and Neon provisioning and env vars (`docs/deployment.md`), Firewall/BotID rules, and every organizational, legal and editorial task in blocks 2 and 3 (entity, DPIA, panel, fact-checker gold set, legal review of the Ledger).
 
-**Main open engineering items:** accounts (passkeys, magic links, sync), voice input, OG share cards, sitemaps, Vercel Blob snapshots of sources, pgvector at scale, named reviewer accounts, background sync, install prompts, "re-run with current models", per-language enable flags in routing, OpenTelemetry, contract tests for the provider adapters, and the Phase 2/3 features.
+**Main open engineering items:** accounts (passkeys, magic links, sync across devices), Vercel Blob snapshots of cited sources, pgvector at scale, named reviewer accounts, offline background sync, Row-Level Security roles, a session-only scope switch, and the Phase 2/3 features (community review, prediction tracker, prebunk lessons, browser extension, debate maps, common-ground rooms).
 
 ## 0. Project at a glance
 
@@ -182,11 +182,11 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 4.10 [P0] Formatting helpers on `Intl` (dates, relative time, numbers, percentages, currency, lists) per locale; device time zone; never hand-formatted strings.
 - [x] 4.11 [P0] `lang` on `<html>` and on every mixed-language fragment (original-language quotes, source titles); `hyphens: auto`; logical CSS properties with `dir` from the registry (RTL-ready); font stack with full Latin Extended coverage.
 - [x] 4.12 [P0] Language columns stored as BCP 47 text validated against the registry (no database enums) in users, analysis renderings, subscriptions and email logs, so a new language needs no migration.
-- [ ] 4.13 [P1] Per-language enable flag in Edge Config for a staged rollout (staff → beta → everyone) without a redeploy. It can only be switched on when the catalogs are complete and the parity evals pass.
-- [ ] 4.14 [P1] SEO generated from the registry: locale-prefixed public URLs, `hreflang` for every enabled language plus `x-default`→`/en`, localized `<title>`, meta description and Open Graph, localized sitemaps.
+- [x] 4.13 [P1] Per-language enable flag in Edge Config for a staged rollout (staff → beta → everyone) without a redeploy. It can only be switched on when the catalogs are complete and the parity evals pass.
+- [x] 4.14 [P1] SEO generated from the registry: locale-prefixed public URLs, `hreflang` for every enabled language plus `x-default`→`/en`, localized `<title>`, meta description and Open Graph, localized sitemaps.
 - [x] 4.15 [P1] Localized PWA manifests per language (`lang`, `description`, shortcuts, `start_url` with prefix); serve the one matching the active locale (needs: 20.1).
 - [ ] 4.16 [P1] Localized emails (Resend templates) and push payloads in the recipient's saved language.
-- [ ] 4.17 [P1] Localized share cards (OG images) in the sharer's language.
+- [x] 4.17 [P1] Localized share cards (OG images) in the sharer's language.
 - [ ] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in CI and in the nightly eval.
 - [ ] 4.19 [P1] Translation workflow: export new and changed keys → professional translation → native review → import via PR; *decide* git-only vs a translation management system; glossary enforcement.
 - [ ] 4.20 [P1] "Add a language" dry run in CI: register the pseudo-locale as a test language and confirm that nothing outside the registry, `messages/`, `prompts/` and `methodology/` has to change.
@@ -250,7 +250,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 8.1 [P0] Design tokens: paper `#F7F5F0`, ink `#1C1F24`, ochre accent `#C98A1B`, monochrome intensity scale; no red/blue/purple/green/orange/teal as semantic colours; editorial type scale with full Latin Extended coverage (ç, ß, ã, õ, ñ, à, è…).
 - [x] 8.2 [P0] Verdict chip: one distinct shape per grade + word label + monochrome intensity (never colour-only), in every supported language.
 - [x] 8.3 [P0] Core components: input box (text/URL/image/voice), cards, tier badges, confidence indicator, model-agreement indicator, banners ("Models disagree", "Backup provider", "Stale data"), side sheet, tabs, disclosure/accordion, toasts, empty states.
-- [ ] 8.4 [P0] App shell: header with scope chip and language menu; bottom nav on mobile (Check · Today · Ledger · More); two-pane on tablet landscape; three columns on desktop (claims · evidence · sources); keyboard shortcuts (`/` focus input, `j/k` navigate).
+- [x] 8.4 [P0] App shell: header with scope chip and language menu; bottom nav on mobile (Check · Today · Ledger · More); two-pane on tablet landscape; three columns on desktop (claims · evidence · sources); keyboard shortcuts (`/` focus input, `j/k` navigate).
 - [ ] 8.5 [P0] Motion that respects `prefers-reduced-motion`; plain-language mode (CEFR B1) toggle wiring.
 - [x] 8.6 [P0] Accessibility baseline: focus styles, skip links, landmarks, live regions for streaming results, form errors.
 - [ ] 8.7 [P1] Storybook (or equivalent) with locale and viewport toolbars, including the pseudo-locale.
@@ -283,7 +283,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 10.10 [P1] Health-check cron (1 min) with a tiny completion per active model, feeding the breaker, the admin console and the public status page.
 - [x] 10.11 [P0] `llm_calls` logging: provider, model, slot, step, tokens, searches (web, X, scrape), cost, latency, finish reason, error class; OpenTelemetry spans. Never send user identifiers to providers.
 - [x] 10.12 [P1] Spend controls: app-level daily spend ceiling (set in the admin console) and Gateway budget alerts. During fallback only Check and Briefing run; dialogue pauses with a friendly localized message.
-- [ ] 10.13 [P0] Contract tests for the Venice and Gateway adapters (recorded fixtures), covering tool calls, structured output, web search, X search and refusals.
+- [x] 10.13 [P0] Contract tests for the Venice and Gateway adapters (recorded fixtures), covering tool calls, structured output, web search, X search and refusals.
 
 ### 10.B Perspective slots and utility roles
 - [x] 10.14 [P0] Slot model. Up to 5 slots; each has a model, allowed privacy tiers, harness settings and conflict-of-interest topics. Verify the defaults against the live catalog at build time.
@@ -367,16 +367,16 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 12.17 [P1] Performance work to hit p50 < 25 s cached-similar and p95 time-to-first-result < 20 s (streaming partial results, parallel retrieval, small models for early stages).
 
 ## 13. Check experience (F1 UI)
-- [ ] 13.1 [P1] Home: one large input ("Paste something you saw, or ask a question"), with paste/URL/image upload/voice (speech-to-text in English and Spanish), "Today's Parallax" card, updates on follows, recent checks.
+- [x] 13.1 [P1] Home: one large input ("Paste something you saw, or ask a question"), with paste/URL/image upload/voice (speech-to-text in English and Spanish), "Today's Parallax" card, updates on follows, recent checks.
 - [x] 13.2 [P1] Share-target handling (`/check` receives POSTed text, URLs and images from the OS share sheet).
 - [x] 13.3 [P1] Streaming progress view with honest stage labels.
 - [x] 13.4 [P1] Result screen: verdict chip, 3-line summary, true/missing/wrong, "Each side gets right" (may be empty), sources with tier badges and verified quotes (original + labelled translation), model agreement, disclosure banners, collapsed reasoning trace, model and prompt versions.
 - [x] 13.5 [P1] Progressive disclosure: headline → summary → evidence → reasoning → raw sources.
 - [x] 13.6 [P1] "Report an error" flow (creates `error_reports`, which feeds the review queue and the 72 h SLA clock).
-- [ ] 13.7 [P1] "Re-run with other models": choose an alternative model mix and show the diff against the original.
+- [x] 13.7 [P1] "Re-run with other models": choose an alternative model mix and show the diff against the original.
 - [x] 13.8 [P1] Version history with public diffs.
 - [x] 13.9 [P1] Follow this analysis (notifies on correction, update or resolution).
-- [ ] 13.10 [P1] Share card (claim + evidence, never a "FALSE" stamp over a face), localized.
+- [x] 13.10 [P1] Share card (claim + evidence, never a "FALSE" stamp over a face), localized.
 - [ ] 13.11 [P1] Public, cacheable analysis pages per language (ISR / `use cache`, tag revalidation on new versions).
 
 ## 14. Push back dialogue
@@ -391,10 +391,10 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 15.3 [P1] Place picker: search and browse country → region, coverage level shown, local official names.
 - [x] 15.4 [P1] Topic picker: two-level list with Follow/Neutral/Mute, search, "skip keeps everything neutral".
 - [ ] 15.5 [P1] Header scope chip: session-only quick switch without changing saved preferences.
-- [ ] 15.6 [P1] "Your Parallaxa" screen with a live preview ("With these settings, today's briefing would be…").
+- [x] 15.6 [P1] "Your Parallaxa" screen with a live preview ("With these settings, today's briefing would be…").
 - [x] 15.7 [P1] Filtering engine (pure, client-side capable): applies place and topic filters to editions, Ledger lists and quiz items; never touches Check results or analysis content.
 - [x] 15.8 [P1] "Why am I seeing this?" explanation on every briefing card and alert.
-- [ ] 15.9 [P1] "Outside your filters" slot: on by default, labelled, can be switched off, with a reminder every 90 days when off.
+- [x] 15.9 [P1] "Outside your filters" slot: on by default, labelled, can be switched off, with a reminder every 90 days when off.
 - [x] 15.10 [P1] Coverage honesty: fallback from region to country to Global with localized disclosure text.
 - [ ] 15.11 [P1] Subscriptions: follow topics, places, analyses (P1), actors (P2); in-app and push channels (P1); weekly email digest (P2); RSS per topic and place without an account (P2).
 - [ ] 15.12 [P1] Notification budget enforcement: ≤ 1 routine per day, ≤ 3 requested follow-ups per day, quiet hours, pause.
@@ -448,7 +448,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 20.1 [P1] Manifest: name, short_name "Parallaxa", icons 192/512 + maskable, `display: standalone`, `share_target` (POST text/url/images → `/check`), one per language (4.15).
 - [ ] 20.2 [P1] Service worker (Serwist): precache the shell; network-first for API; stale-while-revalidate for briefings; offline reading of the last 3 briefings and saved checks; background-sync queue for offline checks.
 - [x] 20.3 [P1] Web Push (VAPID): opt-in after the second meaningful session, never on the first visit; on iOS only inside the installed app (iOS/iPadOS 16.4+); subscriptions encrypted at rest; payloads localized.
-- [ ] 20.4 [P1] Install reminders: only after ≥ 2 visits on different days and ≥ 1 completed check or briefing; in-page bottom banner, never a modal; `beforeinstallprompt` on Android and desktop; illustrated 3-step iOS sheet; max once per 14 days; stop after 2 dismissals; never during a check or quiz; manual Install in settings.
+- [x] 20.4 [P1] Install reminders: only after ≥ 2 visits on different days and ≥ 1 completed check or briefing; in-page bottom banner, never a modal; `beforeinstallprompt` on Android and desktop; illustrated 3-step iOS sheet; max once per 14 days; stop after 2 dismissals; never during a check or quiz; manual Install in settings.
 - [x] 20.5 [P1] Onboarding (≤ 60 s, skippable, no sign-up): detected language with switcher → three panels → place picker → optional topic picker → demo (each side one right, one wrong) → "Don't trust us? Good." hook.
 
 ## 21. Editorial and review console (internal)
@@ -529,7 +529,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 24.6 [P1] Incident response plan (security, model outage, viral error, legal notice) with on-call rotation.
 
 ## 25. Observability, cost control and operations
-- [ ] 25.1 [P0] OpenTelemetry traces per pipeline step (model, latency, tokens, cost); Vercel Observability dashboards.
+- [x] 25.1 [P0] OpenTelemetry traces per pipeline step (model, latency, tokens, cost); Vercel Observability dashboards.
 - [ ] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
 - [x] 25.3 [P1] SLO monitoring and alerts: 99.5% Check availability, p95 time-to-first-result < 20 s, briefing ready by 06:45 local on 99% of days.
 - [x] 25.4 [P1] Cost dashboard: cost per fresh analysis (target ~$0.35–$0.50 default lineup, ~$0.20–$0.30 economy), cost per slot and search type, cache-hit rate (30% → 70%), rendering cost per language, briefing cost per edition, daily spend vs ceiling.

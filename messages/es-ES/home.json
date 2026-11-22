@@ -2,14 +2,34 @@
   "title": "Comprueba algo que has visto",
   "inputLabel": "Pega algo que hayas visto o haz una pregunta",
   "placeholder": "p. ej., «El paro ha caído a su nivel más bajo en 15 años»",
-  "tabs": { "text": "Texto", "link": "Enlace", "image": "Captura" },
+  "tabs": {
+    "text": "Texto",
+    "link": "Enlace",
+    "image": "Captura"
+  },
   "urlLabel": "Enlace a una página o publicación",
   "imageLabel": "Sube una captura de pantalla",
   "imageHint": "PNG, JPEG o WebP, hasta 5 MB. Se eliminan las caras y los nombres de particulares.",
   "submit": "Comprobar",
   "submitting": "Empezando…",
   "privacyNote": "Puedes comprobar sin cuenta. Tu historial se queda en este dispositivo.",
-  "today": { "title": "El Parallax de hoy", "cta": "Leer el resumen de hoy", "subtitle": "Hasta 5 historias, unos 6 minutos. Y listo." },
-  "recent": { "title": "Tus últimas comprobaciones", "empty": "Aquí aparecerán tus comprobaciones. Se quedan en este dispositivo.", "clear": "Borrar historial" },
-  "how": { "title": "Cómo comprueba Parallaxa", "step1": "Tres modelos de IA de distintos países y tendencias percibidas investigan por separado.", "step2": "Una regla publicada combina sus veredictos. Las discrepancias se muestran, no se ocultan.", "step3": "Cada fuente, cita y paso está a la vista, y personas revisan los casos discutidos." }
+  "today": {
+    "title": "El Parallax de hoy",
+    "cta": "Leer el resumen de hoy",
+    "subtitle": "Hasta 5 historias, unos 6 minutos. Y listo."
+  },
+  "recent": {
+    "title": "Tus últimas comprobaciones",
+    "empty": "Aquí aparecerán tus comprobaciones. Se quedan en este dispositivo.",
+    "clear": "Borrar historial"
+  },
+  "how": {
+    "title": "Cómo comprueba Parallaxa",
+    "step1": "Tres modelos de IA de distintos países y tendencias percibidas investigan por separado.",
+    "step2": "Una regla publicada combina sus veredictos. Las discrepancias se muestran, no se ocultan.",
+    "step3": "Cada fuente, cita y paso está a la vista, y personas revisan los casos discutidos."
+  },
+  "dictate": "Dictar",
+  "listening": "Escuchando… toca para parar",
+  "shortcut": "Pulsa / para empezar a escribir"
 }

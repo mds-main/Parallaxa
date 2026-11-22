@@ -4,7 +4,7 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { ENABLED_LANGUAGES, type Locale } from '@/i18n/languages';
 import { useTransition } from 'react';
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ disabled = [] }: { disabled?: string[] }) {
   const t = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
@@ -24,7 +24,7 @@ export function LanguageSwitcher() {
           start(() => router.replace(pathname, { locale: next }));
         }}
       >
-        {ENABLED_LANGUAGES.map((l) => (
+        {ENABLED_LANGUAGES.filter((l) => !disabled.includes(l.tag)).map((l) => (
           <option key={l.tag} value={l.tag} lang={l.tag}>
             {l.nativeName}
           </option>

@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useStoredPreferences } from '@/lib/prefs/hooks';
+import { savePreferences } from '@/lib/prefs/storage';
+import { markEngaged } from './InstallPrompt';
 import { defaultPreferences } from '@/lib/prefs/types';
 import { assembleBriefing, type EditionStory } from '@/lib/briefing/assemble';
 import { GradeIcon } from './VerdictChip';
@@ -31,13 +33,17 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') setIndex((i) => Math.min(i + 1, total));
-      if (e.key === 'ArrowLeft') setIndex((i) => Math.max(i - 1, 0));
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'ArrowRight' || e.key === 'j') setIndex((i) => Math.min(i + 1, total));
+      if (e.key === 'ArrowLeft' || e.key === 'k') setIndex((i) => Math.max(i - 1, 0));
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [total]);
 
+  useEffect(() => {
+    if (total && index >= total) markEngaged();
+  }, [index, total]);
   const name = (id: string) => placeNames[id]?.[locale] ?? id;
   if (!total) return <p className="card p-6">{t('empty')}</p>;
   if (index >= total) {
@@ -57,8 +63,17 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
         : s.reason.kind === 'place'
           ? t('reasons.place', { place: name(s.reason.placeId!) })
           : t('reasons.default', { place: name(s.reason.placeId ?? 'GLOBAL') });
+  const offSince = prefs.briefing.outsideOffSince ? Date.parse(prefs.briefing.outsideOffSince) : null;
+  // eslint-disable-next-line react-hooks/purity -- a once-per-render date comparison is intended here
+  const remind = !prefs.briefing.outsideFilters && offSince !== null && Date.now() - offSince > 90 * 24 * 3600_000;
   return (
     <div>
+      {remind && (
+        <p className="mb-3 rounded-lg border border-line p-3 text-sm">
+          {t('outsideReminder')}{' '}
+          <button className="underline" onClick={() => savePreferences({ ...prefs, briefing: { ...prefs.briefing, outsideFilters: true, outsideOffSince: undefined } })}>{t('outsideTurnOn')}</button>
+        </p>
+      )}
       {result.fallbackPlace && <p className="mb-3 rounded-lg bg-paper-2 p-3 text-sm">{t('fallback', { place: name(result.fallbackPlace) })}</p>}
       <article
         className="card p-6 md:p-8"

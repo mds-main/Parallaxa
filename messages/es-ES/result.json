@@ -76,5 +76,9 @@
   "history": {
     "title": "Historial de versiones",
     "item": "v{from} → v{to}: {reason}"
+  },
+  "rerun": {
+    "button": "Repetir con los modelos actuales",
+    "note": "Este análisis usó una combinación de modelos anterior. Repetirlo crea un análisis nuevo con los modelos de hoy; este se mantiene tal como se publicó."
   }
 }

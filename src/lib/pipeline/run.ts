@@ -19,6 +19,8 @@ import { hash } from '../ai/demo';
 import { ingest, textHash, type CheckInput } from './ingest';
 import { embedText, findCached } from './cache';
 import { renderAnalysis } from './render';
+import { trace } from '@opentelemetry/api';
+import { withSpan } from '../telemetry';
 import {
   CLAIM_TYPES,
   type AnalysisProgress,
@@ -149,11 +151,16 @@ function pickWriter(config: AppConfig, analysisId: string): SlotConfig {
   return enabled[hash(analysisId) % enabled.length]!;
 }
 
-export async function runAnalysis(analysisId: string, input: CheckInput, lang: string): Promise<RunResult> {
+export function runAnalysis(analysisId: string, input: CheckInput, lang: string, opts: { skipCache?: boolean } = {}): Promise<RunResult> {
+  return withSpan('pipeline.run', { 'plx.input_kind': input.kind, 'plx.lang': lang }, () => runAnalysisInner(analysisId, input, lang, opts), (r) => ({ 'plx.status': r.status, 'plx.reused': Boolean(r.reusedFrom) }));
+}
+
+async function runAnalysisInner(analysisId: string, input: CheckInput, lang: string, opts: { skipCache?: boolean }): Promise<RunResult> {
   const db = await getDb();
   const { id: configVersionId, config, activatedAt } = await getActiveConfig();
   const done: PipelineStage[] = [];
   const step = async (stage: PipelineStage) => {
+    trace.getActiveSpan()?.addEvent(`stage.${stage}`);
     await setProgress(analysisId, stage, [...done]);
   };
   try {
@@ -169,7 +176,7 @@ export async function runAnalysis(analysisId: string, input: CheckInput, lang: s
     const isValues = main.type === 'value' || main.type === 'prediction' || !main.checkable;
     const h = textHash(main.canonical);
     const embedding = await embedText(main.canonical, config.roles.embedding);
-    const cached = await findCached(h, embedding, config.pipeline.cacheSimilarity);
+    const cached = opts.skipCache ? null : await findCached(h, embedding, config.pipeline.cacheSimilarity);
     if (cached && cached.analysisId !== analysisId) {
       await db.update(s.analyses).set({ status: 'failed', error: `reused:${cached.analysisId}` }).where(eq(s.analyses.id, analysisId));
       return { analysisId: cached.analysisId, status: 'published', reusedFrom: cached.analysisId };
@@ -177,7 +184,7 @@ export async function runAnalysis(analysisId: string, input: CheckInput, lang: s
     const [claimRow] = await db
       .insert(s.claims)
       .values({ canonicalText: main.canonical, lang: ingested.lang, claimType: main.type, textHash: h, embedding })
-      .onConflictDoUpdate({ target: s.claims.textHash, set: { embedding } })
+      .onConflictDoUpdate({ target: s.claims.textHash, set: { embedding, lang: ingested.lang } })
       .returning({ id: s.claims.id });
     done.push('decompose');
 

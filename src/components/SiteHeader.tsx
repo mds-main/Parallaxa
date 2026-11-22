@@ -3,11 +3,14 @@ import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ScopeChip } from './ScopeChip';
 import { getPlaces } from '@/lib/queries';
+import { getActiveConfig } from '@/lib/config/store';
 
 export async function SiteHeader() {
   const t = await getTranslations('common');
   await getLocale();
   const places = await getPlaces();
+  const { config } = await getActiveConfig();
+  const disabled = Object.entries(config.content.languages).filter(([, on]) => on === false).map(([tag]) => tag);
   const placeNames = Object.fromEntries(places.map((p) => [p.id, p.names]));
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
@@ -40,7 +43,7 @@ export async function SiteHeader() {
             {t('nav.settings')}
           </Link>
           <div className="hidden sm:block">
-            <LanguageSwitcher />
+            <LanguageSwitcher disabled={disabled} />
           </div>
         </div>
       </div>

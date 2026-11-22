@@ -10,6 +10,7 @@ import { llmCalls } from '../db/schema';
 import { getModel } from './catalog';
 import type { AppConfig } from '../config/schema';
 import { modelVendor } from '../config/models';
+import { withSpan } from '../telemetry';
 
 export type CallOptions = {
   step: string;
@@ -86,6 +87,15 @@ async function log(opts: CallOptions, provider: string, model: string, res: Part
 }
 
 export async function callModel(opts: CallOptions): Promise<CallResult> {
+  return withSpan(
+    `model.${opts.step.split(':')[0]}`,
+    { 'plx.step': opts.step, 'plx.model': opts.model, 'plx.slot': opts.slot ?? '' },
+    () => callModelInner(opts),
+    (r) => ({ 'plx.provider': r.provider, 'plx.tokens_in': r.usage.promptTokens, 'plx.tokens_out': r.usage.completionTokens, 'plx.cost_usd': r.costUsd, 'plx.latency_ms': r.latencyMs, 'plx.finish_reason': r.finishReason, 'plx.fallback': r.usedFallback }),
+  );
+}
+
+async function callModelInner(opts: CallOptions): Promise<CallResult> {
   if (isDemoMode()) {
     const res = demoRespond(opts.step, { ...opts.request, model: opts.model });
     await log(opts, 'demo', opts.model, { ...res, costUsd: 0 });

@@ -4,12 +4,16 @@ import { BottomNav } from '@/components/BottomNav';
 import { SiteFooter } from '@/components/SiteFooter';
 import { getActiveConfig } from '@/lib/config/store';
 import { isDemoMode } from '@/lib/ai/client';
-import type { Locale } from '@/i18n/languages';
+import { DEFAULT_LOCALE, prefixFor, type Locale } from '@/i18n/languages';
+import { InstallPrompt } from '@/components/InstallPrompt';
+import { redirect } from 'next/navigation';
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations('common');
   const { config } = await getActiveConfig();
+  // Per-language enable flag from the admin console (TODO 4.13): a disabled language falls back to English.
+  if (locale !== DEFAULT_LOCALE && config.content.languages[locale] === false) redirect(`/${prefixFor(DEFAULT_LOCALE)}`);
   const banner = config.content.maintenanceBanner[locale] ?? config.content.maintenanceBanner.en;
   return (
     <>
@@ -29,6 +33,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       </main>
       <SiteFooter />
       <BottomNav />
+      <InstallPrompt />
     </>
   );
 }

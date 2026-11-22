@@ -8,6 +8,7 @@ import { modelVendor } from '@/lib/config/models';
 import { VerdictChip, GradeIcon } from '@/components/VerdictChip';
 import { AnalysisProgress } from '@/components/AnalysisProgress';
 import { ResultActions } from '@/components/ResultActions';
+import { RerunButton } from '@/components/RerunButton';
 import { recordUsage } from '@/lib/metrics/usage';
 import type { Grade, RenderedAnalysis, VerdictSource } from '@/lib/domain/types';
 
@@ -68,7 +69,7 @@ export default async function AnalysisPage({ params }: Props) {
 
   const s = a.structured;
   const rendered: RenderedAnalysis | null = await ensureRendering(id, locale).catch(() => null);
-  const { config } = await getActiveConfig();
+  const { config, id: activeConfigId } = await getActiveConfig();
   const [places, topics, history] = await Promise.all([getPlaces(), getTopics(), getCorrections(id)]);
   const placeName = (pid: string) => places.find((p) => p.id === pid)?.names[locale] ?? pid;
   const topicName = (tid: string) => topics.find((x) => x.id === tid)?.names[locale] ?? tid;
@@ -190,6 +191,7 @@ export default async function AnalysisPage({ params }: Props) {
           </details>
         )}
 
+        {a.configVersionId !== null && a.configVersionId !== activeConfigId && claim && !s.disclosures.demoMode && <RerunButton analysisId={a.id} claim={claim.canonicalText} />}
         <ResultActions analysisId={a.id} version={a.version} pushBackEnabled={config.killSwitches.pushBack} maxTurns={config.limits.dialogueMaxTurns} />
       </div>
 

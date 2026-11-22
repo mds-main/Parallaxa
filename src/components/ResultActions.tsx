@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { markEngaged } from './InstallPrompt';
 import { useTranslations } from 'next-intl';
 import { loadPreferences, savePreferences } from '@/lib/prefs/storage';
 import { useStoredPreferences } from '@/lib/prefs/hooks';
@@ -10,6 +11,7 @@ import { ReportError } from './ReportError';
 export function ResultActions({ analysisId, version, pushBackEnabled, maxTurns }: { analysisId: string; version: number; pushBackEnabled: boolean; maxTurns: number }) {
   const t = useTranslations('result.actions');
   const [panel, setPanel] = useState<'push' | 'report' | null>(null);
+  useEffect(() => markEngaged(), []);
   const [copied, setCopied] = useState(false);
   const following = Boolean(useStoredPreferences()?.follows.analyses.includes(analysisId));
 

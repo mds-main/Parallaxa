@@ -76,5 +76,9 @@
   "history": {
     "title": "Version history",
     "item": "v{from} → v{to}: {reason}"
+  },
+  "rerun": {
+    "button": "Re-run with current models",
+    "note": "This analysis used an earlier model lineup. Re-running creates a new analysis with today's models; this one stays as published."
   }
 }
