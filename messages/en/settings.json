@@ -1,0 +1,12 @@
+{
+  "title": "Your Parallaxa",
+  "intro": "Choose where and what you care about. We narrow by place and topic only, never by side: every story still shows every side.",
+  "places": { "title": "Places", "help": "Up to 5. One is your home (used for the perception quiz and local context).", "add": "Add a place", "search": "Search countries and regions", "home": "Home", "makeHome": "Make home", "focus": "Only this place", "include": "Include", "remove": "Remove", "global": "Include global news", "max": "You can choose up to 5 places." },
+  "topics": { "title": "Topics", "help": "Followed topics come first. Muted topics are left out of the briefing and alerts, never out of Check.", "follow": "Follow", "neutral": "Neutral", "mute": "Mute" },
+  "briefing": { "title": "Daily briefing", "length": "Stories", "time": "Delivery time", "days": "Days", "weekdays": "Weekdays only", "everyday": "Every day", "depth": "Depth", "quick": "Quick (~3 min)", "standard": "Standard (~6 min)", "plain": "Plain-language mode", "outside": "Keep one “outside your filters” story", "outsideHelp": "A major event outside your places or topics, so personalization doesn't become a bubble." },
+  "notifications": { "title": "Notifications", "help": "At most one routine notification a day, plus updates you asked for (up to 3).", "enable": "Turn on notifications", "enabled": "Notifications are on", "unsupported": "This browser doesn't support notifications. On iPhone, add Parallaxa to your home screen first.", "quiet": "Quiet hours", "pause": "Pause for a week" },
+  "language": { "title": "Language" },
+  "privacy": { "title": "Privacy", "help": "Without an account, everything here stays on this device.", "export": "Download my data", "delete": "Delete everything on this device", "deleted": "Deleted." },
+  "preview": "With these settings, today's briefing would include:",
+  "saved": "Saved on this device."
+}

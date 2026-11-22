@@ -22,6 +22,7 @@ async function create(): Promise<Db> {
   }
   const { PGlite } = await import('@electric-sql/pglite');
   const dataDir = process.env.PARALLAXA_DB === 'memory' ? undefined : path.join(process.cwd(), '.data', 'pglite');
+  if (dataDir) (await import('node:fs')).mkdirSync(dataDir, { recursive: true });
   const client = dataDir ? new PGlite(dataDir) : new PGlite();
   const db = drizzlePglite({ client, schema });
   await migratePglite(db, { migrationsFolder });

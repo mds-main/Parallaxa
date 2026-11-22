@@ -1,0 +1,41 @@
+{
+  "claim": "Afirmación comprobada",
+  "summary": "En resumen",
+  "whatsTrue": "Qué es cierto",
+  "whatsMissing": "Qué falta",
+  "whatsWrong": "Qué es falso",
+  "sides": { "title": "En qué acierta cada lado", "left": "Voces de izquierdas / progresistas", "right": "Voces de derechas / conservadoras", "empty": "Nada que las pruebas confirmen aquí.", "note": "Las secciones pueden quedar vacías: nunca inventamos equilibrio." },
+  "valuesTitle": "Es una cuestión de valores",
+  "valuesIntro": "Los valores no se califican como verdaderos o falsos. Estos son los argumentos más sólidos de cada postura, escritos para que sus propios defensores los suscriban.",
+  "sources": "Fuentes",
+  "quoteVerified": "Cita verificada en la página",
+  "translationNote": "Traducción",
+  "openSource": "Abrir fuente",
+  "reasoning": "Cómo hemos llegado aquí",
+  "techniques": "Técnicas detectadas",
+  "models": {
+    "title": "Quién ha investigado",
+    "intro": "Tres modelos de distintos países y tendencias percibidas lo han comprobado por separado. Una regla publicada ha combinado sus veredictos.",
+    "agree": "Los modelos coincidieron en lo esencial.",
+    "disagree": "Los modelos no coincidieron.",
+    "abstained": "No quiso o no pudo investigar",
+    "coi": "No contabilizado: conflicto de intereses en este tema",
+    "searches": "{web} búsquedas web · {x} búsquedas en X · {pages} páginas",
+    "rule": "Regla: {rule}"
+  },
+  "banners": {
+    "disagree": "Los modelos discrepan. Mostramos todos los razonamientos y una persona está revisando este análisis.",
+    "fallback": "Generado con nuestro proveedor de respaldo (Vercel AI Gateway) durante una caída de Venice. No había búsqueda web ni en X de Venice.",
+    "stale": "Algunas pruebas tienen más de {months} meses. Puede haber datos más recientes.",
+    "demo": "Modo demostración: este análisis es simulado y sus fuentes son de ejemplo.",
+    "review": "Este análisis está pendiente de revisión humana antes de publicarse.",
+    "values": "Cuestión de valores: sin calificación."
+  },
+  "meta": { "checkedAt": "Comprobado el {date, date, medium}", "version": "Versión {version}", "prompt": "Instrucciones {version}", "models": "Modelos: {models}", "humanReviewed": "Revisado por personas", "notReviewed": "Aún sin revisión humana", "aiAssisted": "Análisis asistido por IA" },
+  "places": "Lugares",
+  "topics": "Temas",
+  "actions": { "pushBack": "Rebatir", "report": "Notificar un error", "share": "Compartir", "copied": "Enlace copiado", "follow": "Seguir novedades", "following": "Siguiendo", "history": "Historial de versiones", "rerun": "Repetir con los modelos actuales" },
+  "report": { "title": "Notificar un error", "label": "¿Qué está mal y cuál es tu fuente?", "submit": "Enviar", "thanks": "Gracias. Los errores validados se corrigen en 72 horas, de forma pública." },
+  "pushBack": { "title": "Rebatir", "intro": "¿No estás de acuerdo o tienes una duda? Pregunta. Recibirás pruebas, y te diremos si tienes razón.", "placeholder": "¿Qué crees que está mal o falta?", "send": "Enviar", "limit": "Has llegado al límite de esta conversación ({max} mensajes).", "paused": "Rebatir está en pausa ahora mismo. Inténtalo más tarde." },
+  "notFound": "No hemos encontrado este análisis."
+}

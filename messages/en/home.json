@@ -1,0 +1,15 @@
+{
+  "title": "Check something you saw",
+  "inputLabel": "Paste something you saw, or ask a question",
+  "placeholder": "e.g. “Unemployment has fallen to its lowest level in 15 years”",
+  "tabs": { "text": "Text", "link": "Link", "image": "Screenshot" },
+  "urlLabel": "Link to a page or post",
+  "imageLabel": "Upload a screenshot",
+  "imageHint": "PNG, JPEG or WebP, up to 5 MB. Faces and names of private people are removed.",
+  "submit": "Check it",
+  "submitting": "Starting…",
+  "privacyNote": "Checks work without an account. Your history stays on this device.",
+  "today": { "title": "Today's Parallax", "cta": "Read today's briefing", "subtitle": "Up to 5 stories, about 6 minutes. Then you're done." },
+  "recent": { "title": "Your recent checks", "empty": "Your checks will appear here. They stay on this device.", "clear": "Clear history" },
+  "how": { "title": "How Parallaxa checks", "step1": "Three AI models from different countries and perceived leanings investigate independently.", "step2": "A published rule combines their verdicts. Disagreements are shown, not hidden.", "step3": "Every source, quote and step is visible, and people review disputed cases." }
+}

@@ -1,0 +1,11 @@
+{
+  "step1": { "title": "Las mismas reglas para todos", "text": "Comprobamos afirmaciones de todos los lados con un único criterio publicado y enseñamos todo el trabajo." },
+  "step2": { "title": "Tres modelos, ningún dueño", "text": "Modelos de IA de distintos países y tendencias percibidas investigan por separado. Si discrepan, lo verás." },
+  "step3": { "title": "Tranquilo por diseño", "text": "Sin muro infinito, sin premiar la indignación, sin anuncios. Un resumen breve y listo." },
+  "places": { "title": "¿Qué lugares te interesan?", "text": "Te proponemos uno. Añade una región u otros países, o quédate con lo global." },
+  "topics": { "title": "¿Sigues algún tema en especial?", "text": "Opcional. Si lo saltas, todos los temas quedan en neutral." },
+  "hook": "¿No te fías? Bien. Abre el Centro de confianza o mira qué modelos comprobaron cada respuesta.",
+  "skip": "Saltar",
+  "next": "Siguiente",
+  "start": "Empezar"
+}

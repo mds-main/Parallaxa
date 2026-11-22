@@ -1,0 +1,12 @@
+{
+  "title": "Tu Parallaxa",
+  "intro": "Elige dónde y qué te interesa. Solo filtramos por lugar y tema, nunca por bando: cada historia sigue mostrando todos los lados.",
+  "places": { "title": "Lugares", "help": "Hasta 5. Uno es tu lugar principal (para el test de percepción y el contexto local).", "add": "Añadir lugar", "search": "Busca países y regiones", "home": "Principal", "makeHome": "Hacer principal", "focus": "Solo este lugar", "include": "Incluir", "remove": "Quitar", "global": "Incluir noticias globales", "max": "Puedes elegir hasta 5 lugares." },
+  "topics": { "title": "Temas", "help": "Los temas que sigues van primero. Los silenciados no aparecen en el resumen ni en los avisos, pero nunca se ocultan en Comprobar.", "follow": "Seguir", "neutral": "Neutral", "mute": "Silenciar" },
+  "briefing": { "title": "Resumen diario", "length": "Historias", "time": "Hora de entrega", "days": "Días", "weekdays": "Solo laborables", "everyday": "Todos los días", "depth": "Profundidad", "quick": "Rápido (~3 min)", "standard": "Estándar (~6 min)", "plain": "Modo lenguaje sencillo", "outside": "Mantener una historia «fuera de tus filtros»", "outsideHelp": "Un hecho importante fuera de tus lugares o temas, para que la personalización no se convierta en una burbuja." },
+  "notifications": { "title": "Notificaciones", "help": "Como mucho una notificación habitual al día, más los avisos que pidas (hasta 3).", "enable": "Activar notificaciones", "enabled": "Las notificaciones están activadas", "unsupported": "Este navegador no admite notificaciones. En iPhone, añade antes Parallaxa a la pantalla de inicio.", "quiet": "Horas de silencio", "pause": "Pausar una semana" },
+  "language": { "title": "Idioma" },
+  "privacy": { "title": "Privacidad", "help": "Sin cuenta, todo lo de aquí se queda en este dispositivo.", "export": "Descargar mis datos", "delete": "Borrar todo lo de este dispositivo", "deleted": "Borrado." },
+  "preview": "Con esta configuración, el resumen de hoy incluiría:",
+  "saved": "Guardado en este dispositivo."
+}

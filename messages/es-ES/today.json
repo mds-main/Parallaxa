@@ -1,0 +1,16 @@
+{
+  "title": "El Parallax de hoy",
+  "intro": "Hasta {count} historias importantes de hoy, con lo que acierta y falla cada lado.",
+  "upToDate": "Ya estás al día. Hasta mañana.",
+  "why": "¿Por qué veo esto?",
+  "reasons": { "place": "Sigues {place}", "topic": "Sigues {topic}", "outside": "Fuera de tus filtros: una noticia importante", "default": "Noticia destacada de {place}" },
+  "outsideLabel": "Fuera de tus filtros",
+  "fallback": "Hoy no hay suficiente cobertura regional; mostramos historias de todo {place}.",
+  "empty": "El resumen de hoy aún no está listo. Las ediciones las revisan personas antes de las 07:00 hora local.",
+  "perceptionFact": "Comprobación de percepción",
+  "readAnalysis": "Leer el análisis completo",
+  "settings": "Cambiar lugares y temas",
+  "storyOf": "Historia {n} de {total}",
+  "previous": "Anterior",
+  "next": "Siguiente"
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Registro",
+  "intro": "Historiales basados en lo que los actores públicos han dicho y hecho, medidos con la misma rúbrica para todos. Sin una nota única de bueno o malo.",
+  "conductNote": "Describimos conductas, nunca el carácter. Solo mencionamos delitos con sentencia firme.",
+  "filters": { "country": "País", "type": "Tipo", "topic": "Tema", "all": "Todos" },
+  "types": { "politician": "Político/a", "party": "Partido", "government": "Gobierno", "public_figure": "Figura pública", "influencer": "Creador/a de contenido", "company": "Empresa", "entrepreneur": "Empresario/a", "media": "Medio de comunicación" },
+  "dimensions": {
+    "factual_reliability": "Fiabilidad factual",
+    "correction_behaviour": "Rectificaciones",
+    "data_integrity": "Rigor con los datos",
+    "prediction_calibration": "Acierto en las predicciones",
+    "integrity_record": "Historial de integridad",
+    "influence_operations": "Vínculos con operaciones de influencia",
+    "civility": "Civismo en la conducta"
+  },
+  "factual": "{bad} de {n} afirmaciones analizadas fueron contradichas o carecían mayormente de respaldo.",
+  "notEnough": "Aún no hay suficientes afirmaciones analizadas (n = {n}; hacen falta al menos 10).",
+  "analyzedClaims": "Afirmaciones analizadas",
+  "reply": "Respuesta de {name}",
+  "noReply": "Sin respuesta todavía. Los contactos verificados pueden responder y la respuesta se publica junto al historial.",
+  "respond": "¿Eres {name} o le representas? Responde",
+  "appeal": "Recurrir",
+  "empty": "Todavía no hay perfiles publicados. Solo aparecen tras la revisión jurídica de la rúbrica y de cada perfil.",
+  "sampleSize": "n = {n} · confianza: {confidence}"
+}

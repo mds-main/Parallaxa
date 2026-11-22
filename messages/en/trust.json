@@ -1,0 +1,32 @@
+{
+  "title": "Trust Center",
+  "intro": "Don't trust us? Good. Everything here is open so you can check how Parallaxa works, and hold us to it.",
+  "sections": {
+    "methodology": { "title": "Methodology", "text": "Grades, source tiers, selection rules and the Ledger rubric." },
+    "models": { "title": "Model lineup", "text": "Which AI models investigate, why, and every change we've made." },
+    "corrections": { "title": "Corrections log", "text": "Every correction, with what changed and why." },
+    "prompts": { "title": "Prompts", "text": "The exact instructions every model receives." },
+    "audits": { "title": "Symmetry audits", "text": "Whose claims we checked, and how outcomes compare across sides." },
+    "funding": { "title": "Funding and independence", "text": "Non-profit. No donor above 10% of the budget. No party, government or platform money." },
+    "status": { "title": "System status", "text": "Model health and whether the backup provider is in use." }
+  },
+  "lineup": {
+    "title": "Model lineup",
+    "intro": "Every claim is investigated independently by at least three models chosen for their different perceived leanings and origins. They all get the same neutral instructions.",
+    "leaningNote": "Leaning labels describe how people across the spectrum tend to perceive each model family (Westwood, Grimmer & Hall, 2025). They are not instructions: no model is told to take a side.",
+    "slot": "Perspective",
+    "model": "Model",
+    "vendor": "Company",
+    "origin": "Origin",
+    "privacy": "Privacy",
+    "xSearch": "X search",
+    "roles": "Supporting roles",
+    "history": "Change history",
+    "noHistory": "No changes yet.",
+    "privacyTiers": { "private": "Private (zero retention)", "anonymized": "Anonymized (sees only public claims and sources)" }
+  },
+  "corrections": { "title": "Corrections log", "empty": "No corrections yet.", "rss": "RSS feed", "changed": "Version {from} → {to}" },
+  "audits": { "title": "Symmetry audit", "intro": "Live aggregate figures. Quarterly reports add raw data and outside review.", "mirror": "Mirror claims stored for audit", "byGrade": "Analyses by grade", "disagreement": "Analyses where models disagreed", "refusals": "Refusals by model slot" },
+  "status": { "title": "System status", "operational": "Operational", "degraded": "Degraded", "fallback": "Backup provider in use", "lastChecked": "Last checked {date, date, medium} {date, time, short}" },
+  "funding": { "title": "Funding and independence", "body": "Parallaxa is run as a non-profit foundation. No single donor may provide more than 10% of the annual budget. We take no money from political parties, governments or platform companies. Donors above €1,000 are published. No model vendor may handle more than half of all investigations." }
+}

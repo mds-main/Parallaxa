@@ -1,0 +1,11 @@
+{
+  "step1": { "title": "Same rules for every side", "text": "We check claims from every side with one published standard, and show all our work." },
+  "step2": { "title": "Three models, no single owner", "text": "AI models from different countries and perceived leanings investigate separately. When they disagree, you see it." },
+  "step3": { "title": "Calm by design", "text": "No endless feed, no outrage ranking, no ads. A short briefing, then you're done." },
+  "places": { "title": "Where do you care about?", "text": "We suggested a place. Add a region or other countries, or keep it global." },
+  "topics": { "title": "Anything you especially follow?", "text": "Optional. Skipping keeps every topic neutral." },
+  "hook": "Don't trust us? Good. Open the Trust Center, or see exactly which models checked each answer.",
+  "skip": "Skip",
+  "next": "Next",
+  "start": "Start"
+}

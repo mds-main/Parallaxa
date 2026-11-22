@@ -1,0 +1,15 @@
+{
+  "title": "Perception quiz",
+  "intro": "Most of us think the other side is more extreme than it is. Test your picture of “them” against published survey data.",
+  "guess": "Your guess: {value}%",
+  "reveal": "Reveal",
+  "actual": "Survey result: {value}% (margin ±{margin})",
+  "youWere": "You were {diff} points {direction, select, high {too high} low {too low} other {spot on}}.",
+  "source": "Source",
+  "original": "Original wording",
+  "reflection": "Does this change how you picture people on the other side?",
+  "next": "Next question",
+  "done": "That's all for now. Thanks for checking your picture of the other side.",
+  "empty": "We don't have published survey items for your home country yet.",
+  "pickCountry": "Country"
+}

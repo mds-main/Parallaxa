@@ -1,0 +1,26 @@
+{
+  "title": "Checking…",
+  "intro": "Three independent investigations are running. This usually takes under a minute.",
+  "stages": {
+    "ingest": "Reading what you sent",
+    "decompose": "Finding the checkable claims",
+    "tag": "Identifying places and topics",
+    "retrieve": "Gathering primary sources",
+    "investigate": "Three models investigating independently",
+    "aggregate": "Combining verdicts with the published rule",
+    "mirror": "Running the symmetry check",
+    "compose": "Writing up the evidence",
+    "render": "Writing it in your language",
+    "publish": "Publishing"
+  },
+  "failed": "We couldn't finish this check: {reason}",
+  "retry": "Try again",
+  "errors": {
+    "rateLimited": "You've reached the limit of checks for this hour. Please try again later.",
+    "disabled": "Checks are paused for maintenance. Please try again soon.",
+    "spendLimit": "We've reached today's checking budget. New checks reopen at midnight UTC.",
+    "invalid": "Please paste some text, a link or a screenshot.",
+    "tooLarge": "That file is too large (maximum 5 MB).",
+    "generic": "Something went wrong. Please try again."
+  }
+}

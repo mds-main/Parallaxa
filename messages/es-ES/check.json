@@ -1,0 +1,26 @@
+{
+  "title": "Comprobando…",
+  "intro": "Hay tres investigaciones independientes en marcha. Suele tardar menos de un minuto.",
+  "stages": {
+    "ingest": "Leyendo lo que has enviado",
+    "decompose": "Buscando las afirmaciones comprobables",
+    "tag": "Identificando lugares y temas",
+    "retrieve": "Reuniendo fuentes primarias",
+    "investigate": "Tres modelos investigando por separado",
+    "aggregate": "Combinando veredictos con la regla publicada",
+    "mirror": "Haciendo la prueba de simetría",
+    "compose": "Redactando las pruebas",
+    "render": "Escribiéndolo en tu idioma",
+    "publish": "Publicando"
+  },
+  "failed": "No hemos podido terminar esta comprobación: {reason}",
+  "retry": "Volver a intentarlo",
+  "errors": {
+    "rateLimited": "Has llegado al límite de comprobaciones de esta hora. Inténtalo más tarde.",
+    "disabled": "Las comprobaciones están en pausa por mantenimiento. Vuelve a intentarlo pronto.",
+    "spendLimit": "Hemos alcanzado el presupuesto de hoy. Las comprobaciones vuelven a medianoche UTC.",
+    "invalid": "Pega un texto, un enlace o una captura.",
+    "tooLarge": "El archivo es demasiado grande (máximo 5 MB).",
+    "generic": "Algo ha fallado. Inténtalo de nuevo."
+  }
+}

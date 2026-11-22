@@ -1,0 +1,41 @@
+{
+  "claim": "Claim checked",
+  "summary": "In short",
+  "whatsTrue": "What's true",
+  "whatsMissing": "What's missing",
+  "whatsWrong": "What's wrong",
+  "sides": { "title": "What each side gets right", "left": "Left / progressive voices", "right": "Right / conservative voices", "empty": "Nothing the evidence confirms here.", "note": "Sections can be empty: we never invent balance." },
+  "valuesTitle": "This is a values question",
+  "valuesIntro": "Values can't be graded true or false. Here are the strongest arguments, written so their own supporters would agree with them.",
+  "sources": "Sources",
+  "quoteVerified": "Quote verified on the page",
+  "translationNote": "Translation",
+  "openSource": "Open source",
+  "reasoning": "How we got there",
+  "techniques": "Techniques spotted",
+  "models": {
+    "title": "Who investigated",
+    "intro": "Three models from different countries and perceived leanings checked this independently. A published rule combined their verdicts.",
+    "agree": "The models broadly agreed.",
+    "disagree": "The models disagreed.",
+    "abstained": "Declined or could not investigate",
+    "coi": "Not counted: conflict of interest on this topic",
+    "searches": "{web} web searches · {x} X searches · {pages} pages",
+    "rule": "Rule: {rule}"
+  },
+  "banners": {
+    "disagree": "Models disagree. We show every rationale below, and a person is reviewing this analysis.",
+    "fallback": "Generated via our backup provider (Vercel AI Gateway) during a Venice outage. Venice web and X search were not available.",
+    "stale": "Some evidence is older than {months} months. Newer data may exist.",
+    "demo": "Demo mode: this analysis is simulated and its sources are placeholders.",
+    "review": "This analysis is waiting for human review before it is published.",
+    "values": "Values question: no grade."
+  },
+  "meta": { "checkedAt": "Checked {date, date, medium}", "version": "Version {version}", "prompt": "Prompt {version}", "models": "Models: {models}", "humanReviewed": "Human-reviewed", "notReviewed": "Not yet human-reviewed", "aiAssisted": "AI-assisted analysis" },
+  "places": "Places",
+  "topics": "Topics",
+  "actions": { "pushBack": "Push back", "report": "Report an error", "share": "Share", "copied": "Link copied", "follow": "Follow updates", "following": "Following", "history": "Version history", "rerun": "Re-run with current models" },
+  "report": { "title": "Report an error", "label": "What's wrong, and what's your source?", "submit": "Send report", "thanks": "Thank you. Validated errors are corrected within 72 hours, publicly." },
+  "pushBack": { "title": "Push back", "intro": "Disagree, or have a question? Ask. You'll get evidence, and we'll say so if you're right.", "placeholder": "What do you think is wrong or missing?", "send": "Send", "limit": "You've reached the limit for this conversation ({max} messages).", "paused": "Push back is paused right now. Please try again later." },
+  "notFound": "We couldn't find this analysis."
+}

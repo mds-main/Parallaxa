@@ -1,0 +1,16 @@
+{
+  "title": "Today's Parallax",
+  "intro": "Up to {count} stories that matter today, with what each side gets right and wrong.",
+  "upToDate": "You're up to date. See you tomorrow.",
+  "why": "Why am I seeing this?",
+  "reasons": { "place": "You follow {place}", "topic": "You follow {topic}", "outside": "Outside your filters: a major story", "default": "Top story for {place}" },
+  "outsideLabel": "Outside your filters",
+  "fallback": "Not enough regional coverage today; showing {place}-wide stories.",
+  "empty": "Today's briefing isn't ready yet. Editions are reviewed by people before 07:00 local time.",
+  "perceptionFact": "Perception check",
+  "readAnalysis": "Read the full analysis",
+  "settings": "Change places and topics",
+  "storyOf": "Story {n} of {total}",
+  "previous": "Previous",
+  "next": "Next"
+}

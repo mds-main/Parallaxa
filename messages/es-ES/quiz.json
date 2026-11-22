@@ -1,0 +1,15 @@
+{
+  "title": "Test de percepción",
+  "intro": "La mayoría creemos que el otro lado es más extremo de lo que es. Contrasta tu imagen de «ellos» con datos de encuestas publicadas.",
+  "guess": "Tu estimación: {value} %",
+  "reveal": "Ver resultado",
+  "actual": "Resultado de la encuesta: {value} % (margen ±{margin})",
+  "youWere": "Te has {direction, select, high {pasado} low {quedado corto} other {acertado}} por {diff} puntos.",
+  "source": "Fuente",
+  "original": "Formulación original",
+  "reflection": "¿Cambia esto tu imagen de la gente del otro lado?",
+  "next": "Siguiente pregunta",
+  "done": "Eso es todo por ahora. Gracias por contrastar tu imagen del otro lado.",
+  "empty": "Aún no tenemos preguntas de encuestas publicadas para tu país.",
+  "pickCountry": "País"
+}

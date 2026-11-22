@@ -1,0 +1,25 @@
+{
+  "title": "Ledger",
+  "intro": "Track records based on what public actors actually said and did, measured with the same rubric for everyone. No single good-or-bad score.",
+  "conductNote": "We describe conduct, never character. Crimes are only mentioned after a final court ruling.",
+  "filters": { "country": "Country", "type": "Type", "topic": "Topic", "all": "All" },
+  "types": { "politician": "Politician", "party": "Party", "government": "Government", "public_figure": "Public figure", "influencer": "Influencer", "company": "Company", "entrepreneur": "Entrepreneur", "media": "Media outlet" },
+  "dimensions": {
+    "factual_reliability": "Factual reliability",
+    "correction_behaviour": "Correction behaviour",
+    "data_integrity": "Data integrity",
+    "prediction_calibration": "Prediction calibration",
+    "integrity_record": "Integrity record",
+    "influence_operations": "Influence-operation links",
+    "civility": "Civility of conduct"
+  },
+  "factual": "{bad} of {n} analyzed claims were contradicted or mostly unsupported by evidence.",
+  "notEnough": "Not enough analyzed claims yet (n = {n}; a score needs at least 10).",
+  "analyzedClaims": "Analyzed claims",
+  "reply": "Reply from {name}",
+  "noReply": "No reply yet. Verified contacts can respond, and replies are published alongside the record.",
+  "respond": "Are you {name} or their representative? Respond",
+  "appeal": "Appeal",
+  "empty": "No profiles are published yet. Profiles appear only after legal review of the rubric and each profile.",
+  "sampleSize": "n = {n} · confidence: {confidence}"
+}
