@@ -1,0 +1,22 @@
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { SettingsForm } from '@/components/SettingsForm';
+import { getPlaces, getTopics } from '@/lib/queries';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return { title: (await getTranslations({ locale, namespace: 'settings' }))('title'), robots: { index: false } };
+}
+
+export default async function SettingsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations('settings');
+  const [places, topics] = await Promise.all([getPlaces(), getTopics()]);
+  return (
+    <div className="mx-auto max-w-3xl space-y-4">
+      <h1 className="text-3xl font-semibold">{t('title')}</h1>
+      <p className="muted">{t('intro')}</p>
+      <SettingsForm places={places} topics={topics} />
+    </div>
+  );
+}

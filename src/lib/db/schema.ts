@@ -69,6 +69,9 @@ export const subscriptions = pgTable('subscriptions', {
   channel: text('channel').$type<'push' | 'email' | 'in_app'>().notNull(),
   pushEndpointCiphertext: text('push_endpoint_ciphertext'),
   lang: text('lang').notNull(),
+  /** Delivery settings for push: local time (HH:MM), IANA time zone, weekdays only. */
+  settings: jsonb('settings').$type<{ time?: string; timezone?: string; days?: 'everyday' | 'weekdays' }>(),
+  lastSentAt: ts('last_sent_at'),
   createdAt: createdAt(),
 });
 
