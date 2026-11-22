@@ -97,5 +97,23 @@
       "Choose “Add to Home Screen”.",
       "Tap “Add”."
     ]
+  },
+  "survey": {
+    "ask": "Help us improve? Two anonymous questions, nothing that identifies you.",
+    "yes": "Sure",
+    "no": "No thanks",
+    "never": "Don't ask again",
+    "respected": "Did you feel respected by this analysis?",
+    "calmer": "Compared with before reading, do you feel…",
+    "relevant": "Was today's briefing relevant to you?",
+    "answers": {
+      "yes": "Yes",
+      "no": "No",
+      "calmer": "Calmer",
+      "same": "About the same",
+      "more_stressed": "More stressed",
+      "somewhat": "Somewhat"
+    },
+    "thanks": "Thank you."
   }
 }

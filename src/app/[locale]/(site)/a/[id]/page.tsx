@@ -9,6 +9,7 @@ import { VerdictChip, GradeIcon } from '@/components/VerdictChip';
 import { AnalysisProgress } from '@/components/AnalysisProgress';
 import { ResultActions } from '@/components/ResultActions';
 import { RerunButton } from '@/components/RerunButton';
+import { MicroSurvey } from '@/components/MicroSurvey';
 import { recordUsage } from '@/lib/metrics/usage';
 import type { Grade, RenderedAnalysis, VerdictSource } from '@/lib/domain/types';
 
@@ -206,6 +207,7 @@ export default async function AnalysisPage({ params }: Props) {
         )}
 
         {a.configVersionId !== null && a.configVersionId !== activeConfigId && claim && !s.disclosures.demoMode && <RerunButton analysisId={a.id} claim={claim.canonicalText} />}
+        <MicroSurvey questions={['respected', 'calmer']} />
         <ResultActions analysisId={a.id} version={a.version} pushBackEnabled={config.killSwitches.pushBack} maxTurns={config.limits.dialogueMaxTurns} />
       </div>
 

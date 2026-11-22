@@ -174,6 +174,11 @@ export async function getSeries(days = 30) {
     .from(s.analyses)
     .where(and(gte(s.analyses.createdAt, since), eq(s.analyses.status, 'published')))
     .groupBy(s.analyses.grade);
+  const survey = await db
+    .select({ question: s.surveyResponses.question, answer: s.surveyResponses.answer, n: sql<number>`count(*)::int` })
+    .from(s.surveyResponses)
+    .where(gte(s.surveyResponses.at, since))
+    .groupBy(s.surveyResponses.question, s.surveyResponses.answer);
   const evals = await db.select().from(s.evalRuns).where(and(gte(s.evalRuns.createdAt, since), not(eq(s.evalRuns.kind, 'harness_check')))).orderBy(s.evalRuns.createdAt);
   return {
     checks,
@@ -182,6 +187,7 @@ export async function getSeries(days = 30) {
     usage,
     languages,
     grades,
+    survey,
     evals: evals.map((e) => ({ at: e.createdAt.toISOString().slice(0, 10), kind: e.kind, ...(e.metrics as Record<string, number | null>) })),
   };
 }

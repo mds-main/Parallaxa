@@ -97,5 +97,23 @@
       "Elige «Añadir a la pantalla de inicio».",
       "Toca «Añadir»."
     ]
+  },
+  "survey": {
+    "ask": "¿Nos ayudas a mejorar? Dos preguntas anónimas, nada que te identifique.",
+    "yes": "Vale",
+    "no": "No, gracias",
+    "never": "No volver a preguntar",
+    "respected": "¿Te has sentido respetado o respetada por este análisis?",
+    "calmer": "Comparado con antes de leer, te sientes…",
+    "relevant": "¿Te ha resultado útil el resumen de hoy?",
+    "answers": {
+      "yes": "Sí",
+      "no": "No",
+      "calmer": "Más tranquilo/a",
+      "same": "Más o menos igual",
+      "more_stressed": "Más tenso/a",
+      "somewhat": "En parte"
+    },
+    "thanks": "Gracias."
   }
 }

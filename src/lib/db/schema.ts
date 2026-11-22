@@ -551,3 +551,16 @@ export const passkeys = pgTable('passkeys', {
   createdAt: createdAt(),
   lastUsedAt: ts('last_used_at'),
 });
+
+/** Anonymous opt-in micro-survey answers (PRD 10 wellbeing and relevance metrics). No ids of any kind. */
+export const surveyResponses = pgTable(
+  'survey_responses',
+  {
+    id: serial('id').primaryKey(),
+    question: text('question').$type<'respected' | 'calmer' | 'relevant'>().notNull(),
+    answer: text('answer').notNull(),
+    lang: text('lang'),
+    at: createdAt(),
+  },
+  (t) => [index('survey_question_idx').on(t.question, t.at)],
+);

@@ -275,7 +275,12 @@
       "languages": "Comprobaciones por idioma",
       "costByDay": "Gasto en IA por día",
       "costByStep": "Gasto en IA por paso"
-    }
+    },
+    "wellbeing": "Bienestar y utilidad (encuesta voluntaria)",
+    "respected": "Se sintieron respetados",
+    "calmer": "Se sintieron más tranquilos",
+    "relevant": "Resumen útil",
+    "answersN": "{n} respuestas"
   },
   "alerts": {
     "title": "Avisos",

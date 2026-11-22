@@ -530,14 +530,14 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 
 ## 25. Observability, cost control and operations
 - [x] 25.1 [P0] OpenTelemetry traces per pipeline step (model, latency, tokens, cost); Vercel Observability dashboards.
-- [ ] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
+- [x] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
 - [x] 25.3 [P1] SLO monitoring and alerts: 99.5% Check availability, p95 time-to-first-result < 20 s, briefing ready by 06:45 local on 99% of days.
 - [x] 25.4 [P1] Cost dashboard: cost per fresh analysis (target ~$0.35–$0.50 default lineup, ~$0.20–$0.30 economy), cost per slot and search type, cache-hit rate (30% → 70%), rendering cost per language, briefing cost per edition, daily spend vs ceiling.
 - [ ] 25.5 [P1] Guardrail alarms: average session > 15 minutes; < 60% of users keep "outside your filters" on; topic diversity below the edition baseline; > 10% manual switches away from the detected language.
 - [x] 25.6 [P1] Runbooks: Venice outage, Gateway fallback, briefing late, viral error correction, rollback.
 
 ## 26. Research and experimentation
-- [ ] 26.1 [P1] Opt-in research consent flow (localized), ethics review with academic partners.
+- [x] 26.1 [P1] Opt-in research consent flow (localized), ethics review with academic partners.
 - [x] 26.2 [P1] A/B bucketing in middleware (cookie, no PII).
 - [ ] 26.3 [P1] Instruments: feeling thermometer (affective polarization), perception-gap error, "I felt respected / calmer", "briefing relevant to me", trust by self-placed ideology (opt-in), in English and Spanish with validated translations.
 - [ ] 26.4 [P2] First pre-registered RCT (2- and 8-week follow-ups), benchmarked against the megastudy's best treatments; publish all results, including nulls.

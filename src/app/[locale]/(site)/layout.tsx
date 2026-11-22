@@ -6,6 +6,8 @@ import { getActiveConfig } from '@/lib/config/store';
 import { isDemoMode } from '@/lib/ai/client';
 import { DEFAULT_LOCALE, prefixFor, type Locale } from '@/i18n/languages';
 import { InstallPrompt } from '@/components/InstallPrompt';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { redirect } from 'next/navigation';
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +36,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <SiteFooter />
       <BottomNav />
       <InstallPrompt />
+      {/* Cookieless, first-party Vercel Web Analytics and Speed Insights (TODO 25.2). */}
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 }

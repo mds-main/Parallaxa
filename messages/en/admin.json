@@ -275,7 +275,12 @@
       "languages": "Checks by language",
       "costByDay": "AI spend per day",
       "costByStep": "AI spend by step"
-    }
+    },
+    "wellbeing": "Wellbeing and relevance (opt-in survey)",
+    "respected": "Felt respected",
+    "calmer": "Felt calmer",
+    "relevant": "Briefing relevant",
+    "answersN": "{n} answers"
   },
   "alerts": {
     "title": "Alerts",

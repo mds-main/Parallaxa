@@ -41,6 +41,21 @@ export default async function MetricsPage({ searchParams }: { searchParams: Prom
           </tbody>
         </table>
       </section>
+      <section className="card grid gap-3 p-4 sm:grid-cols-3">
+        <h2 className="font-semibold sm:col-span-3">{t('wellbeing')}</h2>
+        {(['respected', 'calmer', 'relevant'] as const).map((q) => {
+          const rows = series.survey.filter((r) => r.question === q);
+          const total = rows.reduce((a, r) => a + r.n, 0);
+          const good = rows.filter((r) => r.answer === (q === 'calmer' ? 'calmer' : 'yes')).reduce((a, r) => a + r.n, 0);
+          return (
+            <div key={q}>
+              <p className="text-sm muted">{t(q)}</p>
+              <p className="text-2xl font-semibold">{total ? `${Math.round((good / total) * 100)}%` : '—'}</p>
+              <p className="text-xs muted">{t('answersN', { n: total })}</p>
+            </div>
+          );
+        })}
+      </section>
       <MetricsCharts series={series} />
     </div>
   );

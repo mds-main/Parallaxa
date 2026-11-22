@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { useSessionScope, useStoredPreferences } from '@/lib/prefs/hooks';
 import { savePreferences } from '@/lib/prefs/storage';
 import { markEngaged } from './InstallPrompt';
+import { MicroSurvey } from './MicroSurvey';
 import { defaultPreferences } from '@/lib/prefs/types';
 import { assembleBriefing, type EditionStory } from '@/lib/briefing/assemble';
 import { GradeIcon } from './VerdictChip';
@@ -56,6 +57,9 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
     return (
       <div className="card p-10 text-center">
         <p className="font-serif text-2xl">{t('upToDate')}</p>
+        <div className="mx-auto mt-6 max-w-md text-left">
+          <MicroSurvey questions={['relevant', 'calmer']} />
+        </div>
         <button className="btn btn-ghost mt-6" onClick={() => setIndex(0)}>{t('previous')}</button>
       </div>
     );
