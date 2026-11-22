@@ -25,6 +25,7 @@ function payload(structured: StructuredAnalysis, claimText: string) {
     reasoning: structured.reasoning,
     confidenceReason: structured.confidenceReason,
     valuesPositions: structured.valuesQuestion?.positions,
+    moralFrames: structured.moralFrames,
     sources: structured.sources.map((s, i) => ({ n: i + 1, title: s.title })),
   };
 }

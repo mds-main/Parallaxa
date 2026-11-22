@@ -256,7 +256,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
         temperature: 0.2,
       },
     });
-    const composed = parseJson<{ whatsTrue: string[]; whatsMissing: string[]; whatsWrong: string[]; sidesRight: { left: string[]; right: string[] }; reasoning: string[]; confidenceReason: string; valuesPositions?: { label: string; steelman: string }[] }>(composeRes.content);
+    const composed = parseJson<{ whatsTrue: string[]; whatsMissing: string[]; whatsWrong: string[]; sidesRight: { left: string[]; right: string[] }; reasoning: string[]; confidenceReason: string; valuesPositions?: { label: string; steelman: string }[]; moralFrames?: StructuredAnalysis['moralFrames'] }>(composeRes.content);
     const techniques = [...new Set(verdicts.flatMap((v) => v.techniques))].filter((t): t is Technique => (TECHNIQUES as readonly string[]).includes(t));
     const staleCutoff = Date.now() - config.pipeline.staleDataMonths * 30 * 24 * 3600 * 1000;
     const datedDecisive = sources.filter((x) => x.publishedAt && x.stance !== 'context');
@@ -282,6 +282,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
       topicTags: tags.topics,
       staleData,
       valuesQuestion: isValues && composed.valuesPositions?.length ? { positions: composed.valuesPositions } : undefined,
+      moralFrames: composed.moralFrames?.slice(0, 3),
       disclosures: {
         demoMode: isDemoMode(),
         fallbackProvider: usedFallback,

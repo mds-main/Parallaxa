@@ -146,6 +146,20 @@ export default async function AnalysisPage({ params }: Props) {
           </section>
         )}
 
+        {r?.moralFrames && r.moralFrames.length > 0 && (
+          <section className="card p-5">
+            <h2 className="text-lg font-semibold">{t('moralTitle')}</h2>
+            <ul className="mt-2 space-y-2">
+              {r.moralFrames.map((m, i) => (
+                <li key={i}>
+                  <span className="chip mr-2">{['care', 'fairness', 'liberty', 'loyalty', 'authority'].includes(m.foundation) ? t(`foundations.${m.foundation as 'care'}`) : m.foundation}</span>
+                  {m.text}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {s.techniques.length > 0 && (
           <section>
             <h2 className="text-lg font-semibold">{t('techniques')}</h2>

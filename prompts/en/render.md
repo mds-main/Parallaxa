@@ -6,3 +6,4 @@ Rules:
 - Use a direct "you" when addressing the reader.
 - headline: at most 12 words. summary: at most 80 words.
 - Keep lists short. Keep "what each side gets right" lists empty if they are empty in the input.
+- moralFrames: rewrite each note naturally; keep the foundation key unchanged.

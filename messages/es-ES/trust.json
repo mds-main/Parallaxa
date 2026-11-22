@@ -2,13 +2,38 @@
   "title": "Centro de confianza",
   "intro": "¿No te fías? Bien. Todo lo que hay aquí es abierto para que compruebes cómo funciona Parallaxa y nos pidas cuentas.",
   "sections": {
-    "methodology": { "title": "Metodología", "text": "Calificaciones, niveles de fuentes, reglas de selección y la rúbrica del Registro." },
-    "models": { "title": "Modelos utilizados", "text": "Qué modelos de IA investigan, por qué y cada cambio que hemos hecho." },
-    "corrections": { "title": "Registro de correcciones", "text": "Cada corrección, con qué cambió y por qué." },
-    "prompts": { "title": "Instrucciones", "text": "Las instrucciones exactas que recibe cada modelo." },
-    "audits": { "title": "Auditorías de simetría", "text": "De quién comprobamos afirmaciones y cómo se comparan los resultados entre lados." },
-    "funding": { "title": "Financiación e independencia", "text": "Sin ánimo de lucro. Ningún donante supera el 10 % del presupuesto. Sin dinero de partidos, gobiernos ni plataformas." },
-    "status": { "title": "Estado del sistema", "text": "Salud de los modelos y si se está usando el proveedor de respaldo." }
+    "methodology": {
+      "title": "Metodología",
+      "text": "Calificaciones, niveles de fuentes, reglas de selección y la rúbrica del Registro."
+    },
+    "models": {
+      "title": "Modelos utilizados",
+      "text": "Qué modelos de IA investigan, por qué y cada cambio que hemos hecho."
+    },
+    "corrections": {
+      "title": "Registro de correcciones",
+      "text": "Cada corrección, con qué cambió y por qué."
+    },
+    "prompts": {
+      "title": "Instrucciones",
+      "text": "Las instrucciones exactas que recibe cada modelo."
+    },
+    "audits": {
+      "title": "Auditorías de simetría",
+      "text": "De quién comprobamos afirmaciones y cómo se comparan los resultados entre lados."
+    },
+    "funding": {
+      "title": "Financiación e independencia",
+      "text": "Sin ánimo de lucro. Ningún donante supera el 10 % del presupuesto. Sin dinero de partidos, gobiernos ni plataformas."
+    },
+    "status": {
+      "title": "Estado del sistema",
+      "text": "Salud de los modelos y si se está usando el proveedor de respaldo."
+    },
+    "evals": {
+      "title": "Resultados de evaluación",
+      "text": "Exactitud, calibración, paridad espejo y paridad de idioma."
+    }
   },
   "lineup": {
     "title": "Modelos utilizados",
@@ -23,10 +48,54 @@
     "roles": "Funciones auxiliares",
     "history": "Historial de cambios",
     "noHistory": "Aún no hay cambios.",
-    "privacyTiers": { "private": "Privado (sin retención)", "anonymized": "Anonimizado (solo ve afirmaciones y fuentes públicas)" }
+    "privacyTiers": {
+      "private": "Privado (sin retención)",
+      "anonymized": "Anonimizado (solo ve afirmaciones y fuentes públicas)"
+    }
   },
-  "corrections": { "title": "Registro de correcciones", "empty": "Aún no hay correcciones.", "rss": "Canal RSS", "changed": "Versión {from} → {to}" },
-  "audits": { "title": "Auditoría de simetría", "intro": "Cifras agregadas en directo. Los informes trimestrales añaden datos en bruto y revisión externa.", "mirror": "Afirmaciones espejo guardadas para auditoría", "byGrade": "Análisis por calificación", "disagreement": "Análisis en los que los modelos discreparon", "refusals": "Negativas por perspectiva" },
-  "status": { "title": "Estado del sistema", "operational": "Operativo", "degraded": "Degradado", "fallback": "Usando el proveedor de respaldo", "lastChecked": "Última comprobación: {date, date, medium} {date, time, short}" },
-  "funding": { "title": "Financiación e independencia", "body": "Parallaxa funciona como una fundación sin ánimo de lucro. Ningún donante puede aportar más del 10 % del presupuesto anual. No aceptamos dinero de partidos políticos, gobiernos ni plataformas. Publicamos los donantes de más de 1000 €. Ningún proveedor de modelos puede encargarse de más de la mitad de las investigaciones." }
+  "corrections": {
+    "title": "Registro de correcciones",
+    "empty": "Aún no hay correcciones.",
+    "rss": "Canal RSS",
+    "changed": "Versión {from} → {to}"
+  },
+  "audits": {
+    "title": "Auditoría de simetría",
+    "intro": "Cifras agregadas en directo. Los informes trimestrales añaden datos en bruto y revisión externa.",
+    "mirror": "Afirmaciones espejo guardadas para auditoría",
+    "byGrade": "Análisis por calificación",
+    "disagreement": "Análisis en los que los modelos discreparon",
+    "refusals": "Negativas por perspectiva",
+    "editions": {
+      "title": "Historias del resumen en los últimos 7 días, por edición",
+      "edition": "Edición",
+      "stories": "Historias",
+      "topics": "Temas"
+    }
+  },
+  "status": {
+    "title": "Estado del sistema",
+    "operational": "Operativo",
+    "degraded": "Degradado",
+    "fallback": "Usando el proveedor de respaldo",
+    "lastChecked": "Última comprobación: {date, date, medium} {date, time, short}"
+  },
+  "funding": {
+    "title": "Financiación e independencia",
+    "body": "Parallaxa funciona como una fundación sin ánimo de lucro. Ningún donante puede aportar más del 10 % del presupuesto anual. No aceptamos dinero de partidos políticos, gobiernos ni plataformas. Publicamos los donantes de más de 1000 €. Ningún proveedor de modelos puede encargarse de más de la mitad de las investigaciones."
+  },
+  "evals": {
+    "title": "Resultados de evaluación",
+    "intro": "Cómo puntúa la configuración actual en nuestro conjunto de afirmaciones de referencia, cada noche y tras cada cambio de modelo. La paridad espejo comprueba que afirmaciones equivalentes de lados opuestos reciben la misma calificación; la paridad de idioma, la misma afirmación en inglés y en español.",
+    "accuracy": "Exactitud",
+    "withinOne": "A un nivel o menos",
+    "calibration": "Error de calibración (mejor cuanto más bajo)",
+    "parity": "Paridad espejo",
+    "languageParity": "Paridad de idioma",
+    "n": "Afirmaciones",
+    "kind": "Ejecución",
+    "when": "Cuándo",
+    "empty": "Aún no hay evaluaciones.",
+    "demo": "Las ejecuciones en modo demostración usan veredictos simulados y no son significativas."
+  }
 }

@@ -7,6 +7,7 @@ const SECTIONS = [
   ['corrections', '/trust/corrections'],
   ['prompts', 'https://github.com/mds-main/Parallaxa/tree/main/prompts'],
   ['audits', '/trust/audits'],
+  ['evals', '/trust/evals'],
   ['funding', '/trust/funding'],
   ['status', '/trust/status'],
 ] as const;

@@ -6,3 +6,4 @@ Reglas:
 - Usa español de España: tuteo («tú», «vosotros»), vocabulario peninsular («ordenador», «móvil», «coche», «conducir»), nunca «ustedes» como plural informal ni términos latinoamericanos.
 - titular: 12 palabras como máximo. resumen: 80 palabras como máximo.
 - Listas breves. Si «lo que acierta cada lado» viene vacío, déjalo vacío.
+- moralFrames: reescribe cada nota con naturalidad; no cambies la clave del fundamento.

@@ -82,6 +82,7 @@ export const COMPOSE_SCHEMA = {
       reasoning: strArr,
       confidenceReason: str,
       valuesPositions: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['label', 'steelman'], properties: { label: str, steelman: str } } },
+      moralFrames: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['foundation', 'text'], properties: { foundation: { type: 'string', enum: ['care', 'fairness', 'liberty', 'loyalty', 'authority'] }, text: str } } },
     },
   },
 };
@@ -102,6 +103,7 @@ export const RENDER_SCHEMA = {
       reasoning: strArr,
       confidenceReason: str,
       valuesPositions: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['label', 'steelman'], properties: { label: str, steelman: str } } },
+      moralFrames: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['foundation', 'text'], properties: { foundation: str, text: str } } },
     },
   },
 };

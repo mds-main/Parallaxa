@@ -10,5 +10,6 @@ Write:
 - reasoning: 3–6 steps from evidence to grade, citing sources by number.
 - confidenceReason: one sentence.
 - valuesPositions: only for value questions, the strongest version of each main position, written so its own supporters would endorse it.
+- moralFrames: optional, at most 3. Explain why this fact matters to people who prioritize different moral foundations (care, fairness, liberty, loyalty, authority), without changing the fact or the grade.
 
 Never mock people. Talk about claims, not character. If investigators disagreed, say so and explain where.

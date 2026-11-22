@@ -408,7 +408,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 16.4 [P1] Deterministic personal assembly (no model call): match places, weight followed topics, drop muted ones, add the outside-filters slot, apply the length (3/5) and depth (Quick/Standard) settings; runs client-side for anonymous users and server-side for push and email.
 - [x] 16.5 [P1] Briefing UI: ≤ 5 cards, swipe on mobile and arrow keys on desktop, the "You're up to date. See you tomorrow." end state, and no feed below.
 - [x] 16.6 [P1] Delivery at the user's chosen time and days via push; offline reading of the last 3 briefings.
-- [ ] 16.7 [P1] Weekly symmetry audit per edition (whose claims were checked and why), published in the Trust Center.
+- [x] 16.7 [P1] Weekly symmetry audit per edition (whose claims were checked and why), published in the Trust Center.
 - [x] 16.8 [P1] Pilot editions: Global, Spain, US, and 2–3 Spanish autonomous communities.
 - [ ] 16.9 [P2] All Spanish autonomous communities and the largest US states (as review capacity allows); UK and Mexico country editions.
 - [ ] 16.10 [P3] Country editions for each newly added language (candidates: France, Germany, Italy, Portugal), then their regions.
@@ -432,7 +432,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 18.3 [P1] Quiz content for Spain and the US (P1); UK and MX (P2); each country added with a new language (P3).
 - [x] 18.4 [P1] Anonymous quiz responses (no user_id) for aggregate before/after error measurement.
 - [x] 18.5 [P1] Steelman composer for value questions (the strongest version of each position, written to be endorsed by its holders); cross-partisan rater validation and bridging score in P2.
-- [ ] 18.6 [P1] Moral reframing hints (why the fact matters across care, fairness, liberty, loyalty and authority) without changing the fact.
+- [x] 18.6 [P1] Moral reframing hints (why the fact matters across care, fairness, liberty, loyalty and authority) without changing the fact.
 
 ## 19. Trust Center and transparency (F5)
 - [x] 19.1 [P1] Trust Center pages in English and Spanish: methodology, grades, tiers, selection rules, rubric, prompts (linked to the repo), model list and roles, funding and donors, panel bios, legal entity.
@@ -440,7 +440,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 19.3 [P1] Public corrections log with diffs and reasons; RSS feed per language.
 - [x] 19.4 [P1] Symmetry and audit reports: mirror-test aggregates, story mix per edition, Ledger outcomes by party family, with raw data downloads (quarterly from P2).
 - [x] 19.5 [P1] Public status page (model health, fallback in use, incidents).
-- [ ] 19.6 [P1] Eval results page (accuracy, calibration, parity, language parity) updated on every release.
+- [x] 19.6 [P1] Eval results page (accuracy, calibration, parity, language parity) updated on every release.
 - [ ] 19.7 [P2] External audit publication.
 - [x] 19.8 [P1] Model lineup page: current model per perspective slot and utility role, full change history (date, old → new, reason) and post-swap eval results (needs: 10.28).
 
@@ -526,15 +526,15 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 24.3 [P1] Secrets: environment-scoped Vercel env vars, quarterly rotation runbook, no secrets in client bundles (CI check).
 - [ ] 24.4 [P1] Abuse reporting channel; no bulk API in the MVP.
 - [ ] 24.5 [P1] Third-party penetration test before public launch (focus: SSRF, prompt injection, auth, RLS); fix all high and critical findings.
-- [ ] 24.6 [P1] Incident response plan (security, model outage, viral error, legal notice) with on-call rotation.
+- [x] 24.6 [P1] Incident response plan (security, model outage, viral error, legal notice) with on-call rotation.
 
 ## 25. Observability, cost control and operations
 - [x] 25.1 [P0] OpenTelemetry traces per pipeline step (model, latency, tokens, cost); Vercel Observability dashboards.
-- [ ] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
+- [x] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
 - [x] 25.3 [P1] SLO monitoring and alerts: 99.5% Check availability, p95 time-to-first-result < 20 s, briefing ready by 06:45 local on 99% of days.
 - [x] 25.4 [P1] Cost dashboard: cost per fresh analysis (target ~$0.35–$0.50 default lineup, ~$0.20–$0.30 economy), cost per slot and search type, cache-hit rate (30% → 70%), rendering cost per language, briefing cost per edition, daily spend vs ceiling.
 - [ ] 25.5 [P1] Guardrail alarms: average session > 15 minutes; < 60% of users keep "outside your filters" on; topic diversity below the edition baseline; > 10% manual switches away from the detected language.
-- [ ] 25.6 [P1] Runbooks: Venice outage, Gateway fallback, briefing late, viral error correction, rollback.
+- [x] 25.6 [P1] Runbooks: Venice outage, Gateway fallback, briefing late, viral error correction, rollback.
 
 ## 26. Research and experimentation
 - [ ] 26.1 [P1] Opt-in research consent flow (localized), ethics review with academic partners.

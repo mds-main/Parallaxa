@@ -116,6 +116,8 @@ export type StructuredAnalysis = {
   topicTags: { id: string; confidence: number }[];
   staleData: boolean;
   valuesQuestion?: { positions: { label: string; steelman: string }[] };
+  /** Why the fact matters across moral foundations, without changing the fact (PRD F4). */
+  moralFrames?: { foundation: 'care' | 'fairness' | 'liberty' | 'loyalty' | 'authority'; text: string }[];
   disclosures: {
     demoMode: boolean;
     fallbackProvider: boolean;
@@ -137,6 +139,7 @@ export type RenderedAnalysis = {
   reasoning: string[];
   confidenceReason: string;
   valuesPositions?: { label: string; steelman: string }[];
+  moralFrames?: { foundation: string; text: string }[];
 };
 
 /** Live analyses store the mirrored claim for audits; graded mirror pairs are checked in the eval suite. */
