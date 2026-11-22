@@ -122,7 +122,7 @@ export async function harnessCheck(config: AppConfig, slotId: string, model: str
     { label: 'Returns a structured verdict', ok: verdicts >= 4, detail: `${verdicts}/5` },
     { label: 'Uses web search', ok: demo || samples.some((s) => s.webSearches > 0), detail: `${samples.reduce((a, s) => a + s.webSearches, 0)} searches` },
     { label: 'Cites sources', ok: samples.every((s) => s.got === null || s.sources > 0) },
-    { label: 'Close to expected grades (±1)', ok: close >= 4, detail: `${close}/5` },
+    { label: 'Close to expected grades (±1)', ok: demo || close >= 4, detail: demo ? 'skipped in demo mode (simulated verdicts)' : `${close}/5` },
   ];
   if (catalogModel?.capabilities.xSearch && slot.harness.xSearch) checks.push({ label: 'Uses X search', ok: demo || samples.some((s) => s.xSearches > 0), detail: `${samples.reduce((a, s) => a + s.xSearches, 0)} searches` });
   const ok = checks.every((c) => c.ok);

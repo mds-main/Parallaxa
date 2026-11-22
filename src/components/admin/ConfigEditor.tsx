@@ -16,10 +16,27 @@ export function useEditor() {
 }
 
 function flatten(obj: unknown, prefix = ''): Record<string, string> {
-  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) return { [prefix]: JSON.stringify(obj) };
+  if (obj === null || typeof obj !== 'object') return { [prefix]: JSON.stringify(obj) };
+  // Arrays of primitives (lists of codes, keywords) are one setting; arrays of objects (slots) are walked by index.
+  if (Array.isArray(obj) && obj.every((x) => x === null || typeof x !== 'object')) return { [prefix]: JSON.stringify(obj) };
   const out: Record<string, string> = {};
   for (const [k, v] of Object.entries(obj as Record<string, unknown>)) Object.assign(out, flatten(v, prefix ? `${prefix}.${k}` : k));
   return out;
+}
+
+function show(v: unknown): string {
+  if (v === undefined || v === null || v === '') return '—';
+  if (Array.isArray(v)) return v.join(', ');
+  if (typeof v === 'object') return JSON.stringify(v);
+  return String(v);
+}
+
+function pathLabel(p: string, draft: AppConfig, locale: 'en' | 'es-ES'): string {
+  const field = FIELDS.find((f) => f.path === p);
+  if (field) return field.label[locale];
+  const m = p.match(/^slots\.(\d+)\.(.*)$/);
+  if (m) return `${draft.slots[Number(m[1])]?.id ?? `slot ${m[1]}`} · ${m[2]}`;
+  return p;
 }
 
 export function diffPaths(a: unknown, b: unknown): string[] {
@@ -73,9 +90,10 @@ function SaveBar({ onReset, costEstimate }: { onReset: () => void; costEstimate?
   if (!changed.length && !message) return null;
 
   const descriptors = changed.map((p) => FIELDS.find((f) => p === f.path || p.startsWith(`${f.path}.`))).filter(Boolean);
+  const modelChange = changed.some((p) => /^slots\.\d+\.model$/.test(p));
   const killOff = changed.some((p) => p.startsWith('killSwitches.') && getPath(draft, p) === false);
   const dangerous = killOff || descriptors.some((d) => d!.dangerous);
-  const affects = [...new Set(descriptors.flatMap((d) => d!.affects))];
+  const affects = [...new Set([...descriptors.flatMap((d) => d!.affects), ...(modelChange ? (['check', 'briefing', 'costs'] as const) : [])])];
   const est = costEstimate ? { before: costEstimate(initial), after: costEstimate(draft) } : null;
   const fmt = (n: number) => new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', maximumFractionDigits: n < 1 ? 3 : 0 }).format(n);
 
@@ -102,13 +120,13 @@ function SaveBar({ onReset, costEstimate }: { onReset: () => void; costEstimate?
               <ul className="flex flex-wrap gap-1 text-xs">
                 {changed.slice(0, 8).map((p) => (
                   <li key={p} className="chip">
-                    {FIELDS.find((f) => f.path === p)?.label[locale] ?? p}: {String(getPath(initial, p) ?? '—').slice(0, 30)} → <strong>{String(getPath(draft, p) ?? '—').slice(0, 30)}</strong>
+                    {pathLabel(p, draft, locale)}: {show(getPath(initial, p)).slice(0, 40)} → <strong>{show(getPath(draft, p)).slice(0, 40)}</strong>
                   </li>
                 ))}
               </ul>
               {(est || affects.length > 0) && (
                 <p className="text-sm muted">
-                  {est && `${t('impact')}: ${t('costPerAnalysis', { value: fmt(est.after.perAnalysis) })} (${fmt(est.before.perAnalysis)} →), ${t('costPerMonth', { value: fmt(est.after.perMonth) })}. `}
+                  {est && `${t('impact')}: ${fmt(est.before.perAnalysis)} → ${t('costPerAnalysis', { value: fmt(est.after.perAnalysis) })}; ${t('costPerMonth', { value: fmt(est.after.perMonth) })}. `}
                   {affects.length > 0 && t('affects', { features: affects.map((a) => tf(a)).join(', ') })}
                 </p>
               )}

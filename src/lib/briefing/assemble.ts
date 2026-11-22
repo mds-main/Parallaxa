@@ -12,6 +12,7 @@ export type EditionStory = {
   salience: number;
   placeIds: string[];
   headline: Record<string, string>;
+  claim?: string;
   grade: string;
   perceptionFact?: Record<string, string>;
 };

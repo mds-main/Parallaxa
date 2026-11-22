@@ -42,9 +42,10 @@ export async function getPublishedEditions() {
   const chosen = [...latest.values()].filter((e) => e.date >= cutoff);
   if (!chosen.length) return [];
   const stories = await db
-    .select({ st: s.editionStories, grade: s.analyses.grade })
+    .select({ st: s.editionStories, grade: s.analyses.grade, claim: s.claims.canonicalText })
     .from(s.editionStories)
     .innerJoin(s.analyses, eq(s.analyses.id, s.editionStories.analysisId))
+    .leftJoin(s.claims, eq(s.claims.id, s.analyses.claimId))
     .where(inArray(s.editionStories.editionId, chosen.map((e) => e.id)));
   const placesByAnalysis = new Map<string, string[]>();
   const ids = [...new Set(stories.map((x) => x.st.analysisId))];
@@ -67,6 +68,7 @@ export async function getPublishedEditions() {
         salience: x.st.salience,
         placeIds: placesByAnalysis.get(x.st.analysisId) ?? [e.placeId],
         headline: x.st.headline,
+        claim: x.claim ?? undefined,
         grade: x.grade ?? 'not_checkable',
         perceptionFact: x.st.perceptionFact ?? undefined,
       })),

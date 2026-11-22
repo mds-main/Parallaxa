@@ -76,6 +76,7 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
         <p className="text-sm muted">{t('storyOf', { n: index + 1, total })}</p>
         {s.reason.kind === 'outside' && <p className="chip mt-2">{t('outsideLabel')}</p>}
         <h2 className="mt-3 text-2xl font-semibold">{s.headline[locale] ?? s.headline.en}</h2>
+        {s.claim && <blockquote className="mt-2 font-serif text-lg text-ink-2">“{s.claim}”</blockquote>}
         <p className="mt-3 flex items-center gap-2 text-sm">
           <GradeIcon grade={s.grade as Grade} /> {gradeLabels[s.grade]}
         </p>

@@ -23,7 +23,7 @@ export function ScopeChip({ placeNames }: { placeNames: Record<string, Record<st
   }, [locale, placeNames, t]);
   if (!label) return null;
   return (
-    <Link href="/settings" className="chip max-w-[14rem] truncate no-underline hover:border-ink-3" title={t('change')}>
+    <Link href="/settings" className="chip max-w-[11rem] truncate no-underline hover:border-ink-3 sm:max-w-[14rem]" title={t('change')}>
       <span className="sr-only">{t('label')}: </span>
       <span className="truncate">{label}</span>
       <span aria-hidden="true">▾</span>

@@ -29,7 +29,7 @@ export async function BottomNav() {
     ['/more', 'more'],
   ] as const;
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur hyphens-none lg:hidden">
       <ul className="mx-auto grid max-w-md grid-cols-4">
         {items.map(([href, key]) => (
           <li key={key}>
