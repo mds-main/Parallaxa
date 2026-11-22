@@ -25,10 +25,12 @@ async function session() {
   return s;
 }
 
-export async function loginAction(_prev: { error?: string } | undefined, form: FormData): Promise<{ error?: string }> {
+export async function loginAction(_prev: { error?: string; username?: string } | undefined, form: FormData): Promise<{ error?: string; username?: string }> {
   const locale = String(form.get('locale') ?? 'en') as Locale;
-  const result = await login(String(form.get('username') ?? ''), String(form.get('password') ?? ''));
-  if (result !== 'ok') return { error: result };
+  const username = String(form.get('username') ?? '');
+  const result = await login(username, String(form.get('password') ?? ''));
+  // Keep the username after a failed attempt (React resets form fields after an action).
+  if (result !== 'ok') return { error: result, username: username.slice(0, 100) };
   redirect(`/${prefixFor(locale)}/admin`);
 }
 

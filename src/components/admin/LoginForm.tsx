@@ -13,7 +13,7 @@ export function LoginForm() {
       <input type="hidden" name="locale" value={locale} />
       <label className="block">
         <span className="label">{t('username')}</span>
-        <input name="username" className="field mt-1" autoComplete="username" required />
+        <input name="username" className="field mt-1" autoComplete="username" required defaultValue={state?.username ?? ''} key={state?.username ?? ''} />
       </label>
       <label className="block">
         <span className="label">{t('password')}</span>

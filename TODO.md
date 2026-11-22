@@ -11,6 +11,14 @@ This file lists **every block of work, and every task inside each block**, neede
 
 ---
 
+## Status (23 Nov 2026)
+
+The application is implemented on branch `feat/mvp-implementation`: public site (Check, Today, Ledger, quiz, Trust Center, Your Parallaxa, onboarding, PWA), the full pipeline with three perspective slots and the Venice investigation harness, rule-based aggregation, corrections, briefing generation, push, cron jobs, the admin console, and unit, end-to-end and accessibility tests. Ticked tasks below are done in code; partially done tasks stay open.
+
+**Needs you (cannot be done from code):** a Venice API key (the site runs in labelled demo mode without it), Vercel and Neon provisioning and env vars (`docs/deployment.md`), Firewall/BotID rules, and every organizational, legal and editorial task in blocks 2 and 3 (entity, DPIA, panel, fact-checker gold set, legal review of the Ledger).
+
+**Main open engineering items:** accounts (passkeys, magic links, sync), voice input, OG share cards, sitemaps, Vercel Blob snapshots of sources, pgvector at scale, named reviewer accounts, background sync, install prompts, "re-run with current models", per-language enable flags in routing, OpenTelemetry, contract tests for the provider adapters, and the Phase 2/3 features.
+
 ## 0. Project at a glance
 
 ### 0.1 What Parallaxa is
@@ -142,41 +150,41 @@ Resolution order: URL prefix → saved choice (account setting or `NEXT_LOCALE` 
 - [ ] 2.16 [P0] Review acceptable-use and data terms for every model vendor reached through Venice (xAI, OpenAI, Anthropic, Google, DeepSeek, Moonshot/Kimi, Zhipu/GLM, Alibaba/Qwen), including export-control and sanctions checks for Chinese models.
 
 ## 3. Methodology and editorial standards (published under CC BY 4.0)
-- [ ] 3.1 [P0] Claim types and definitions: Fact, Value, Prediction, Attribution, Framing.
-- [ ] 3.2 [P0] Evidence grades and definitions: Well supported · Mostly supported · Mixed/contested · Missing context · Mostly unsupported · Contradicted by evidence · Not checkable (yet). Confidence levels High/Medium/Low, with reason templates.
-- [ ] 3.3 [P0] Source tiers T1–T4 with examples per launch country (statistics offices, courts, legislation, peer review, wires, outlets across the spectrum); the "≥ 2 independent sources, ≥ 1 T1/T2" rule.
-- [ ] 3.4 [P0] Manipulation-technique catalogue (cherry-picked window, base-rate neglect, misleading axis, correlation→causation, out-of-context clip, AI-generated media), with examples drawn equally from all sides.
+- [x] 3.1 [P0] Claim types and definitions: Fact, Value, Prediction, Attribution, Framing.
+- [x] 3.2 [P0] Evidence grades and definitions: Well supported · Mostly supported · Mixed/contested · Missing context · Mostly unsupported · Contradicted by evidence · Not checkable (yet). Confidence levels High/Medium/Low, with reason templates.
+- [x] 3.3 [P0] Source tiers T1–T4 with examples per launch country (statistics offices, courts, legislation, peer review, wires, outlets across the spectrum); the "≥ 2 independent sources, ≥ 1 T1/T2" rule.
+- [x] 3.4 [P0] Manipulation-technique catalogue (cherry-picked window, base-rate neglect, misleading axis, correlation→causation, out-of-context clip, AI-generated media), with examples drawn equally from all sides.
 - [ ] 3.5 [P0] Mirror-test protocol: how to build the structurally equivalent opposite-side claim, the parity tolerance (±0.1 ordinal), and logging and publication.
 - [ ] 3.6 [P0] Briefing selection rules (cross-outlet salience on both sides, virality of contested claims, upcoming decisions) and "outside your filters" salience rules.
 - [ ] 3.7 [P0] Ledger rubric v1: seven dimensions, minimum samples, reach weighting, confidence, conduct-only phrasing rules, positive signals; legal review (needs: 2.6).
 - [ ] 3.8 [P0] Corrections policy (versioning, public diff, reasons, 72 h SLA) and appeals policy (two stages).
 - [ ] 3.9 [P0] Topic taxonomy v1: ~20 topics and ~150 subtopics with neutral names in English and Spanish, country-specific subtopics mapped to neutral parents; panel review; versioning rules.
-- [ ] 3.10 [P0] Place list: ISO 3166-1 countries and ISO 3166-2 first-level regions for launch countries; official local names; time zones; coverage-level criteria (Full / Partial / Limited) and the threshold for a regional edition.
+- [x] 3.10 [P0] Place list: ISO 3166-1 countries and ISO 3166-2 first-level regions for launch countries; official local names; time zones; coverage-level criteria (Full / Partial / Limited) and the threshold for a regional edition.
 - [ ] 3.11 [P0] Left/right labelling rules per country for the side-by-side card (e.g., Spain "izquierda/derecha" plus party families; no logos or party colours).
 - [ ] 3.12 [P0] Gold set v1: 500 claims balanced by side, country and language, graded by fact-checkers of different orientations plus academics; each claim professionally translated into the other launch language (grows to ≥ 1,000 by P2; needs: 2.12).
-- [ ] 3.13 [P0] Publish methodology v1 in the public repo (`/methodology`) and in the Trust Center in English and Spanish.
-- [ ] 3.14 [P0] Verdict aggregation rule (median grade, spread → confidence, disagreement threshold, abstentions for refusals, conflict-of-interest exclusions) and conflict-of-interest topic lists per model family, published in the methodology.
-- [ ] 3.15 [P0] Methodology page explaining the perspective slots, what "perceived leaning" means (with the research behind it), and why every slot gets identical neutral prompts.
+- [x] 3.13 [P0] Publish methodology v1 in the public repo (`/methodology`) and in the Trust Center in English and Spanish.
+- [x] 3.14 [P0] Verdict aggregation rule (median grade, spread → confidence, disagreement threshold, abstentions for refusals, conflict-of-interest exclusions) and conflict-of-interest topic lists per model family, published in the methodology.
+- [x] 3.15 [P0] Methodology page explaining the perspective slots, what "perceived leaning" means (with the research behind it), and why every slot gets identical neutral prompts.
 
 ## 4. Languages and localization (F7)
 Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so that adding a language later is configuration and content work, not code.
 
 ### 4.A Engineering
-- [ ] 4.1 [P0] Language registry (`src/i18n/languages.ts`): the single source of truth per language (BCP 47 tag, URL prefix, primary-subtag matcher, native name, `dir`, `Intl` locale, enabled flag). Middleware, switcher, sitemaps, `hreflang`, manifests, emails, CI checks, prompt loading and evals all read from it. Launch entries: `en`, `es-ES`.
-- [ ] 4.2 [P0] Lint rule forbidding hard-coded locale lists or locale literals outside the registry.
-- [ ] 4.3 [P0] next-intl configured from the registry; URL prefixes `/en` and `/es`; default and fallback `en`.
-- [ ] 4.4 [P0] Locale negotiation in Routing Middleware, in order: URL prefix → `NEXT_LOCALE` cookie or account setting → `Accept-Language` by q-value, primary-subtag match among *enabled* languages (`es-*`→`es-ES`, `en-*`→`en`) → `en`. Never use IP. Redirect `/` to the resolved prefix (302, `Vary: Accept-Language, Cookie`).
-- [ ] 4.5 [P0] Negotiation tests: `es-MX,es;q=0.9`→es-ES; `es-419`→es-ES; `ca,es;q=0.8,en;q=0.5`→es-ES; `en-GB`→en; `fr-FR,de;q=0.8`→en; empty header→en; cookie overrides header; URL overrides cookie. Plus a parameterized suite that runs for every registry entry, so new languages are covered automatically.
-- [ ] 4.6 [P0] Language switcher (header menu, settings, onboarding) listing enabled languages by their own names ("English", "Español"), never flags. It persists the choice (cookie or account) and keeps the current path.
-- [ ] 4.7 [P0] Message catalogs at `messages/<lang>/<namespace>.json`, English as source, ICU plurals/select, generated TypeScript key types.
-- [ ] 4.8 [P0] CI i18n checks that loop over the registry: missing keys, unused keys, ICU syntax, placeholder parity. An enabled language can have no gaps; a disabled, in-progress language may.
+- [x] 4.1 [P0] Language registry (`src/i18n/languages.ts`): the single source of truth per language (BCP 47 tag, URL prefix, primary-subtag matcher, native name, `dir`, `Intl` locale, enabled flag). Middleware, switcher, sitemaps, `hreflang`, manifests, emails, CI checks, prompt loading and evals all read from it. Launch entries: `en`, `es-ES`.
+- [x] 4.2 [P0] Lint rule forbidding hard-coded locale lists or locale literals outside the registry.
+- [x] 4.3 [P0] next-intl configured from the registry; URL prefixes `/en` and `/es`; default and fallback `en`.
+- [x] 4.4 [P0] Locale negotiation in Routing Middleware, in order: URL prefix → `NEXT_LOCALE` cookie or account setting → `Accept-Language` by q-value, primary-subtag match among *enabled* languages (`es-*`→`es-ES`, `en-*`→`en`) → `en`. Never use IP. Redirect `/` to the resolved prefix (302, `Vary: Accept-Language, Cookie`).
+- [x] 4.5 [P0] Negotiation tests: `es-MX,es;q=0.9`→es-ES; `es-419`→es-ES; `ca,es;q=0.8,en;q=0.5`→es-ES; `en-GB`→en; `fr-FR,de;q=0.8`→en; empty header→en; cookie overrides header; URL overrides cookie. Plus a parameterized suite that runs for every registry entry, so new languages are covered automatically.
+- [x] 4.6 [P0] Language switcher (header menu, settings, onboarding) listing enabled languages by their own names ("English", "Español"), never flags. It persists the choice (cookie or account) and keeps the current path.
+- [x] 4.7 [P0] Message catalogs at `messages/<lang>/<namespace>.json`, English as source, ICU plurals/select, generated TypeScript key types.
+- [x] 4.8 [P0] CI i18n checks that loop over the registry: missing keys, unused keys, ICU syntax, placeholder parity. An enabled language can have no gaps; a disabled, in-progress language may.
 - [ ] 4.9 [P0] Pseudo-locale (accented, +40% length) registered as a dev-only language; Playwright snapshots in pseudo and es-ES at all breakpoints, so longer future languages (German, French) fit without redesign.
-- [ ] 4.10 [P0] Formatting helpers on `Intl` (dates, relative time, numbers, percentages, currency, lists) per locale; device time zone; never hand-formatted strings.
-- [ ] 4.11 [P0] `lang` on `<html>` and on every mixed-language fragment (original-language quotes, source titles); `hyphens: auto`; logical CSS properties with `dir` from the registry (RTL-ready); font stack with full Latin Extended coverage.
-- [ ] 4.12 [P0] Language columns stored as BCP 47 text validated against the registry (no database enums) in users, analysis renderings, subscriptions and email logs, so a new language needs no migration.
+- [x] 4.10 [P0] Formatting helpers on `Intl` (dates, relative time, numbers, percentages, currency, lists) per locale; device time zone; never hand-formatted strings.
+- [x] 4.11 [P0] `lang` on `<html>` and on every mixed-language fragment (original-language quotes, source titles); `hyphens: auto`; logical CSS properties with `dir` from the registry (RTL-ready); font stack with full Latin Extended coverage.
+- [x] 4.12 [P0] Language columns stored as BCP 47 text validated against the registry (no database enums) in users, analysis renderings, subscriptions and email logs, so a new language needs no migration.
 - [ ] 4.13 [P1] Per-language enable flag in Edge Config for a staged rollout (staff → beta → everyone) without a redeploy. It can only be switched on when the catalogs are complete and the parity evals pass.
 - [ ] 4.14 [P1] SEO generated from the registry: locale-prefixed public URLs, `hreflang` for every enabled language plus `x-default`→`/en`, localized `<title>`, meta description and Open Graph, localized sitemaps.
-- [ ] 4.15 [P1] Localized PWA manifests per language (`lang`, `description`, shortcuts, `start_url` with prefix); serve the one matching the active locale (needs: 20.1).
+- [x] 4.15 [P1] Localized PWA manifests per language (`lang`, `description`, shortcuts, `start_url` with prefix); serve the one matching the active locale (needs: 20.1).
 - [ ] 4.16 [P1] Localized emails (Resend templates) and push payloads in the recipient's saved language.
 - [ ] 4.17 [P1] Localized share cards (OG images) in the sharer's language.
 - [ ] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in CI and in the nightly eval.
@@ -190,7 +198,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 4.24 [P1] Native Spain-Spanish reviewer rota in the review console (needs: 21) for briefings, Ledger text and sampled analyses.
 
 ### 4.C Adding a language later (playbook)
-- [ ] 4.25 [P1] Write `docs/adding-a-language.md`:
+- [x] 4.25 [P1] Write `docs/adding-a-language.md`:
   1. Add a disabled registry entry.
   2. Translate and natively review the UI catalogs, taxonomy, place and grade names, Trust Center, methodology and legal texts.
   3. Write the style guide and glossary.
@@ -203,53 +211,53 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 4.26 [P3] Add the first new language through the playbook (candidates: French, German, Italian, Portuguese), together with its country edition.
 
 ## 5. Repository, tooling and CI/CD
-- [ ] 5.1 [P0] Scaffold Next.js (App Router, TS strict, `src/` layout), pnpm, Node LTS pinned (`.nvmrc`, `engines`).
-- [ ] 5.2 [P0] ESLint, Prettier, typecheck, import boundaries (`app/`, `features/*`, `lib/*`, `server/*`), conventional commits.
-- [ ] 5.3 [P0] Vitest with coverage; Playwright projects for mobile, tablet and desktop in Chromium, WebKit and Firefox; axe-core integration.
-- [ ] 5.4 [P0] GitHub Actions: lint, typecheck, unit, i18n checks (4.8), E2E on preview URL, axe, LLM eval gate on prompt-touching PRs (23.6), OSV scan, SBOM generation.
-- [ ] 5.5 [P0] Renovate config, pnpm lockfile enforcement, dependency review.
-- [ ] 5.6 [P0] Licences: AGPL-3.0 for code, CC BY 4.0 for `/methodology` and `/prompts`; `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`.
-- [ ] 5.7 [P0] Env var schema with Zod (fail fast on boot) covering `VENICE_API_KEY`, `AI_GATEWAY_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, optional `ADMIN_IP_ALLOWLIST`, Edge Config and Vercel API tokens, database and email keys; `.env.example` with names only; secrets never committed.
-- [ ] 5.8 [P0] `CLAUDE.md`/`AGENTS.md` for the repo: stack, commands, non-negotiable rules (0.3), locale rules (0.5), model-slot rules (0.6).
-- [ ] 5.9 [P0] Seed and fixture scripts: places, topics, sample analyses in en and es-ES, demo actors (fictional) for previews and tests.
+- [x] 5.1 [P0] Scaffold Next.js (App Router, TS strict, `src/` layout), pnpm, Node LTS pinned (`.nvmrc`, `engines`).
+- [x] 5.2 [P0] ESLint, Prettier, typecheck, import boundaries (`app/`, `features/*`, `lib/*`, `server/*`), conventional commits.
+- [x] 5.3 [P0] Vitest with coverage; Playwright projects for mobile, tablet and desktop in Chromium, WebKit and Firefox; axe-core integration.
+- [x] 5.4 [P0] GitHub Actions: lint, typecheck, unit, i18n checks (4.8), E2E on preview URL, axe, LLM eval gate on prompt-touching PRs (23.6), OSV scan, SBOM generation.
+- [x] 5.5 [P0] Renovate config, pnpm lockfile enforcement, dependency review.
+- [x] 5.6 [P0] Licences: AGPL-3.0 for code, CC BY 4.0 for `/methodology` and `/prompts`; `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`.
+- [x] 5.7 [P0] Env var schema with Zod (fail fast on boot) covering `VENICE_API_KEY`, `AI_GATEWAY_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, optional `ADMIN_IP_ALLOWLIST`, Edge Config and Vercel API tokens, database and email keys; `.env.example` with names only; secrets never committed.
+- [x] 5.8 [P0] `CLAUDE.md`/`AGENTS.md` for the repo: stack, commands, non-negotiable rules (0.3), locale rules (0.5), model-slot rules (0.6).
+- [x] 5.9 [P0] Seed and fixture scripts: places, topics, sample analyses in en and es-ES, demo actors (fictional) for previews and tests.
 
 ## 6. Infrastructure and platform (Vercel + Neon)
 - [ ] 6.1 [P0] Create the Vercel project (Pro), link the repo, pin functions to `fra1`, enable Fluid compute; set up production and preview environments.
 - [ ] 6.2 [P0] Provision Neon via Vercel Marketplace in the EU (AWS Frankfurt): Free plan for prototyping, Launch for production; branch per preview deployment, auto-deleted on PR close; production minimum 0.25 CU, autoscaling max 2 CU; scale-to-zero only for previews.
 - [ ] 6.3 [P0] Enable pgvector; configure the pooled connection string for functions; `@neondatabase/serverless` (HTTP for one-shot queries, WebSocket for transactions).
 - [ ] 6.4 [P0] Vercel Blob store (private, signed URLs) for screenshots and source snapshots.
-- [ ] 6.5 [P0] Edge Config: active configuration version (model slots, harness and pipeline settings), feature flags, language flags, circuit-breaker overrides, kill switches (per feature and per locale); written only by the admin publish flow (22.9).
+- [x] 6.5 [P0] Edge Config: active configuration version (model slots, harness and pipeline settings), feature flags, language flags, circuit-breaker overrides, kill switches (per feature and per locale); written only by the admin publish flow (22.9).
 - [ ] 6.6 [P0] Marketplace Redis/KV for circuit-breaker state, rate counters and short-lived caches.
 - [ ] 6.7 [P0] Vercel Workflow for the analysis pipeline and Queues for retrieval fan-out; verify availability in region and plan, otherwise implement a Postgres job table plus cron drain.
-- [ ] 6.8 [P0] Cron jobs (`vercel.json`): edition generation per place at 05:00 local, nightly evals, 1-minute model health checks, cache warmers, retention purge, corrections RSS rebuild, symmetry-report aggregation.
+- [x] 6.8 [P0] Cron jobs (`vercel.json`): edition generation per place at 05:00 local, nightly evals, 1-minute model health checks, cache warmers, retention purge, corrections RSS rebuild, symmetry-report aggregation.
 - [ ] 6.9 [P1] Vercel Firewall/WAF rules and rate limits on `/api/check`, `/api/dialogue`, `/api/rate`; BotID on write and LLM-triggering endpoints; WAF rule and rate limit on `/admin/login`; attack challenge mode runbook.
 - [ ] 6.13 [P0] Vercel API token scoped to the Edge Config store only, used by the admin publish flow; stored as a sensitive env var.
-- [ ] 6.10 [P0] Security headers: strict nonce-based CSP, HSTS preload, `frame-ancestors 'none'`, Referrer-Policy, Permissions-Policy.
+- [x] 6.10 [P0] Security headers: strict nonce-based CSP, HSTS preload, `frame-ancestors 'none'`, Referrer-Policy, Permissions-Policy.
 - [ ] 6.11 [P1] Rolling Releases and an instant-rollback runbook; production promotion requires the eval gate to be green.
 - [ ] 6.12 [P0] Custom domains (needs: 2.3), with locale-prefix routing working on them.
 
 ## 7. Data model and database
-- [ ] 7.1 [P0] Drizzle schema and migrations for: `users`, `user_political_self_id` (separate table, separate key), `user_preferences` (encrypted), `subscriptions`, `places`, `topics`, `claims` (with `embedding vector(1024)`), `claim_places`, `claim_topics`, `analyses` (versioned, immutable), `analysis_renderings` (per language), `analysis_sources`, `sources`, `outlets`, `actors`, `actor_places`, `actor_claims`, `actor_dimension_scores`, `actor_replies`, `appeals`, `corrections`, `briefing_editions`, `edition_stories`, `quiz_items` (+ translations), `quiz_responses` (no user_id), `error_reports`, `review_tasks`, `audit_log`, `llm_calls` (with slot, searches, finish reason), `analysis_verdicts` (per-slot verdicts), `config_versions`, `eval_runs`, `admin_sessions`, `metrics_daily` (aggregate only), `jobs` (if the Workflow fallback is used). Language columns are BCP 47 text, never enums (4.12).
+- [x] 7.1 [P0] Drizzle schema and migrations for: `users`, `user_political_self_id` (separate table, separate key), `user_preferences` (encrypted), `subscriptions`, `places`, `topics`, `claims` (with `embedding vector(1024)`), `claim_places`, `claim_topics`, `analyses` (versioned, immutable), `analysis_renderings` (per language), `analysis_sources`, `sources`, `outlets`, `actors`, `actor_places`, `actor_claims`, `actor_dimension_scores`, `actor_replies`, `appeals`, `corrections`, `briefing_editions`, `edition_stories`, `quiz_items` (+ translations), `quiz_responses` (no user_id), `error_reports`, `review_tasks`, `audit_log`, `llm_calls` (with slot, searches, finish reason), `analysis_verdicts` (per-slot verdicts), `config_versions`, `eval_runs`, `admin_sessions`, `metrics_daily` (aggregate only), `jobs` (if the Workflow fallback is used). Language columns are BCP 47 text, never enums (4.12).
 - [ ] 7.2 [P0] Row-Level Security on user-owned rows; DB roles (app, reviewer, admin, analytics read-only).
-- [ ] 7.3 [P0] Application-level AES-256-GCM encryption helpers with key IDs and rotation: separate key classes for political self-ID, preferences and push subscriptions.
+- [x] 7.3 [P0] Application-level AES-256-GCM encryption helpers with key IDs and rotation: separate key classes for political self-ID, preferences and push subscriptions.
 - [ ] 7.4 [P0] pgvector indexes (HNSW) for the claim semantic cache and source dedup; text-hash unique index.
-- [ ] 7.5 [P0] Content-addressed cache keys: claim hash + model set + prompt version (+ language for renderings).
-- [ ] 7.6 [P0] Seed places (ISO 3166-1/2 with names in English and Spanish plus local official names, time zones, coverage level) and topics (taxonomy v1) (needs: 3.9, 3.10).
-- [ ] 7.7 [P1] Retention jobs: daily-salted IP hashes deleted after 7 days; logs after 30 days; account-linked query text de-linked after 90 days.
+- [x] 7.5 [P0] Content-addressed cache keys: claim hash + model set + prompt version (+ language for renderings).
+- [x] 7.6 [P0] Seed places (ISO 3166-1/2 with names in English and Spanish plus local official names, time zones, coverage level) and topics (taxonomy v1) (needs: 3.9, 3.10).
+- [x] 7.7 [P1] Retention jobs: daily-salted IP hashes deleted after 7 days; logs after 30 days; account-linked query text de-linked after 90 days.
 - [ ] 7.8 [P1] Backups and restore drill (Neon point-in-time restore); old snapshots archived to Blob.
 
 ## 8. Design system and app shell
-- [ ] 8.1 [P0] Design tokens: paper `#F7F5F0`, ink `#1C1F24`, ochre accent `#C98A1B`, monochrome intensity scale; no red/blue/purple/green/orange/teal as semantic colours; editorial type scale with full Latin Extended coverage (ç, ß, ã, õ, ñ, à, è…).
-- [ ] 8.2 [P0] Verdict chip: one distinct shape per grade + word label + monochrome intensity (never colour-only), in every supported language.
-- [ ] 8.3 [P0] Core components: input box (text/URL/image/voice), cards, tier badges, confidence indicator, model-agreement indicator, banners ("Models disagree", "Backup provider", "Stale data"), side sheet, tabs, disclosure/accordion, toasts, empty states.
+- [x] 8.1 [P0] Design tokens: paper `#F7F5F0`, ink `#1C1F24`, ochre accent `#C98A1B`, monochrome intensity scale; no red/blue/purple/green/orange/teal as semantic colours; editorial type scale with full Latin Extended coverage (ç, ß, ã, õ, ñ, à, è…).
+- [x] 8.2 [P0] Verdict chip: one distinct shape per grade + word label + monochrome intensity (never colour-only), in every supported language.
+- [x] 8.3 [P0] Core components: input box (text/URL/image/voice), cards, tier badges, confidence indicator, model-agreement indicator, banners ("Models disagree", "Backup provider", "Stale data"), side sheet, tabs, disclosure/accordion, toasts, empty states.
 - [ ] 8.4 [P0] App shell: header with scope chip and language menu; bottom nav on mobile (Check · Today · Ledger · More); two-pane on tablet landscape; three columns on desktop (claims · evidence · sources); keyboard shortcuts (`/` focus input, `j/k` navigate).
 - [ ] 8.5 [P0] Motion that respects `prefers-reduced-motion`; plain-language mode (CEFR B1) toggle wiring.
-- [ ] 8.6 [P0] Accessibility baseline: focus styles, skip links, landmarks, live regions for streaming results, form errors.
+- [x] 8.6 [P0] Accessibility baseline: focus styles, skip links, landmarks, live regions for streaming results, form errors.
 - [ ] 8.7 [P1] Storybook (or equivalent) with locale and viewport toolbars, including the pseudo-locale.
 
 ## 9. Accounts, auth and privacy center
 - [ ] 9.1 [P0] *Decide* Auth.js vs Neon Auth (verify passkeys, magic links, EU data, RLS integration).
-- [ ] 9.2 [P1] Anonymous-first: every core feature works without an account; local history and preferences in IndexedDB.
+- [x] 9.2 [P1] Anonymous-first: every core feature works without an account; local history and preferences in IndexedDB.
 - [ ] 9.3 [P1] Sign-in with passkeys + email magic links (Resend, localized); optional Google/Apple OAuth, never required.
 - [ ] 9.4 [P1] Account sync of preferences, follows and history (encrypted, 7.3); merge local → account on first sign-in.
 - [ ] 9.5 [P1] Privacy center: export (JSON), delete account (hard delete with confirmation), withdraw consents, view what is stored.
@@ -258,46 +266,46 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 
 ## 10. AI layer: Venice, perspective slots and investigation harness
 ### 10.A Provider layer
-- [ ] 10.1 [P0] Venice client through the AI SDK OpenAI-compatible provider (`https://api.venice.ai/api/v1`), with `json_schema` structured output and Zod validation. `include_venice_system_prompt: false` is forced on every call (enforced in the client and tested).
-- [ ] 10.2 [P0] Venice catalog sync: fetch `GET /models?type=text` every 15 minutes and cache each model's capabilities (`supportsFunctionCalling`, `supportsResponseSchema`, `supportsWebSearch`, `supportsXSearch`, reasoning-effort options), context length, privacy tier, offline and deprecation status, and prices. Alert when an active model is deprecated, goes offline or changes price.
-- [ ] 10.3 [P0] Adapter layer for model quirks, so prompts stay identical across slots: OpenAI reasoning models rejecting `seed`/`stop`/`n`/penalties; per-model reasoning-effort options; `reasoning_details` round-trip in tool loops; refusal detection (`finish_reason: "content_filter"` and in-stream `content_blocked_by_provider`).
-- [ ] 10.4 [P0] Privacy-tier enforcement: raw user text only ever goes to Private/TEE models. Anonymized models receive only canonical, PII-free claims (12.3) and public sources. Unit tests prove it for every step and slot.
-- [ ] 10.5 [P0] Prompt registry: versioned prompts in `prompts/<lang>/` (CC BY 4.0), with en and es-ES variants and few-shot examples. The same prompts serve every perspective slot, and the content hash is recorded on every call.
-- [ ] 10.6 [P0] Error-class handling:
+- [x] 10.1 [P0] Venice client through the AI SDK OpenAI-compatible provider (`https://api.venice.ai/api/v1`), with `json_schema` structured output and Zod validation. `include_venice_system_prompt: false` is forced on every call (enforced in the client and tested).
+- [x] 10.2 [P0] Venice catalog sync: fetch `GET /models?type=text` every 15 minutes and cache each model's capabilities (`supportsFunctionCalling`, `supportsResponseSchema`, `supportsWebSearch`, `supportsXSearch`, reasoning-effort options), context length, privacy tier, offline and deprecation status, and prices. Alert when an active model is deprecated, goes offline or changes price.
+- [x] 10.3 [P0] Adapter layer for model quirks, so prompts stay identical across slots: OpenAI reasoning models rejecting `seed`/`stop`/`n`/penalties; per-model reasoning-effort options; `reasoning_details` round-trip in tool loops; refusal detection (`finish_reason: "content_filter"` and in-stream `content_blocked_by_provider`).
+- [x] 10.4 [P0] Privacy-tier enforcement: raw user text only ever goes to Private/TEE models. Anonymized models receive only canonical, PII-free claims (12.3) and public sources. Unit tests prove it for every step and slot.
+- [x] 10.5 [P0] Prompt registry: versioned prompts in `prompts/<lang>/` (CC BY 4.0), with en and es-ES variants and few-shot examples. The same prompts serve every perspective slot, and the content hash is recorded on every call.
+- [x] 10.6 [P0] Error-class handling:
   - 429 → honour the reset header, retry once with jitter, else fall back.
   - 5xx/timeout → retry once (250 ms→1 s), then fall back.
   - 4xx schema → one repair prompt, no fallback.
   - 401/402 → immediate fallback and page on-call.
   - Refusal → abstention for perspective slots; alternate model, then fallback, for utility roles.
-- [ ] 10.7 [P0] Timeouts: first token 8 s, 45 s per step, 90 s per investigation.
-- [ ] 10.8 [P0] Per-model circuit breaker (state in KV, overrides in Edge Config): opens after 5 failures in 60 s or p95 > 3× baseline; half-open probe every 30 s; manual override from the admin console.
-- [ ] 10.9 [P0] AI Gateway fallback with a per-slot mapping: same family and origin (Grok → xAI, GPT → OpenAI, DeepSeek → DeepSeek), otherwise the same origin, flagged. On the fallback path, investigations use Parallaxa's own search and fetch tools (no Venice-native web or X search) and the analysis discloses it. Zero-data-retention routing for user-text steps.
-- [ ] 10.10 [P1] Health-check cron (1 min) with a tiny completion per active model, feeding the breaker, the admin console and the public status page.
-- [ ] 10.11 [P0] `llm_calls` logging: provider, model, slot, step, tokens, searches (web, X, scrape), cost, latency, finish reason, error class; OpenTelemetry spans. Never send user identifiers to providers.
-- [ ] 10.12 [P1] Spend controls: app-level daily spend ceiling (set in the admin console) and Gateway budget alerts. During fallback only Check and Briefing run; dialogue pauses with a friendly localized message.
+- [x] 10.7 [P0] Timeouts: first token 8 s, 45 s per step, 90 s per investigation.
+- [x] 10.8 [P0] Per-model circuit breaker (state in KV, overrides in Edge Config): opens after 5 failures in 60 s or p95 > 3× baseline; half-open probe every 30 s; manual override from the admin console.
+- [x] 10.9 [P0] AI Gateway fallback with a per-slot mapping: same family and origin (Grok → xAI, GPT → OpenAI, DeepSeek → DeepSeek), otherwise the same origin, flagged. On the fallback path, investigations use Parallaxa's own search and fetch tools (no Venice-native web or X search) and the analysis discloses it. Zero-data-retention routing for user-text steps.
+- [x] 10.10 [P1] Health-check cron (1 min) with a tiny completion per active model, feeding the breaker, the admin console and the public status page.
+- [x] 10.11 [P0] `llm_calls` logging: provider, model, slot, step, tokens, searches (web, X, scrape), cost, latency, finish reason, error class; OpenTelemetry spans. Never send user identifiers to providers.
+- [x] 10.12 [P1] Spend controls: app-level daily spend ceiling (set in the admin console) and Gateway budget alerts. During fallback only Check and Briefing run; dialogue pauses with a friendly localized message.
 - [ ] 10.13 [P0] Contract tests for the Venice and Gateway adapters (recorded fixtures), covering tool calls, structured output, web search, X search and refusals.
 
 ### 10.B Perspective slots and utility roles
-- [ ] 10.14 [P0] Slot model. Up to 5 slots; each has a model, allowed privacy tiers, harness settings and conflict-of-interest topics. Verify the defaults against the live catalog at build time.
+- [x] 10.14 [P0] Slot model. Up to 5 slots; each has a model, allowed privacy tiers, harness settings and conflict-of-interest topics. Verify the defaults against the live catalog at build time.
   - **US-R** (US, perceived right-leaning): default xAI Grok `grok-4-7`.
   - **US-L** (US, perceived left-leaning): default OpenAI `openai-gpt-62-sol`; alternatives Claude (`claude-sonnet-5-5`) and Gemini (`gemini-4-carbon`).
   - **CN** (Chinese): default DeepSeek `deepseek-v4-pro`; alternatives Kimi (`kimi-k3`), GLM (`z-ai-glm-5-3`) and Qwen.
-- [ ] 10.15 [P0] Lineup invariants checked on every configuration change: ≥ 3 active slots, ≥ 2 countries of origin, ≥ 3 vendors, no vendor > 50% of adjudication volume, no empty slot.
-- [ ] 10.16 [P0] Utility-role configuration:
+- [x] 10.15 [P0] Lineup invariants checked on every configuration change: ≥ 3 active slots, ≥ 2 countries of origin, ≥ 3 vendors, no vendor > 50% of adjudication volume, no empty slot.
+- [x] 10.16 [P0] Utility-role configuration:
   - PII redaction and canonicalization, decomposition and tagging: small Private model.
   - Reader: mid Private model, tool-less.
   - Writer: rotates among the slots.
   - Renderer and consistency checker: different vendors.
   - Push back: Private model.
-- [ ] 10.17 [P1] Conflict-of-interest topic lists per model family (3.14), applied at aggregation and editable in the admin console.
+- [x] 10.17 [P1] Conflict-of-interest topic lists per model family (3.14), applied at aggregation and editable in the admin console.
 
 ### 10.C Investigation harness
-- [ ] 10.18 [P0] Agentic investigation loop per slot (AI SDK tool calling). Input: canonical claim + shared evidence pool. Output: `submit_verdict` (grade, confidence, reasoning, cited sources) via structured output. A slot never sees the other slots' verdicts.
-- [ ] 10.19 [P0] Venice-native tools:
+- [x] 10.18 [P0] Agentic investigation loop per slot (AI SDK tool calling). Input: canonical claim + shared evidence pool. Output: `submit_verdict` (grade, confidence, reasoning, cited sources) via structured output. A slot never sees the other slots' verdicts.
+- [x] 10.19 [P0] Venice-native tools:
   - `enable_web_search: "on"`, `return_search_results_as_documents: true` and `enable_web_citations: true` on every slot.
   - `enable_web_scraping` for URLs in the claim.
   - `enable_x_search: true` only when the model has `supportsXSearch` (Grok). X results are tagged T4 context.
-- [ ] 10.20 [P0] Parallaxa function tools:
+- [x] 10.20 [P0] Parallaxa function tools:
   - `search_web`: secondary search API.
   - `fetch_source`: sandbox + snapshot.
   - `query_primary_data`: primary-data connectors.
@@ -306,32 +314,32 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
   - `find_past_analyses`.
 
   All tool output is wrapped as inert data (11.2).
-- [ ] 10.21 [P0] Budgets per slot: tool calls (12), web searches (4), X searches (3), scraped URLs (5), 90 s, cost cap per investigation. When a budget is reached, the loop stops gracefully and the verdict says so.
-- [ ] 10.22 [P0] Harness requirement validator. A model must have:
+- [x] 10.21 [P0] Budgets per slot: tool calls (12), web searches (4), X searches (3), scraped URLs (5), 90 s, cost cap per investigation. When a budget is reached, the loop stops gracefully and the verdict says so.
+- [x] 10.22 [P0] Harness requirement validator. A model must have:
   - `supportsFunctionCalling`, `supportsResponseSchema` and `supportsWebSearch`.
   - Not offline and not deprecated.
   - Context ≥ 128k tokens.
   - A privacy tier allowed for the slot.
 
   It returns pass/fail with readable reasons, which the admin model picker uses.
-- [ ] 10.23 [P1] Harness check runner: sends 5 gold-set claims through a candidate model and verifies tool calls, search, citations, structured output and (where available) X search. Results are stored in `eval_runs` and shown side by side with the current model.
+- [x] 10.23 [P1] Harness check runner: sends 5 gold-set claims through a candidate model and verifies tool calls, search, citations, structured output and (where available) X search. Results are stored in `eval_runs` and shown side by side with the current model.
 
 ### 10.D Swapping models
-- [ ] 10.24 [P0] Versioned configuration:
+- [x] 10.24 [P0] Versioned configuration:
   - `config_versions` in Postgres moves through draft → testing → shadow → active → retired.
   - The active version is published to Edge Config and reaches new analyses within ~10 s, with no deploy.
   - Each analysis records `config_version_id` and every slot's model.
   - In-flight analyses finish on their starting version.
-- [ ] 10.25 [P1] Shadow mode: a candidate model runs alongside the live one on the next N analyses. Its results are stored, never published, and a comparison report shows agreement, grades, cost and latency.
-- [ ] 10.26 [P1] Post-swap eval: a 50-claim gold-set run after every activation. A regression beyond tolerance raises an alert and offers rollback.
-- [ ] 10.27 [P1] One-step rollback to any earlier version. Emergency swap path: harness check required, shadow skipped.
-- [ ] 10.28 [P1] Public lineup and change-history feed for the Trust Center (19.8).
+- [x] 10.25 [P1] Shadow mode: a candidate model runs alongside the live one on the next N analyses. Its results are stored, never published, and a comparison report shows agreement, grades, cost and latency.
+- [x] 10.26 [P1] Post-swap eval: a 50-claim gold-set run after every activation. A regression beyond tolerance raises an alert and offers rollback.
+- [x] 10.27 [P1] One-step rollback to any earlier version. Emergency swap path: harness check required, shadow skipped.
+- [x] 10.28 [P1] Public lineup and change-history feed for the Trust Center (19.8).
 
 ## 11. Retrieval, sources and sandboxed fetching
-- [ ] 11.1 [P0] Sandboxed fetcher on Vercel Sandbox: egress allow-list, private-IP and SSRF blocking, size and time limits, HTML and PDF rendering, OCR for images (English and Spanish at launch; Latin-script ready).
-- [ ] 11.2 [P0] Prompt-injection defences: retrieved text wrapped in inert data blocks, separate tool-less "reader" calls, hidden text and HTML comments stripped, schema validation; retrieved content can never change instructions, tools or fetched URLs.
-- [ ] 11.3 [P0] Venice web search with results returned as documents (primary).
-- [ ] 11.4 [P1] *Decide* and integrate a secondary search API (Brave / Exa / Tavily) for diversity and cross-checks.
+- [x] 11.1 [P0] Sandboxed fetcher on Vercel Sandbox: egress allow-list, private-IP and SSRF blocking, size and time limits, HTML and PDF rendering, OCR for images (English and Spanish at launch; Latin-script ready).
+- [x] 11.2 [P0] Prompt-injection defences: retrieved text wrapped in inert data blocks, separate tool-less "reader" calls, hidden text and HTML comments stripped, schema validation; retrieved content can never change instructions, tools or fetched URLs.
+- [x] 11.3 [P0] Venice web search with results returned as documents (primary).
+- [x] 11.4 [P1] *Decide* and integrate a secondary search API (Brave / Exa / Tavily) for diversity and cross-checks.
 - [ ] 11.5 [P1] Primary-data connectors: Eurostat, INE, OECD, World Bank, BOE/EUR-Lex, US Census/BLS, CIS barometers, CENDOJ, parliamentary records, Wikidata (entity resolution only).
 - [ ] 11.6 [P2] Connectors for new country editions: ONS/UK Parliament and INEGI/DOF, plus regional statistics offices for regional editions; [P3] connectors for each country added with a new language (e.g., INSEE/Légifrance, Destatis/Bundestag, ISTAT/Normattiva, INE-PT/DRE).
 - [ ] 11.7 [P0] Source snapshotting to Blob (dated, hashed) for every cited page; respect robots.txt; snapshots private; only short quotes displayed.
@@ -339,77 +347,77 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 11.9 [P0] Retrieval that is aware of place and language: per-claim query plans use place tags to pick authoritative local sources and search in the claim's language plus English; deliberately retrieve outlets from both sides when coverage diverges.
 
 ## 12. Truth-seeking pipeline (F1 engine)
-- [ ] 12.1 [P0] Workflow skeleton: each stage is a durable, retryable step with persisted state and OpenTelemetry spans; progress events streamed to the UI.
-- [ ] 12.2 [P1] Stage 1, ingest and normalize: URL fetch (11.1), text extraction and OCR, source-language detection, canonicalization, hashing; exact and semantic cache hit (≥ 0.92) → reuse with "previously analyzed on <date>, refresh?".
-- [ ] 12.3 [P1] Stage 2, claim decomposition into atomic claims typed Fact / Value / Prediction / Attribution / Framing, plus canonicalization by a Private model: each claim rewritten as a neutral, self-contained public statement with personal data removed (the only user-derived text Anonymized models see).
-- [ ] 12.4 [P1] Stage 2b, place and topic tagging (ISO codes + 1–3 taxonomy topics, with confidence; low confidence falls back to the parent).
-- [ ] 12.5 [P1] Stage 3, retrieval with the tier plan (T1–T4) and the "≥ 2 independent sources, ≥ 1 T1/T2" rule.
-- [ ] 12.6 [P1] Stage 4, evidence grading with confidence and a reason.
-- [ ] 12.7 [P1] Stage 5, manipulation-technique detection (probability language for AI-generated media, never certainty).
-- [ ] 12.8 [P1] Stage 6, independent investigation: every perspective slot (US-R, US-L, CN, plus extras) runs the investigation harness (10.C) in parallel from the shared evidence pool and returns a blind structured verdict. Sources found by any slot are snapshotted, quote-verified and pooled; verdicts resting on unverifiable sources are downgraded.
-- [ ] 12.8b [P1] Verdict aggregation by the published rule (3.14): median grade, spread lowers confidence, ≥ 2 grade steps apart (configurable) or supported-vs-contradicted split → "Models disagree" banner with every slot's rationale and a human review task; refusals → abstentions; conflict-of-interest exclusions; fewer than 2 valid verdicts → human review before publication. Store per-slot verdicts in `analysis_verdicts`.
-- [ ] 12.9 [P1] Stage 7, mirror test for contested political claims; results logged per analysis and aggregated for audits.
-- [ ] 12.10 [P1] Stage 8, composition into a **language-neutral structured analysis** (summary points, true/missing/wrong, each side's correct points only with evidence, sources, reasoning trace, model and prompt versions, timestamp).
-- [ ] 12.11 [P1] Stage 8b, native rendering per language from the structured analysis (per-language prompts and style guides). Cached per (analysis version, language) and rendered on first request. Never changes grades, numbers or sources. Quotes stay in the original language with a labelled translation.
-- [ ] 12.12 [P1] Cross-language consistency check on 100% of renderings (a second model verifies meaning, grades and numbers against the structured analysis); failures re-render once, then go to native review.
-- [ ] 12.13 [P1] Verbatim quote verification (string match against the snapshot); unverified quotes are removed. Unsupported claims are auto-downgraded to "Not checkable".
-- [ ] 12.14 [P1] Disclosure flags: model disagreement, fallback provider used, stale data (> 12 months), human-reviewed yes/no, AI-assisted badge (AI Act).
-- [ ] 12.15 [P1] Versioning and corrections: analyses are immutable; a correction creates a new version with a public diff and reason; feeds the corrections log and RSS.
-- [ ] 12.16 [P1] Values handling: Value claims are never graded; they route to the steelman composer ("Values question: here are the strongest arguments").
+- [x] 12.1 [P0] Workflow skeleton: each stage is a durable, retryable step with persisted state and OpenTelemetry spans; progress events streamed to the UI.
+- [x] 12.2 [P1] Stage 1, ingest and normalize: URL fetch (11.1), text extraction and OCR, source-language detection, canonicalization, hashing; exact and semantic cache hit (≥ 0.92) → reuse with "previously analyzed on <date>, refresh?".
+- [x] 12.3 [P1] Stage 2, claim decomposition into atomic claims typed Fact / Value / Prediction / Attribution / Framing, plus canonicalization by a Private model: each claim rewritten as a neutral, self-contained public statement with personal data removed (the only user-derived text Anonymized models see).
+- [x] 12.4 [P1] Stage 2b, place and topic tagging (ISO codes + 1–3 taxonomy topics, with confidence; low confidence falls back to the parent).
+- [x] 12.5 [P1] Stage 3, retrieval with the tier plan (T1–T4) and the "≥ 2 independent sources, ≥ 1 T1/T2" rule.
+- [x] 12.6 [P1] Stage 4, evidence grading with confidence and a reason.
+- [x] 12.7 [P1] Stage 5, manipulation-technique detection (probability language for AI-generated media, never certainty).
+- [x] 12.8 [P1] Stage 6, independent investigation: every perspective slot (US-R, US-L, CN, plus extras) runs the investigation harness (10.C) in parallel from the shared evidence pool and returns a blind structured verdict. Sources found by any slot are snapshotted, quote-verified and pooled; verdicts resting on unverifiable sources are downgraded.
+- [x] 12.8b [P1] Verdict aggregation by the published rule (3.14): median grade, spread lowers confidence, ≥ 2 grade steps apart (configurable) or supported-vs-contradicted split → "Models disagree" banner with every slot's rationale and a human review task; refusals → abstentions; conflict-of-interest exclusions; fewer than 2 valid verdicts → human review before publication. Store per-slot verdicts in `analysis_verdicts`.
+- [x] 12.9 [P1] Stage 7, mirror test for contested political claims; results logged per analysis and aggregated for audits.
+- [x] 12.10 [P1] Stage 8, composition into a **language-neutral structured analysis** (summary points, true/missing/wrong, each side's correct points only with evidence, sources, reasoning trace, model and prompt versions, timestamp).
+- [x] 12.11 [P1] Stage 8b, native rendering per language from the structured analysis (per-language prompts and style guides). Cached per (analysis version, language) and rendered on first request. Never changes grades, numbers or sources. Quotes stay in the original language with a labelled translation.
+- [x] 12.12 [P1] Cross-language consistency check on 100% of renderings (a second model verifies meaning, grades and numbers against the structured analysis); failures re-render once, then go to native review.
+- [x] 12.13 [P1] Verbatim quote verification (string match against the snapshot); unverified quotes are removed. Unsupported claims are auto-downgraded to "Not checkable".
+- [x] 12.14 [P1] Disclosure flags: model disagreement, fallback provider used, stale data (> 12 months), human-reviewed yes/no, AI-assisted badge (AI Act).
+- [x] 12.15 [P1] Versioning and corrections: analyses are immutable; a correction creates a new version with a public diff and reason; feeds the corrections log and RSS.
+- [x] 12.16 [P1] Values handling: Value claims are never graded; they route to the steelman composer ("Values question: here are the strongest arguments").
 - [ ] 12.17 [P1] Performance work to hit p50 < 25 s cached-similar and p95 time-to-first-result < 20 s (streaming partial results, parallel retrieval, small models for early stages).
 
 ## 13. Check experience (F1 UI)
 - [ ] 13.1 [P1] Home: one large input ("Paste something you saw, or ask a question"), with paste/URL/image upload/voice (speech-to-text in English and Spanish), "Today's Parallax" card, updates on follows, recent checks.
-- [ ] 13.2 [P1] Share-target handling (`/check` receives POSTed text, URLs and images from the OS share sheet).
-- [ ] 13.3 [P1] Streaming progress view with honest stage labels.
-- [ ] 13.4 [P1] Result screen: verdict chip, 3-line summary, true/missing/wrong, "Each side gets right" (may be empty), sources with tier badges and verified quotes (original + labelled translation), model agreement, disclosure banners, collapsed reasoning trace, model and prompt versions.
-- [ ] 13.5 [P1] Progressive disclosure: headline → summary → evidence → reasoning → raw sources.
-- [ ] 13.6 [P1] "Report an error" flow (creates `error_reports`, which feeds the review queue and the 72 h SLA clock).
+- [x] 13.2 [P1] Share-target handling (`/check` receives POSTed text, URLs and images from the OS share sheet).
+- [x] 13.3 [P1] Streaming progress view with honest stage labels.
+- [x] 13.4 [P1] Result screen: verdict chip, 3-line summary, true/missing/wrong, "Each side gets right" (may be empty), sources with tier badges and verified quotes (original + labelled translation), model agreement, disclosure banners, collapsed reasoning trace, model and prompt versions.
+- [x] 13.5 [P1] Progressive disclosure: headline → summary → evidence → reasoning → raw sources.
+- [x] 13.6 [P1] "Report an error" flow (creates `error_reports`, which feeds the review queue and the 72 h SLA clock).
 - [ ] 13.7 [P1] "Re-run with other models": choose an alternative model mix and show the diff against the original.
-- [ ] 13.8 [P1] Version history with public diffs.
-- [ ] 13.9 [P1] Follow this analysis (notifies on correction, update or resolution).
+- [x] 13.8 [P1] Version history with public diffs.
+- [x] 13.9 [P1] Follow this analysis (notifies on correction, update or resolution).
 - [ ] 13.10 [P1] Share card (claim + evidence, never a "FALSE" stamp over a face), localized.
 - [ ] 13.11 [P1] Public, cacheable analysis pages per language (ISR / `use cache`, tag revalidation on new versions).
 
 ## 14. Push back dialogue
-- [ ] 14.1 [P1] User-initiated chat from any result: accuracy-first prompt, no persuasion goal, every factual statement cited, concedes where the user is right, max 10 turns.
-- [ ] 14.2 [P1] Replies in the user's message language if supported, otherwise the UI language; Private models only.
-- [ ] 14.3 [P1] Guardrails: stays on the claim, refuses to tell users how to vote, handles abuse calmly; pauses with a localized message during fallback.
+- [x] 14.1 [P1] User-initiated chat from any result: accuracy-first prompt, no persuasion goal, every factual statement cited, concedes where the user is right, max 10 turns.
+- [x] 14.2 [P1] Replies in the user's message language if supported, otherwise the UI language; Private models only.
+- [x] 14.3 [P1] Guardrails: stays on the claim, refuses to tell users how to vote, handles abuse calmly; pauses with a localized message during fallback.
 - [ ] 14.4 [P1] Eval set for dialogue accuracy and tone in English and Spanish.
 
 ## 15. Places, topics and personalization (F6)
-- [ ] 15.1 [P1] Preferences model (local IndexedDB for anonymous users, encrypted sync when signed in): up to 5 places with home flag and Focus/Include mode, Global on/off, topic states (Follow/Neutral/Mute), follows, briefing settings, channels, quiet hours, pause.
-- [ ] 15.2 [P1] Default suggestion: home country from browser locale region subtag and coarse IP country (suggestion only, never stored) + Global; user confirms. No Geolocation API.
-- [ ] 15.3 [P1] Place picker: search and browse country → region, coverage level shown, local official names.
-- [ ] 15.4 [P1] Topic picker: two-level list with Follow/Neutral/Mute, search, "skip keeps everything neutral".
+- [x] 15.1 [P1] Preferences model (local IndexedDB for anonymous users, encrypted sync when signed in): up to 5 places with home flag and Focus/Include mode, Global on/off, topic states (Follow/Neutral/Mute), follows, briefing settings, channels, quiet hours, pause.
+- [x] 15.2 [P1] Default suggestion: home country from browser locale region subtag and coarse IP country (suggestion only, never stored) + Global; user confirms. No Geolocation API.
+- [x] 15.3 [P1] Place picker: search and browse country → region, coverage level shown, local official names.
+- [x] 15.4 [P1] Topic picker: two-level list with Follow/Neutral/Mute, search, "skip keeps everything neutral".
 - [ ] 15.5 [P1] Header scope chip: session-only quick switch without changing saved preferences.
 - [ ] 15.6 [P1] "Your Parallaxa" screen with a live preview ("With these settings, today's briefing would be…").
-- [ ] 15.7 [P1] Filtering engine (pure, client-side capable): applies place and topic filters to editions, Ledger lists and quiz items; never touches Check results or analysis content.
-- [ ] 15.8 [P1] "Why am I seeing this?" explanation on every briefing card and alert.
+- [x] 15.7 [P1] Filtering engine (pure, client-side capable): applies place and topic filters to editions, Ledger lists and quiz items; never touches Check results or analysis content.
+- [x] 15.8 [P1] "Why am I seeing this?" explanation on every briefing card and alert.
 - [ ] 15.9 [P1] "Outside your filters" slot: on by default, labelled, can be switched off, with a reminder every 90 days when off.
-- [ ] 15.10 [P1] Coverage honesty: fallback from region to country to Global with localized disclosure text.
+- [x] 15.10 [P1] Coverage honesty: fallback from region to country to Global with localized disclosure text.
 - [ ] 15.11 [P1] Subscriptions: follow topics, places, analyses (P1), actors (P2); in-app and push channels (P1); weekly email digest (P2); RSS per topic and place without an account (P2).
 - [ ] 15.12 [P1] Notification budget enforcement: ≤ 1 routine per day, ≤ 3 requested follow-ups per day, quiet hours, pause.
 - [ ] 15.13 [P1] Automated test: analyses, grades and side-by-side cards are byte-identical across preference profiles.
 - [ ] 15.14 [P2] On-device topic suggestions (computed locally, shown as suggestions that need acceptance).
 
 ## 16. Daily Parallax (F2)
-- [ ] 16.1 [P1] Edition model: one Global, one per supported country, one per supported region; a ranked pool of 5–10 candidate stories per edition by the published selection rules.
-- [ ] 16.2 [P1] Edition generation cron at 05:00 local per place: candidate discovery, analysis via the pipeline, card composition (what happened, place, topic, what's disputed, each side right/wrong, one perception-gap fact).
-- [ ] 16.3 [P1] Review flow: editor plus at least one cross-partisan reviewer before 07:00 (P1 minimum: one human, always disclosed); native-language spot review of renderings.
-- [ ] 16.4 [P1] Deterministic personal assembly (no model call): match places, weight followed topics, drop muted ones, add the outside-filters slot, apply the length (3/5) and depth (Quick/Standard) settings; runs client-side for anonymous users and server-side for push and email.
-- [ ] 16.5 [P1] Briefing UI: ≤ 5 cards, swipe on mobile and arrow keys on desktop, the "You're up to date. See you tomorrow." end state, and no feed below.
-- [ ] 16.6 [P1] Delivery at the user's chosen time and days via push; offline reading of the last 3 briefings.
+- [x] 16.1 [P1] Edition model: one Global, one per supported country, one per supported region; a ranked pool of 5–10 candidate stories per edition by the published selection rules.
+- [x] 16.2 [P1] Edition generation cron at 05:00 local per place: candidate discovery, analysis via the pipeline, card composition (what happened, place, topic, what's disputed, each side right/wrong, one perception-gap fact).
+- [x] 16.3 [P1] Review flow: editor plus at least one cross-partisan reviewer before 07:00 (P1 minimum: one human, always disclosed); native-language spot review of renderings.
+- [x] 16.4 [P1] Deterministic personal assembly (no model call): match places, weight followed topics, drop muted ones, add the outside-filters slot, apply the length (3/5) and depth (Quick/Standard) settings; runs client-side for anonymous users and server-side for push and email.
+- [x] 16.5 [P1] Briefing UI: ≤ 5 cards, swipe on mobile and arrow keys on desktop, the "You're up to date. See you tomorrow." end state, and no feed below.
+- [x] 16.6 [P1] Delivery at the user's chosen time and days via push; offline reading of the last 3 briefings.
 - [ ] 16.7 [P1] Weekly symmetry audit per edition (whose claims were checked and why), published in the Trust Center.
-- [ ] 16.8 [P1] Pilot editions: Global, Spain, US, and 2–3 Spanish autonomous communities.
+- [x] 16.8 [P1] Pilot editions: Global, Spain, US, and 2–3 Spanish autonomous communities.
 - [ ] 16.9 [P2] All Spanish autonomous communities and the largest US states (as review capacity allows); UK and Mexico country editions.
 - [ ] 16.10 [P3] Country editions for each newly added language (candidates: France, Germany, Italy, Portugal), then their regions.
 
 ## 17. Actor Ledger (F3)
-- [ ] 17.1 [P1] Actor model and admin: types (politician, party, government/country, public figure, influencer ≥ 100k reach, company, entrepreneur, media outlet), places, verified contact. Private individuals are never profiled.
-- [ ] 17.2 [P1] Link analyzed claims to actors (`actor_claims`) with reach weighting.
-- [ ] 17.3 [P1] Dimension scoring jobs: factual reliability (n ≥ 10), correction behaviour, data integrity, integrity record (final rulings only), influence-operation links (sourced, with confidence), civility of conduct; prediction calibration (Brier score) in P2. Sample size and confidence on each; no overall score.
-- [ ] 17.4 [P1] Actor page: dimension tiles with n and confidence, analyzed claims, positive conduct, actor reply, appeal status; conduct-only phrasing in English and Spanish (natively and legally reviewed).
+- [x] 17.1 [P1] Actor model and admin: types (politician, party, government/country, public figure, influencer ≥ 100k reach, company, entrepreneur, media outlet), places, verified contact. Private individuals are never profiled.
+- [x] 17.2 [P1] Link analyzed claims to actors (`actor_claims`) with reach weighting.
+- [x] 17.3 [P1] Dimension scoring jobs: factual reliability (n ≥ 10), correction behaviour, data integrity, integrity record (final rulings only), influence-operation links (sourced, with confidence), civility of conduct; prediction calibration (Brier score) in P2. Sample size and confidence on each; no overall score.
+- [x] 17.4 [P1] Actor page: dimension tiles with n and confidence, analyzed claims, positive conduct, actor reply, appeal status; conduct-only phrasing in English and Spanish (natively and legally reviewed).
 - [ ] 17.5 [P1] Read-only launch scope: parties and national leaders in Spain and the US; legal review of the first 100 profiles (needs: 2.6, 2.10).
 - [ ] 17.6 [P1] Filters by country, region and topic.
 - [ ] 17.7 [P2] Right of reply: verified-contact "Respond" channel, ≤ 300 words + links, published within 5 business days; a rebuttal with new evidence triggers re-review within 10 business days.
@@ -419,96 +427,96 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 17.11 [P2] Follow actors (new analyses, replies, appeal results).
 
 ## 18. Depolarization features (F4)
-- [ ] 18.1 [P1] Side-by-side card: "What [left/progressive] voices get right · What [right/conservative] voices get right · What the evidence says"; labels per country (3.11); sections may be empty; no logos or party colours.
-- [ ] 18.2 [P1] Perception-gap quiz: slider guess → reveal the real survey value with source and margin of error → reflection prompt; published surveys only (More in Common, CIS, Pew, Eurobarometer, regional institutes such as CEO); question wording in the user's language with a link to the original; items matched to the home place and followed topics; regional items only with adequate samples.
+- [x] 18.1 [P1] Side-by-side card: "What [left/progressive] voices get right · What [right/conservative] voices get right · What the evidence says"; labels per country (3.11); sections may be empty; no logos or party colours.
+- [x] 18.2 [P1] Perception-gap quiz: slider guess → reveal the real survey value with source and margin of error → reflection prompt; published surveys only (More in Common, CIS, Pew, Eurobarometer, regional institutes such as CEO); question wording in the user's language with a link to the original; items matched to the home place and followed topics; regional items only with adequate samples.
 - [ ] 18.3 [P1] Quiz content for Spain and the US (P1); UK and MX (P2); each country added with a new language (P3).
-- [ ] 18.4 [P1] Anonymous quiz responses (no user_id) for aggregate before/after error measurement.
-- [ ] 18.5 [P1] Steelman composer for value questions (the strongest version of each position, written to be endorsed by its holders); cross-partisan rater validation and bridging score in P2.
+- [x] 18.4 [P1] Anonymous quiz responses (no user_id) for aggregate before/after error measurement.
+- [x] 18.5 [P1] Steelman composer for value questions (the strongest version of each position, written to be endorsed by its holders); cross-partisan rater validation and bridging score in P2.
 - [ ] 18.6 [P1] Moral reframing hints (why the fact matters across care, fairness, liberty, loyalty and authority) without changing the fact.
 
 ## 19. Trust Center and transparency (F5)
-- [ ] 19.1 [P1] Trust Center pages in English and Spanish: methodology, grades, tiers, selection rules, rubric, prompts (linked to the repo), model list and roles, funding and donors, panel bios, legal entity.
-- [ ] 19.2 [P1] Per-analysis provenance: model IDs, provider (Venice or fallback), prompt hash, human-review status.
-- [ ] 19.3 [P1] Public corrections log with diffs and reasons; RSS feed per language.
-- [ ] 19.4 [P1] Symmetry and audit reports: mirror-test aggregates, story mix per edition, Ledger outcomes by party family, with raw data downloads (quarterly from P2).
-- [ ] 19.5 [P1] Public status page (model health, fallback in use, incidents).
+- [x] 19.1 [P1] Trust Center pages in English and Spanish: methodology, grades, tiers, selection rules, rubric, prompts (linked to the repo), model list and roles, funding and donors, panel bios, legal entity.
+- [x] 19.2 [P1] Per-analysis provenance: model IDs, provider (Venice or fallback), prompt hash, human-review status.
+- [x] 19.3 [P1] Public corrections log with diffs and reasons; RSS feed per language.
+- [x] 19.4 [P1] Symmetry and audit reports: mirror-test aggregates, story mix per edition, Ledger outcomes by party family, with raw data downloads (quarterly from P2).
+- [x] 19.5 [P1] Public status page (model health, fallback in use, incidents).
 - [ ] 19.6 [P1] Eval results page (accuracy, calibration, parity, language parity) updated on every release.
 - [ ] 19.7 [P2] External audit publication.
-- [ ] 19.8 [P1] Model lineup page: current model per perspective slot and utility role, full change history (date, old → new, reason) and post-swap eval results (needs: 10.28).
+- [x] 19.8 [P1] Model lineup page: current model per perspective slot and utility role, full change history (date, old → new, reason) and post-swap eval results (needs: 10.28).
 
 ## 20. PWA, offline and notifications
-- [ ] 20.1 [P1] Manifest: name, short_name "Parallaxa", icons 192/512 + maskable, `display: standalone`, `share_target` (POST text/url/images → `/check`), one per language (4.15).
+- [x] 20.1 [P1] Manifest: name, short_name "Parallaxa", icons 192/512 + maskable, `display: standalone`, `share_target` (POST text/url/images → `/check`), one per language (4.15).
 - [ ] 20.2 [P1] Service worker (Serwist): precache the shell; network-first for API; stale-while-revalidate for briefings; offline reading of the last 3 briefings and saved checks; background-sync queue for offline checks.
-- [ ] 20.3 [P1] Web Push (VAPID): opt-in after the second meaningful session, never on the first visit; on iOS only inside the installed app (iOS/iPadOS 16.4+); subscriptions encrypted at rest; payloads localized.
+- [x] 20.3 [P1] Web Push (VAPID): opt-in after the second meaningful session, never on the first visit; on iOS only inside the installed app (iOS/iPadOS 16.4+); subscriptions encrypted at rest; payloads localized.
 - [ ] 20.4 [P1] Install reminders: only after ≥ 2 visits on different days and ≥ 1 completed check or briefing; in-page bottom banner, never a modal; `beforeinstallprompt` on Android and desktop; illustrated 3-step iOS sheet; max once per 14 days; stop after 2 dismissals; never during a check or quiz; manual Install in settings.
-- [ ] 20.5 [P1] Onboarding (≤ 60 s, skippable, no sign-up): detected language with switcher → three panels → place picker → optional topic picker → demo (each side one right, one wrong) → "Don't trust us? Good." hook.
+- [x] 20.5 [P1] Onboarding (≤ 60 s, skippable, no sign-up): detected language with switcher → three panels → place picker → optional topic picker → demo (each side one right, one wrong) → "Don't trust us? Good." hook.
 
 ## 21. Editorial and review console (internal)
 - [ ] 21.1 [P1] Roles and permissions with individual accounts: editor, reviewer, native language reviewer, panel member, legal; every action written to `audit_log`. (The operator admin console is block 22.)
-- [ ] 21.2 [P1] Queues: model disagreements, briefing editions, Ledger entries, error reports (72 h SLA timer), appeals, replies, failed consistency checks, 2% cross-partisan sampling of outputs.
+- [x] 21.2 [P1] Queues: model disagreements, briefing editions, Ledger entries, error reports (72 h SLA timer), appeals, replies, failed consistency checks, 2% cross-partisan sampling of outputs.
 - [ ] 21.3 [P1] Review UI: side-by-side model rationales, sources and snapshots, renderings in every supported language next to the structured analysis, approve / edit / escalate / correct.
 - [ ] 21.4 [P1] Panel workflows: votes requiring one member from each bloc, decisions published with reasons.
 - [ ] 21.5 [P1] Reviewer scheduling for the 05:00–07:00 briefing window per time zone and language.
 
 ## 22. Admin console (F8)
 ### 22.A Access and security
-- [ ] 22.1 [P0] `/admin` route group: server-rendered, `noindex`, not linked from the public app, in English and Spanish through the same i18n system.
-- [ ] 22.2 [P0] Env vars `ADMIN_USERNAME`, `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` (Vercel "sensitive", different per environment), plus optional `ADMIN_IP_ALLOWLIST`. A boot check disables the admin site if the password is missing or shorter than 20 characters.
-- [ ] 22.3 [P0] Login form with constant-time comparison. Session: a signed `HttpOnly`/`Secure`/`SameSite=Strict` cookie (8 h, 30 min idle), backed by `admin_sessions` for revocation. Logout.
-- [ ] 22.4 [P0] Login protection:
+- [x] 22.1 [P0] `/admin` route group: server-rendered, `noindex`, not linked from the public app, in English and Spanish through the same i18n system.
+- [x] 22.2 [P0] Env vars `ADMIN_USERNAME`, `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` (Vercel "sensitive", different per environment), plus optional `ADMIN_IP_ALLOWLIST`. A boot check disables the admin site if the password is missing or shorter than 20 characters.
+- [x] 22.3 [P0] Login form with constant-time comparison. Session: a signed `HttpOnly`/`Secure`/`SameSite=Strict` cookie (8 h, 30 min idle), backed by `admin_sessions` for revocation. Logout.
+- [x] 22.4 [P0] Login protection:
   - After 5 failed attempts in 15 minutes from one IP hash, lock out for 15 minutes and send an alert email.
   - BotID and a WAF rule on the login route.
   - CSRF tokens on every change.
-- [ ] 22.5 [P0] Session checked in middleware *and* in every admin page, route handler and server action. An automated test calls every admin route without a session and expects a redirect or 401.
-- [ ] 22.6 [P0] Audit log for every admin action (time, IP hash, before/after diff, reason), with revert and export.
+- [x] 22.5 [P0] Session checked in middleware *and* in every admin page, route handler and server action. An automated test calls every admin route without a session and expects a redirect or 401.
+- [x] 22.6 [P0] Audit log for every admin action (time, IP hash, before/after diff, reason), with revert and export.
 
 ### 22.B Settings framework
-- [ ] 22.7 [P0] One typed settings schema (Zod): type, range, default, help text in en and es-ES, "needs a test run" flag and affected features. Forms, validation and the settings reference are generated from it, so nobody edits JSON.
-- [ ] 22.8 [P1] Save bar:
+- [x] 22.7 [P0] One typed settings schema (Zod): type, range, default, help text in en and es-ES, "needs a test run" flag and affected features. Forms, validation and the settings reference are generated from it, so nobody edits JSON.
+- [x] 22.8 [P1] Save bar:
   - A plain-language summary of pending changes.
   - A required reason.
   - An impact preview: cost per analysis and per month, latency, affected features.
   - Typed confirmation for production-wide actions.
   - Undo.
-- [ ] 22.9 [P1] Publish flow: save → `config_versions` → Edge Config (Vercel API token scoped to that store) → live within ~10 s, with publish status shown.
+- [x] 22.9 [P1] Publish flow: save → `config_versions` → Edge Config (Vercel API token scoped to that store) → live within ~10 s, with publish status shown.
 
 ### 22.C Sections
-- [ ] 22.10 [P1] **Overview** ("Is everything OK?"):
+- [x] 22.10 [P1] **Overview** ("Is everything OK?"):
   - System status and fallback state.
   - Today's checks, cache-hit rate, p50/p95 time to result, error rate.
   - Spend against the daily ceiling.
   - Briefing editions status, review queues and the corrections SLA.
   - Model agreement rate, latest evals, open alerts.
-- [ ] 22.11 [P0] **Models:**
+- [x] 22.11 [P0] **Models:**
   - Slot and role cards: model, vendor, origin, privacy tier, harness badges, price, p95, refusal rate, agreement, breaker state.
   - A picker of live compatible Venice models (filter by vendor, origin, price, context), with incompatible models greyed out and the reason shown.
   - Test → Shadow → Activate; emergency swap.
   - Clear messages when a change would break a lineup rule.
   - History and rollback.
-- [ ] 22.12 [P1] **Investigation settings** per slot:
+- [x] 22.12 [P1] **Investigation settings** per slot:
   - Web search mode, scraping, citations.
   - X search, shown only when the model supports it.
   - Reasoning effort, limited to the model's options.
   - Budgets, temperature, conflict-of-interest topics.
 
   The Venice system prompt is shown as locked off.
-- [ ] 22.13 [P1] **Pipeline settings:** thresholds, aggregation rule, disagreement threshold, human-review triggers, mirror test by topic, writer rotation. The prompt version is read-only.
-- [ ] 22.14 [P1] **Reliability and limits:** breaker thresholds, timeouts, fallback mapping and on/off per feature, spend ceiling and alert levels, quotas, rate limits, kill switches, maintenance banner.
-- [ ] 22.15 [P1] **Content:** language flags from the registry, places and editions with coverage levels, briefing timing, notification limits, "outside your filters" default, quiz on/off per country.
-- [ ] 22.16 [P1] **Metrics** with date range and CSV export: truth, even-handedness, models (agreement matrix, per-slot grade distribution, refusals, conflict-of-interest exclusions, latency, cost), operations, usage (aggregate, k ≥ 50), wellbeing and relevance, guardrails, costs. *Decide* the chart library.
+- [x] 22.13 [P1] **Pipeline settings:** thresholds, aggregation rule, disagreement threshold, human-review triggers, mirror test by topic, writer rotation. The prompt version is read-only.
+- [x] 22.14 [P1] **Reliability and limits:** breaker thresholds, timeouts, fallback mapping and on/off per feature, spend ceiling and alert levels, quotas, rate limits, kill switches, maintenance banner.
+- [x] 22.15 [P1] **Content:** language flags from the registry, places and editions with coverage levels, briefing timing, notification limits, "outside your filters" default, quiz on/off per country.
+- [x] 22.16 [P1] **Metrics** with date range and CSV export: truth, even-handedness, models (agreement matrix, per-slot grade distribution, refusals, conflict-of-interest exclusions, latency, cost), operations, usage (aggregate, k ≥ 50), wellbeing and relevance, guardrails, costs. *Decide* the chart library.
 - [ ] 22.17 [P1] `metrics_daily` aggregation jobs feeding the metrics pages. No per-user data is stored for the console.
-- [ ] 22.18 [P1] **Alerts:** thresholds and email recipients (spend, SLO breach, fallback active, eval regression, late briefing, login lockouts), sent through Resend.
+- [x] 22.18 [P1] **Alerts:** thresholds and email recipients (spend, SLO breach, fallback active, eval regression, late briefing, login lockouts), sent through Resend.
 - [ ] 22.19 [P1] Usability test with a first-time operator: swap the CN model, lower the spend ceiling and find yesterday's p95, all without help. Fix what they stumble on.
 - [ ] 22.20 [P2] Named admin accounts with passkeys and roles, replacing the shared env-var login.
 
 ## 23. Evaluation and quality gates
-- [ ] 23.1 [P0] Eval harness: run the pipeline on the gold set and compute grade accuracy, macro-F1, calibration (ECE), citation precision and source-tier quality.
-- [ ] 23.2 [P1] Even-handedness suite: mirror pairs (parity ±0.1), refusal symmetry by side and by slot, outcome reporting by side.
-- [ ] 23.2b [P1] Per-slot model metrics: agreement matrix between slots, grade distribution by side of claim origin, refusal and abstention rates, conflict-of-interest exclusions, cost and latency; nightly, surfaced in the admin console (22.16).
-- [ ] 23.3 [P1] Language parity suite: the same claims in every supported language (en and es-ES at launch); ≥ 98% cross-language grade agreement; native fluency and terminology ratings ≥ 4.5/5 (es-ES raters for Spanish); es-ES lexicon check (4.18).
+- [x] 23.1 [P0] Eval harness: run the pipeline on the gold set and compute grade accuracy, macro-F1, calibration (ECE), citation precision and source-tier quality.
+- [x] 23.2 [P1] Even-handedness suite: mirror pairs (parity ±0.1), refusal symmetry by side and by slot, outcome reporting by side.
+- [x] 23.2b [P1] Per-slot model metrics: agreement matrix between slots, grade distribution by side of claim origin, refusal and abstention rates, conflict-of-interest exclusions, cost and latency; nightly, surfaced in the admin console (22.16).
+- [x] 23.3 [P1] Language parity suite: the same claims in every supported language (en and es-ES at launch); ≥ 98% cross-language grade agreement; native fluency and terminology ratings ≥ 4.5/5 (es-ES raters for Spanish); es-ES lexicon check (4.18).
 - [ ] 23.4 [P1] Tag accuracy evals: country ≥ 95%, region and topic ≥ 90%.
-- [ ] 23.5 [P1] Nightly regression on the gold set, with alerts.
-- [ ] 23.6 [P1] Release gate in CI: no prompt or model change ships if accuracy drops > 1 point or any symmetry or language-parity metric regresses beyond tolerance.
+- [x] 23.5 [P1] Nightly regression on the gold set, with alerts.
+- [x] 23.6 [P1] Release gate in CI: no prompt or model change ships if accuracy drops > 1 point or any symmetry or language-parity metric regresses beyond tolerance.
 - [ ] 23.7 [P2] Perceived-slant panels (Westwood-style) stratified by ideology in ES, US, UK and MX, then each country added with a new language; goal: no significant perceived slant on ≥ 80% of topics.
 - [ ] 23.8 [P1] Hallucination tests: quote verification coverage, "Not checkable" downgrade behaviour, prompt-injection red-team set.
 
@@ -523,8 +531,8 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 ## 25. Observability, cost control and operations
 - [ ] 25.1 [P0] OpenTelemetry traces per pipeline step (model, latency, tokens, cost); Vercel Observability dashboards.
 - [ ] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
-- [ ] 25.3 [P1] SLO monitoring and alerts: 99.5% Check availability, p95 time-to-first-result < 20 s, briefing ready by 06:45 local on 99% of days.
-- [ ] 25.4 [P1] Cost dashboard: cost per fresh analysis (target ~$0.35–$0.50 default lineup, ~$0.20–$0.30 economy), cost per slot and search type, cache-hit rate (30% → 70%), rendering cost per language, briefing cost per edition, daily spend vs ceiling.
+- [x] 25.3 [P1] SLO monitoring and alerts: 99.5% Check availability, p95 time-to-first-result < 20 s, briefing ready by 06:45 local on 99% of days.
+- [x] 25.4 [P1] Cost dashboard: cost per fresh analysis (target ~$0.35–$0.50 default lineup, ~$0.20–$0.30 economy), cost per slot and search type, cache-hit rate (30% → 70%), rendering cost per language, briefing cost per edition, daily spend vs ceiling.
 - [ ] 25.5 [P1] Guardrail alarms: average session > 15 minutes; < 60% of users keep "outside your filters" on; topic diversity below the edition baseline; > 10% manual switches away from the detected language.
 - [ ] 25.6 [P1] Runbooks: Venice outage, Gateway fallback, briefing late, viral error correction, rollback.
 

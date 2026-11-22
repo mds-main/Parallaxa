@@ -8,7 +8,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   use: { baseURL: process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`, trace: 'retain-on-failure' },
   projects: [
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'mobile', use: { ...devices['Pixel 7'] }, testIgnore: /admin\.spec/ },
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: process.env.E2E_BASE_URL
