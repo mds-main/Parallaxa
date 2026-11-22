@@ -10,6 +10,7 @@ import { loadPrompt } from '../ai/prompts';
 import { CONSISTENCY_SCHEMA, RENDER_SCHEMA, parseJson } from '../ai/json';
 import { getActiveConfig } from '../config/store';
 import { assertKnownLanguage } from '../../i18n/languages';
+import { latamTerms } from '../i18n-lexicon';
 import type { RenderedAnalysis, StructuredAnalysis } from '../domain/types';
 import type { AppConfig } from '../config/schema';
 
@@ -66,6 +67,13 @@ export async function renderAnalysis(structured: StructuredAnalysis, claimText: 
       },
     });
     const consistency = parseJson<{ ok: boolean; notes?: string }>(check.content);
+    if (lang === 'es-ES') {
+      const hits = latamTerms(JSON.stringify(body));
+      if (hits.length) {
+        consistency.ok = false;
+        consistency.notes = `${consistency.notes ? `${consistency.notes}; ` : ''}Use Spain Spanish only (found: ${hits.join(', ')})`;
+      }
+    }
     if (consistency.ok || attempt === 1) return { body, consistency, model: config.roles.renderer, promptHash: prompt.hash };
     lastNotes = consistency.notes;
   }

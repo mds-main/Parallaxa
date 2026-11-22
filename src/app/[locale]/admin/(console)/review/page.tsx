@@ -15,7 +15,7 @@ export default async function ReviewPage() {
   const reports = reportIds.length ? await db.select().from(errorReports).where(inArray(errorReports.id, reportIds)) : [];
   const analysisIds = tasks.map((x) => (x.kind === 'error_report' ? x.notes?.split('\n')[0] : x.refId.split(':')[0])).filter((x): x is string => Boolean(x && /^[0-9a-f-]{36}$/.test(x)));
   const rows = analysisIds.length
-    ? await db.select({ id: analyses.id, text: claims.canonicalText, grade: analyses.grade }).from(analyses).leftJoin(claims, eq(claims.id, analyses.claimId)).where(inArray(analyses.id, analysisIds))
+    ? await db.select({ id: analyses.id, text: claims.canonicalText, grade: analyses.grade, structured: analyses.structured }).from(analyses).leftJoin(claims, eq(claims.id, analyses.claimId)).where(inArray(analyses.id, analysisIds))
     : [];
   return (
     <div className="max-w-4xl space-y-4">
@@ -35,6 +35,8 @@ export default async function ReviewPage() {
             notes: task.notes,
             createdAt: task.createdAt.toISOString(),
             summary: [a?.text ? `“${a.text}” (${a.grade ?? '—'})` : null, report ? `Report: ${report.body}` : null].filter(Boolean).join(' — '),
+            verdicts: a?.structured?.verdicts.map((v) => ({ slot: v.slot, model: v.model, grade: v.grade, abstained: v.abstained, coi: v.coiExcluded, reasoning: v.reasoning.slice(0, 600) })) ?? [],
+            sources: a?.structured?.sources.slice(0, 8).map((src) => ({ title: src.title, url: src.url, tier: src.tier, hash: src.contentHash })) ?? [],
           };
         })}
       />

@@ -45,6 +45,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
+      - name: Build and check that no server secrets reach browser bundles
+        run: pnpm build && pnpm check:secrets
       - name: End-to-end and accessibility tests (mobile + desktop)
         run: pnpm e2e
         env:

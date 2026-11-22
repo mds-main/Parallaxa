@@ -185,11 +185,11 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 4.13 [P1] Per-language enable flag in Edge Config for a staged rollout (staff → beta → everyone) without a redeploy. It can only be switched on when the catalogs are complete and the parity evals pass.
 - [x] 4.14 [P1] SEO generated from the registry: locale-prefixed public URLs, `hreflang` for every enabled language plus `x-default`→`/en`, localized `<title>`, meta description and Open Graph, localized sitemaps.
 - [x] 4.15 [P1] Localized PWA manifests per language (`lang`, `description`, shortcuts, `start_url` with prefix); serve the one matching the active locale (needs: 20.1).
-- [ ] 4.16 [P1] Localized emails (Resend templates) and push payloads in the recipient's saved language.
+- [x] 4.16 [P1] Localized emails (Resend templates) and push payloads in the recipient's saved language.
 - [x] 4.17 [P1] Localized share cards (OG images) in the sharer's language.
-- [ ] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in CI and in the nightly eval.
+- [x] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in CI and in the nightly eval.
 - [ ] 4.19 [P1] Translation workflow: export new and changed keys → professional translation → native review → import via PR; *decide* git-only vs a translation management system; glossary enforcement.
-- [ ] 4.20 [P1] "Add a language" dry run in CI: register the pseudo-locale as a test language and confirm that nothing outside the registry, `messages/`, `prompts/` and `methodology/` has to change.
+- [x] 4.20 [P1] "Add a language" dry run in CI: register the pseudo-locale as a test language and confirm that nothing outside the registry, `messages/`, `prompts/` and `methodology/` has to change.
 
 ### 4.B Content and operations
 - [ ] 4.21 [P0] Style guides for en and es-ES: tone (curious, plain, non-humiliating), form of address (es-ES "tú"/"vosotros"; a direct "you" in English), English spelling convention, number style, quotation marks, inclusive-language policy.
@@ -343,8 +343,8 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [ ] 11.5 [P1] Primary-data connectors: Eurostat, INE, OECD, World Bank, BOE/EUR-Lex, US Census/BLS, CIS barometers, CENDOJ, parliamentary records, Wikidata (entity resolution only).
 - [ ] 11.6 [P2] Connectors for new country editions: ONS/UK Parliament and INEGI/DOF, plus regional statistics offices for regional editions; [P3] connectors for each country added with a new language (e.g., INSEE/Légifrance, Destatis/Bundestag, ISTAT/Normattiva, INE-PT/DRE).
 - [x] 11.7 [P0] Source snapshotting to Blob (dated, hashed) for every cited page; respect robots.txt; snapshots private; only short quotes displayed.
-- [ ] 11.8 [P0] Outlet registry: type, country, language. **No** left/right bias scores.
-- [ ] 11.9 [P0] Retrieval that is aware of place and language: per-claim query plans use place tags to pick authoritative local sources and search in the claim's language plus English; deliberately retrieve outlets from both sides when coverage diverges.
+- [x] 11.8 [P0] Outlet registry: type, country, language. **No** left/right bias scores.
+- [x] 11.9 [P0] Retrieval that is aware of place and language: per-claim query plans use place tags to pick authoritative local sources and search in the claim's language plus English; deliberately retrieve outlets from both sides when coverage diverges.
 
 ## 12. Truth-seeking pipeline (F1 engine)
 - [x] 12.1 [P0] Workflow skeleton: each stage is a durable, retryable step with persisted state and OpenTelemetry spans; progress events streamed to the UI.
@@ -398,7 +398,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 15.10 [P1] Coverage honesty: fallback from region to country to Global with localized disclosure text.
 - [ ] 15.11 [P1] Subscriptions: follow topics, places, analyses (P1), actors (P2); in-app and push channels (P1); weekly email digest (P2); RSS per topic and place without an account (P2).
 - [ ] 15.12 [P1] Notification budget enforcement: ≤ 1 routine per day, ≤ 3 requested follow-ups per day, quiet hours, pause.
-- [ ] 15.13 [P1] Automated test: analyses, grades and side-by-side cards are byte-identical across preference profiles.
+- [x] 15.13 [P1] Automated test: analyses, grades and side-by-side cards are byte-identical across preference profiles.
 - [ ] 15.14 [P2] On-device topic suggestions (computed locally, shown as suggestions that need acceptance).
 
 ## 16. Daily Parallax (F2)
@@ -454,7 +454,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 ## 21. Editorial and review console (internal)
 - [ ] 21.1 [P1] Roles and permissions with individual accounts: editor, reviewer, native language reviewer, panel member, legal; every action written to `audit_log`. (The operator admin console is block 22.)
 - [x] 21.2 [P1] Queues: model disagreements, briefing editions, Ledger entries, error reports (72 h SLA timer), appeals, replies, failed consistency checks, 2% cross-partisan sampling of outputs.
-- [ ] 21.3 [P1] Review UI: side-by-side model rationales, sources and snapshots, renderings in every supported language next to the structured analysis, approve / edit / escalate / correct.
+- [x] 21.3 [P1] Review UI: side-by-side model rationales, sources and snapshots, renderings in every supported language next to the structured analysis, approve / edit / escalate / correct.
 - [ ] 21.4 [P1] Panel workflows: votes requiring one member from each bloc, decisions published with reasons.
 - [ ] 21.5 [P1] Reviewer scheduling for the 05:00–07:00 briefing window per time zone and language.
 
@@ -523,14 +523,14 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 ## 24. Security and abuse prevention
 - [ ] 24.1 [P1] Rate limits and quotas (WAF + app level), BotID on expensive and write routes, account age and reputation signals.
 - [ ] 24.2 [P1] Anomaly detection for rating bursts, coordinated reports and brigading on errors and appeals.
-- [ ] 24.3 [P1] Secrets: environment-scoped Vercel env vars, quarterly rotation runbook, no secrets in client bundles (CI check).
+- [x] 24.3 [P1] Secrets: environment-scoped Vercel env vars, quarterly rotation runbook, no secrets in client bundles (CI check).
 - [ ] 24.4 [P1] Abuse reporting channel; no bulk API in the MVP.
 - [ ] 24.5 [P1] Third-party penetration test before public launch (focus: SSRF, prompt injection, auth, RLS); fix all high and critical findings.
 - [x] 24.6 [P1] Incident response plan (security, model outage, viral error, legal notice) with on-call rotation.
 
 ## 25. Observability, cost control and operations
 - [x] 25.1 [P0] OpenTelemetry traces per pipeline step (model, latency, tokens, cost); Vercel Observability dashboards.
-- [x] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
+- [ ] 25.2 [P1] Speed Insights and cookieless Web Analytics (no third-party pixels).
 - [x] 25.3 [P1] SLO monitoring and alerts: 99.5% Check availability, p95 time-to-first-result < 20 s, briefing ready by 06:45 local on 99% of days.
 - [x] 25.4 [P1] Cost dashboard: cost per fresh analysis (target ~$0.35–$0.50 default lineup, ~$0.20–$0.30 economy), cost per slot and search type, cache-hit rate (30% → 70%), rendering cost per language, briefing cost per edition, daily spend vs ceiling.
 - [ ] 25.5 [P1] Guardrail alarms: average session > 15 minutes; < 60% of users keep "outside your filters" on; topic diversity below the edition baseline; > 10% manual switches away from the detected language.
@@ -538,7 +538,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 
 ## 26. Research and experimentation
 - [ ] 26.1 [P1] Opt-in research consent flow (localized), ethics review with academic partners.
-- [ ] 26.2 [P1] A/B bucketing in middleware (cookie, no PII).
+- [x] 26.2 [P1] A/B bucketing in middleware (cookie, no PII).
 - [ ] 26.3 [P1] Instruments: feeling thermometer (affective polarization), perception-gap error, "I felt respected / calmer", "briefing relevant to me", trust by self-placed ideology (opt-in), in English and Spanish with validated translations.
 - [ ] 26.4 [P2] First pre-registered RCT (2- and 8-week follow-ups), benchmarked against the megastudy's best treatments; publish all results, including nulls.
 

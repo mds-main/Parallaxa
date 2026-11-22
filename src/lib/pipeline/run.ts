@@ -19,6 +19,8 @@ import { hash } from '../ai/demo';
 import { ingest, textHash, type CheckInput } from './ingest';
 import { embedText, findCached } from './cache';
 import { renderAnalysis } from './render';
+import { PRIMARY_SOURCES } from '../data/outlets';
+import { domainOf } from '../ai/sources';
 import { trace } from '@opentelemetry/api';
 import { withSpan } from '../telemetry';
 import {
@@ -104,14 +106,20 @@ async function tag(claim: string, config: AppConfig, analysisId: string) {
 }
 
 /** Stage 3: the shared evidence pool every perspective slot starts from. */
-async function buildPool(claim: string, config: AppConfig, analysisId: string): Promise<VerdictSource[]> {
+async function buildPool(claim: string, config: AppConfig, analysisId: string, ctx: { placeIds: string[]; originalText: string; lang: string }): Promise<VerdictSource[]> {
   if (isDemoMode()) return [];
   const pool: VerdictSource[] = [];
-  try {
-    for (const r of (await searchWeb(claim)).slice(0, 6)) pool.push({ url: r.url, title: r.title, tier: inferTier(r.url), stance: 'context', quote: r.snippet.slice(0, 280), origin: 'pool', publishedAt: r.date });
-  } catch {
-    /* secondary search unavailable */
+  // Place- and language-aware retrieval (TODO 11.9): search the canonical (English) claim and, for
+  // non-English input, the original wording, so local-language sources are found too.
+  const queries = [claim, ...(ctx.lang !== 'en' && ctx.originalText ? [ctx.originalText.slice(0, 300)] : [])];
+  for (const q of queries) {
+    try {
+      for (const r of (await searchWeb(q)).slice(0, 5)) pool.push({ url: r.url, title: r.title, tier: inferTier(r.url), stance: 'context', quote: r.snippet.slice(0, 280), origin: 'pool', publishedAt: r.date });
+    } catch {
+      /* secondary search unavailable */
+    }
   }
+  const hints = [...new Set(ctx.placeIds.flatMap((p) => PRIMARY_SOURCES[p.split('-')[0]!] ?? []).concat(PRIMARY_SOURCES.GLOBAL!))];
   try {
     const res = await callModel({
       step: 'retrieve',
@@ -121,7 +129,7 @@ async function buildPool(claim: string, config: AppConfig, analysisId: string): 
       searches: { web: 1, x: 0, scrape: 0 },
       request: {
         messages: [
-          { role: 'system', content: 'List the most relevant primary and reputable sources for checking the claim, from across the political spectrum. Reply with one line per source: title — URL.' },
+          { role: 'system', content: `List the most relevant primary and reputable sources for checking the claim, from across the political spectrum. Prefer the authoritative primary sources for the places involved: ${hints.join(', ')}. Reply with one line per source: title — URL.` },
           { role: 'user', content: `<claim>${claim}</claim>` },
         ],
         veniceParameters: { enable_web_search: 'on', enable_web_citations: true },
@@ -193,7 +201,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
     done.push('tag');
 
     await step('retrieve');
-    const pool = isValues ? [] : await buildPool(main.canonical, config, analysisId);
+    const pool = isValues ? [] : await buildPool(main.canonical, config, analysisId, { placeIds: tags.places.map((p) => p.id), originalText: ingested.text, lang: ingested.lang });
     done.push('retrieve');
 
     await step('investigate');
@@ -302,6 +310,11 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
     const holdForReview = !isValues && aggregate.counted.length < 2;
     const status = holdForReview ? 'review' : 'published';
     const totalCost = verdicts.reduce((acc, v) => acc + v.costUsd, 0);
+    const outletRows = await db.select({ id: s.outlets.id, domain: s.outlets.domain }).from(s.outlets);
+    const outletFor = (url: string) => {
+      const d = domainOf(url);
+      return outletRows.find((o) => d === o.domain || d.endsWith(`.${o.domain}`))?.id ?? null;
+    };
     await db.transaction(async (tx) => {
       await tx
         .update(s.analyses)
@@ -332,7 +345,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
       for (const p of tags.places) await tx.insert(s.claimPlaces).values({ analysisId, placeId: p.id, confidence: p.confidence }).onConflictDoNothing();
       for (const t of tags.topics) await tx.insert(s.claimTopics).values({ analysisId, topicId: t.id, confidence: t.confidence }).onConflictDoNothing();
       for (const src of sources) {
-        const [row] = await tx.insert(s.sources).values({ url: src.url, title: src.title, tier: src.tier, lang: src.lang ?? null, contentHash: src.contentHash ?? null, snapshotKey: src.contentHash ?? null, publishedAt: src.publishedAt && !Number.isNaN(Date.parse(src.publishedAt)) ? new Date(src.publishedAt) : null }).returning({ id: s.sources.id });
+        const [row] = await tx.insert(s.sources).values({ url: src.url, title: src.title, tier: src.tier, outletId: outletFor(src.url), lang: src.lang ?? null, contentHash: src.contentHash ?? null, snapshotKey: src.contentHash ?? null, publishedAt: src.publishedAt && !Number.isNaN(Date.parse(src.publishedAt)) ? new Date(src.publishedAt) : null }).returning({ id: s.sources.id });
         await tx.insert(s.analysisSources).values({ analysisId, sourceId: row!.id, tier: src.tier, quote: src.quoteVerified ? src.quote ?? null : null, quoteVerified: Boolean(src.quoteVerified), stance: src.stance }).onConflictDoNothing();
       }
       await tx.insert(s.analysisRenderings).values({ analysisId, version: 1, lang, body: rendered.body, model: rendered.model, promptVersion: rendered.promptHash, consistencyCheck: rendered.consistency }).onConflictDoNothing();

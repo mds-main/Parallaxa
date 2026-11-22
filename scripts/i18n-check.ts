@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { LANGUAGES, DEFAULT_LOCALE } from '../src/i18n/languages';
 import { NAMESPACES } from '../src/i18n/messages';
+import { latamTerms } from '../src/lib/i18n-lexicon';
 
 type Json = Record<string, unknown>;
 const root = path.join(process.cwd(), 'messages');
@@ -76,12 +77,11 @@ for (const ns of NAMESPACES) {
 }
 
 // es-ES lexicon check (TODO 4.18): flag Latin American-only terms in Spanish UI copy.
-const LATAM = [/\bcomputadora/i, /\bcelular/i, /\bcarro\b/i, /\bmanejar\b/i, /\bustedes\b/i, /\bplata\b/i, /\bchequear/i, /\bago\b/i];
 for (const ns of NAMESPACES) {
   const file = path.join(root, 'es-ES', `${ns}.json`);
   if (!fs.existsSync(file)) continue;
   for (const [key, value] of Object.entries(flatten(JSON.parse(fs.readFileSync(file, 'utf8')) as Json))) {
-    for (const re of LATAM) if (re.test(value)) fail(`es-ES/${ns}: ${key} uses a Latin American term (${re})`);
+    for (const term of latamTerms(value)) fail(`es-ES/${ns}: ${key} uses a Latin American term (${term})`);
   }
 }
 

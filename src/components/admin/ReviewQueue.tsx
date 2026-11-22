@@ -5,7 +5,7 @@ import { Link, useRouter } from '@/i18n/navigation';
 import { resolveReviewAction } from '@/app/[locale]/admin/actions';
 import { CorrectionForm } from './CorrectionForm';
 
-type Task = { id: string; kind: string; refId: string; priority: number; dueAt: string | null; notes: string | null; createdAt: string; summary?: string };
+type Task = { id: string; kind: string; refId: string; priority: number; dueAt: string | null; notes: string | null; createdAt: string; summary?: string; verdicts?: { slot: string; model: string; grade: string | null; abstained: boolean; coi: boolean; reasoning: string }[]; sources?: { title: string; url: string; tier: number; hash?: string }[] };
 
 export function ReviewQueue({ tasks }: { tasks: Task[] }) {
   const t = useTranslations('admin.review');
@@ -38,6 +38,27 @@ export function ReviewQueue({ tasks }: { tasks: Task[] }) {
                 {analysisId && /^[0-9a-f-]{36}$/.test(analysisId) && <Link href={`/a/${analysisId}`} className="ml-auto text-sm" target="_blank">{t('open')} ↗</Link>}
               </div>
               {task.summary && <p className="text-sm">{task.summary}</p>}
+              {task.verdicts && task.verdicts.length > 0 && (
+                <div className="grid gap-2 md:grid-cols-3">
+                  {task.verdicts.map((v) => (
+                    <div key={v.slot} className="rounded-lg border border-line p-2 text-xs">
+                      <p className="font-semibold">{v.slot} · {v.model}</p>
+                      <p>{v.abstained ? 'abstained' : v.grade}{v.coi ? ' · COI (not counted)' : ''}</p>
+                      <p className="mt-1 whitespace-pre-line muted">{v.reasoning}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {task.sources && task.sources.length > 0 && (
+                <ul className="text-xs">
+                  {task.sources.map((src) => (
+                    <li key={src.url}>
+                      T{src.tier} <a href={src.url} target="_blank" rel="noopener noreferrer">{src.title}</a>
+                      {src.hash && <> · <a href={`/api/admin/snapshot/${src.hash}`} target="_blank" rel="noopener noreferrer">archived copy</a></>}
+                    </li>
+                  ))}
+                </ul>
+              )}
               {task.notes && task.kind !== 'error_report' && <p className="text-sm muted whitespace-pre-line">{task.notes}</p>}
               <label className="block text-sm">
                 <span className="muted">{t('notes')}</span>
