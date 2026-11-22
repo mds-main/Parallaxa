@@ -3,7 +3,7 @@ import nextTs from 'eslint-config-next/typescript';
 
 const LOCALE_LITERAL = /^(en|es-ES|es)$/;
 
-export default [
+const config = [
   ...nextVitals,
   ...nextTs,
   { ignores: ['.next/**', 'node_modules/**', 'drizzle/**', '.data/**', 'playwright-report/**', 'test-results/**', 'next-env.d.ts', 'public/sw.js'] },
@@ -22,3 +22,5 @@ export default [
     },
   },
 ];
+
+export default config;

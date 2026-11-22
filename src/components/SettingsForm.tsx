@@ -1,7 +1,8 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { clearAllLocalData, exportLocalData, loadPreferences, savePreferences } from '@/lib/prefs/storage';
+import { clearAllLocalData, exportLocalData, savePreferences } from '@/lib/prefs/storage';
+import { useIsClient, usePushSupport, useStoredPreferences } from '@/lib/prefs/hooks';
 import { defaultPreferences, MAX_PLACES, type Preferences, type TopicState } from '@/lib/prefs/types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { enablePush } from '@/lib/prefs/push';
@@ -113,16 +114,15 @@ export function TopicPicker({ topics, value, onChange }: { topics: TopicOption[]
 
 export function SettingsForm({ places, topics }: { places: PlaceOption[]; topics: TopicOption[] }) {
   const t = useTranslations('settings');
-  const [prefs, setPrefs] = useState<Preferences | null>(null);
+  const isClient = useIsClient();
+  const stored = useStoredPreferences();
+  const support = usePushSupport();
   const [status, setStatus] = useState<string | null>(null);
-  const [pushState, setPushState] = useState<'unsupported' | 'off' | 'on'>('off');
-  useEffect(() => {
-    setPrefs(loadPreferences() ?? { ...defaultPreferences(), onboarded: true });
-    setPushState(!('Notification' in window) || !('serviceWorker' in navigator) ? 'unsupported' : Notification.permission === 'granted' ? 'on' : 'off');
-  }, []);
-  if (!prefs) return null;
+  const [pushOverride, setPushState] = useState<'on' | 'off' | null>(null);
+  const pushState = pushOverride ?? support ?? 'off';
+  if (!isClient) return null;
+  const prefs: Preferences = stored ?? { ...defaultPreferences(), onboarded: true };
   const update = (p: Preferences) => {
-    setPrefs(p);
     savePreferences(p);
     setStatus(t('saved'));
   };
@@ -218,7 +218,6 @@ export function SettingsForm({ places, topics }: { places: PlaceOption[]; topics
             className="btn btn-ghost"
             onClick={() => {
               clearAllLocalData();
-              setPrefs(defaultPreferences());
               setStatus(t('privacy.deleted'));
             }}
           >

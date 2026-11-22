@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { defaultPreferences, suggestHomeCountry, type Preferences } from '@/lib/prefs/types';
-import { loadPreferences, savePreferences } from '@/lib/prefs/storage';
+import { savePreferences } from '@/lib/prefs/storage';
+import { useBrowserLanguages, useIsClient, useStoredPreferences } from '@/lib/prefs/hooks';
 import { PlacePicker, TopicPicker, type PlaceOption, type TopicOption } from './SettingsForm';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -12,13 +13,16 @@ export function Onboarding({ places, topics }: { places: PlaceOption[]; topics: 
   const t = useTranslations('onboarding');
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [prefs, setPrefs] = useState<Preferences | null>(null);
-  useEffect(() => {
-    const existing = loadPreferences();
+  const isClient = useIsClient();
+  const stored = useStoredPreferences();
+  const languages = useBrowserLanguages();
+  const [draft, setPrefs] = useState<Preferences | null>(null);
+  const suggested = useMemo(() => {
     const countries = places.filter((p) => p.level === 'country').map((p) => p.id);
-    setPrefs(existing ?? defaultPreferences(suggestHomeCountry(navigator.languages ?? [navigator.language], countries)));
-  }, [places]);
-  if (!prefs) return null;
+    return defaultPreferences(suggestHomeCountry(languages ? languages.split(',') : [], countries));
+  }, [places, languages]);
+  const prefs = draft ?? stored ?? suggested;
+  if (!isClient) return null;
   const finish = () => {
     savePreferences({ ...prefs, onboarded: true });
     router.replace('/');

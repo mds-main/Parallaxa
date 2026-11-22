@@ -36,6 +36,7 @@ export function addHistory(item: HistoryItem) {
   try {
     const list = [item, ...loadHistory().filter((x) => x.id !== item.id)].slice(0, 30);
     localStorage.setItem(HISTORY, JSON.stringify(list));
+    window.dispatchEvent(new Event('plx:history'));
   } catch {
     /* ignore */
   }
@@ -45,6 +46,8 @@ export function clearAllLocalData() {
   try {
     for (const k of Object.keys(localStorage)) if (k.startsWith('plx:')) localStorage.removeItem(k);
     sessionStorage.clear();
+    window.dispatchEvent(new Event('plx:prefs'));
+    window.dispatchEvent(new Event('plx:history'));
   } catch {
     /* ignore */
   }

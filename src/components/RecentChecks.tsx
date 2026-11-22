@@ -1,13 +1,11 @@
 'use client';
-import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { loadHistory, type HistoryItem } from '@/lib/prefs/storage';
+import { useHistory } from '@/lib/prefs/hooks';
 
 export function RecentChecks() {
   const t = useTranslations('home.recent');
-  const [items, setItems] = useState<HistoryItem[] | null>(null);
-  useEffect(() => setItems(loadHistory()), []);
+  const items = useHistory();
   if (items === null) return null;
   return (
     <section aria-labelledby="recent-title" className="card p-5">
@@ -18,7 +16,7 @@ export function RecentChecks() {
             className="text-sm underline"
             onClick={() => {
               localStorage.removeItem('plx:history:v1');
-              setItems([]);
+              window.dispatchEvent(new Event('plx:history'));
             }}
           >
             {t('clear')}

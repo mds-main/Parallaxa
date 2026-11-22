@@ -1,22 +1,21 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { loadPreferences } from '@/lib/prefs/storage';
+import { useStoredPreferences } from '@/lib/prefs/hooks';
 
 export type QuizItemView = { id: string; placeId: string; question: Record<string, string>; trueValue: number; margin: number; sourceName: string; sourceUrl: string; originalWording: string; year: number };
 
 export function Quiz({ items, countryNames }: { items: QuizItemView[]; countryNames: Record<string, string> }) {
   const t = useTranslations('quiz');
   const locale = useLocale();
-  const countries = [...new Set(items.map((i) => i.placeId))];
-  const [country, setCountry] = useState<string>(countries[0] ?? '');
+  const countries = useMemo(() => [...new Set(items.map((i) => i.placeId))], [items]);
+  const prefs = useStoredPreferences();
+  const home = prefs?.places.find((p) => p.home)?.id.split('-')[0];
+  const [picked, setCountry] = useState<string | null>(null);
+  const country = picked ?? (home && countries.includes(home) ? home : (countries[0] ?? ''));
   const [index, setIndex] = useState(0);
   const [guess, setGuess] = useState(50);
   const [revealed, setRevealed] = useState(false);
-  useEffect(() => {
-    const home = loadPreferences()?.places.find((p) => p.home)?.id.split('-')[0];
-    if (home && countries.includes(home)) setCountry(home);
-  }, [countries]);
   const list = items.filter((i) => i.placeId === country);
   if (!countries.length) return <p className="card p-6">{t('empty')}</p>;
   const item = list[index];

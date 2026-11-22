@@ -1,7 +1,29 @@
 {
   "title": "Administración de Parallaxa",
-  "nav": { "overview": "Resumen", "models": "Modelos", "investigation": "Investigación", "pipeline": "Proceso", "limits": "Fiabilidad y límites", "content": "Contenido", "review": "Revisión", "metrics": "Métricas", "alerts": "Avisos", "audit": "Registro de cambios", "logout": "Cerrar sesión", "viewSite": "Ver el sitio" },
-  "login": { "title": "Accede a la consola de administración", "username": "Usuario", "password": "Contraseña", "submit": "Entrar", "invalid": "Usuario o contraseña incorrectos.", "locked": "Demasiados intentos. Vuelve a probar en 15 minutos.", "disabled": "La consola está desactivada: configura ADMIN_USERNAME, ADMIN_PASSWORD (20 caracteres o más) y ADMIN_SESSION_SECRET." },
+  "nav": {
+    "overview": "Resumen",
+    "models": "Modelos",
+    "investigation": "Investigación",
+    "pipeline": "Proceso",
+    "limits": "Fiabilidad y límites",
+    "content": "Contenido",
+    "review": "Revisión",
+    "metrics": "Métricas",
+    "alerts": "Avisos",
+    "audit": "Registro de cambios",
+    "logout": "Cerrar sesión",
+    "viewSite": "Ver el sitio",
+    "ledger": "Registro de actores"
+  },
+  "login": {
+    "title": "Accede a la consola de administración",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "submit": "Entrar",
+    "invalid": "Usuario o contraseña incorrectos.",
+    "locked": "Demasiados intentos. Vuelve a probar en 15 minutos.",
+    "disabled": "La consola está desactivada: configura ADMIN_USERNAME, ADMIN_PASSWORD (20 caracteres o más) y ADMIN_SESSION_SECRET."
+  },
   "common": {
     "reason": "¿Por qué haces este cambio?",
     "reasonPlaceholder": "p. ej., Reducir costes mientras hay poco tráfico",
@@ -28,7 +50,15 @@
     "loading": "Cargando…",
     "demoMode": "Modo demostración: no hay VENICE_API_KEY, así que las llamadas de IA son simuladas y el coste es cero."
   },
-  "features": { "check": "Comprobar", "briefing": "Resumen", "dialogue": "Rebatir", "ledger": "Registro", "quiz": "Test", "admin": "Administración", "costs": "Costes" },
+  "features": {
+    "check": "Comprobar",
+    "briefing": "Resumen",
+    "dialogue": "Rebatir",
+    "ledger": "Registro",
+    "quiz": "Test",
+    "admin": "Administración",
+    "costs": "Costes"
+  },
   "overview": {
     "title": "¿Va todo bien?",
     "allGood": "Todo parece normal.",
@@ -70,9 +100,23 @@
     "breaker": "Circuito",
     "breakerOpen": "Retirado",
     "breakerClosed": "Sano",
-    "badges": { "tools": "Herramientas", "schema": "Salida estructurada", "web": "Búsqueda web", "x": "Búsqueda en X" },
+    "badges": {
+      "tools": "Herramientas",
+      "schema": "Salida estructurada",
+      "web": "Búsqueda web",
+      "x": "Búsqueda en X"
+    },
     "change": "Cambiar modelo",
-    "picker": { "title": "Elige un modelo para {slot}", "search": "Buscar modelos", "vendor": "Empresa", "origin": "Origen", "compatible": "Compatible", "incompatible": "No compatible: {reasons}", "estimate": "≈ {value} por investigación", "select": "Elegir" },
+    "picker": {
+      "title": "Elige un modelo para {slot}",
+      "search": "Buscar modelos",
+      "vendor": "Empresa",
+      "origin": "Origen",
+      "compatible": "Compatible",
+      "incompatible": "No compatible: {reasons}",
+      "estimate": "≈ {value} por investigación",
+      "select": "Elegir"
+    },
     "test": "Probar (comprobación del sistema)",
     "testing": "Haciendo una investigación corta con 5 afirmaciones de referencia…",
     "testPassed": "Comprobación superada",
@@ -88,12 +132,27 @@
     "removeSlot": "Quitar perspectiva",
     "fallback": "Modelo de respaldo (AI Gateway)",
     "roles": "Funciones auxiliares",
-    "roleNames": { "canonicalize": "Limpieza de afirmaciones (quita datos personales)", "decompose": "División de afirmaciones", "tag": "Etiquetado de lugares y temas", "reader": "Lector de fuentes", "renderer": "Redacción para lectores (por idioma)", "checker": "Comprobación de coherencia", "pushBack": "Diálogo Rebatir", "embedding": "Vectores (caché de afirmaciones parecidas)", "vision": "Lector de texto en capturas", "writer": "Redactor del análisis" },
+    "roleNames": {
+      "canonicalize": "Limpieza de afirmaciones (quita datos personales)",
+      "decompose": "División de afirmaciones",
+      "tag": "Etiquetado de lugares y temas",
+      "reader": "Lector de fuentes",
+      "renderer": "Redacción para lectores (por idioma)",
+      "checker": "Comprobación de coherencia",
+      "pushBack": "Diálogo Rebatir",
+      "embedding": "Vectores (caché de afirmaciones parecidas)",
+      "vision": "Lector de texto en capturas",
+      "writer": "Redactor del análisis"
+    },
     "rotate": "Rotar entre perspectivas",
     "history": "Historial de cambios",
     "rollback": "Volver a esta versión",
     "version": "v{id}",
-    "leaning": { "right": "percibido de derechas", "left": "percibido de izquierdas", "none": "—" },
+    "leaning": {
+      "right": "percibido de derechas",
+      "left": "percibido de izquierdas",
+      "none": "—"
+    },
     "catalogSync": "Actualizar catálogo de modelos",
     "catalogUpdated": "Catálogo actualizado: {count} modelos."
   },
@@ -121,11 +180,148 @@
     "coiHelp": "Uno por línea. En estos temas el veredicto de esta perspectiva se muestra, pero no cuenta.",
     "systemPromptLocked": "Instrucciones de sistema de Venice: desactivadas (bloqueado)"
   },
-  "pipeline": { "title": "Proceso", "intro": "Cómo se combinan los veredictos y cuándo revisan personas. Las instrucciones solo cambian a través del repositorio público y la evaluación.", "promptVersion": "Versión de instrucciones en uso" },
-  "limits": { "title": "Fiabilidad y límites", "intro": "Fallos, gasto y límites de uso.", "kill": "Interruptores de emergencia", "killHelp": "Desactiva una función para todo el mundo al instante.", "maintenance": "Aviso de mantenimiento", "fallbackMap": "Modelos de respaldo por perspectiva" },
-  "content": { "title": "Contenido", "intro": "Idiomas, lugares, resúmenes, notificaciones y test.", "languages": "Idiomas", "languageHelp": "Los idiomas salen del registro de idiomas. Solo se puede activar uno cuando sus traducciones están completas.", "quizItems": "Preguntas del test de percepción", "addQuiz": "Añadir pregunta", "quizFields": { "place": "Código de país", "topic": "Tema", "questionEn": "Pregunta (inglés)", "questionEs": "Pregunta (español de España)", "trueValue": "Valor de la encuesta (%)", "margin": "Margen (± puntos)", "sourceName": "Nombre de la fuente", "sourceUrl": "URL de la fuente", "originalWording": "Formulación original", "year": "Año" }, "saveQuiz": "Guardar pregunta" },
-  "review": { "title": "Revisión", "intro": "Análisis discutidos, fallos de coherencia, notificaciones de error y muestras aleatorias.", "empty": "No hay nada que revisar.", "kinds": { "disagreement": "Los modelos discrepan", "briefing": "Edición del resumen", "ledger": "Entrada del Registro", "error_report": "Notificación de error", "appeal": "Recurso", "reply": "Respuesta de un actor", "consistency": "Coherencia de la redacción", "sample": "Muestra aleatoria" }, "open": "Abrir", "reviewer": "Tu nombre (queda registrado)", "approve": "Aprobar y publicar", "markReviewed": "Marcar como revisado", "escalate": "Elevar al panel", "notes": "Notas", "due": "Vence el {date, date, short}" },
-  "metrics": { "title": "Métricas", "intro": "Solo cifras agregadas. No se puede consultar a ningún usuario concreto.", "range": "Periodo", "days": "{n} días", "export": "Exportar CSV", "sections": { "truth": "Exactitud (evaluación)", "evenhandedness": "Imparcialidad", "models": "Modelos", "operations": "Funcionamiento", "usage": "Uso", "costs": "Costes" }, "labels": { "accuracy": "Exactitud en el conjunto de referencia", "calibration": "Error de calibración", "citation": "Precisión de las citas", "parity": "Paridad espejo", "gradeBySide": "Calificaciones", "agreementMatrix": "Frecuencia de coincidencia entre perspectivas", "refusalsBySlot": "Negativas por perspectiva", "coi": "Exclusiones por conflicto de intereses", "latency": "Latencia por perspectiva (p95, s)", "costBySlot": "Coste por perspectiva", "checks": "Comprobaciones por día", "failures": "Comprobaciones fallidas", "fallbackUse": "Llamadas al respaldo", "briefings": "Resúmenes abiertos", "quiz": "Respuestas al test", "languages": "Comprobaciones por idioma", "costByDay": "Gasto en IA por día", "costByStep": "Gasto en IA por paso" } },
-  "alerts": { "title": "Avisos", "intro": "Quién recibe aviso cuando algo necesita atención.", "recent": "Avisos recientes", "none": "No hay avisos.", "acknowledge": "Marcar como visto" },
-  "audit": { "title": "Registro de cambios", "intro": "Cada cambio de administración, con su motivo. Deshaz cualquier cambio de configuración con un clic.", "when": "Cuándo", "action": "Acción", "target": "Objeto", "reason": "Motivo", "revert": "Deshacer", "export": "Exportar" }
+  "pipeline": {
+    "title": "Proceso",
+    "intro": "Cómo se combinan los veredictos y cuándo revisan personas. Las instrucciones solo cambian a través del repositorio público y la evaluación.",
+    "promptVersion": "Versión de instrucciones en uso"
+  },
+  "limits": {
+    "title": "Fiabilidad y límites",
+    "intro": "Fallos, gasto y límites de uso.",
+    "kill": "Interruptores de emergencia",
+    "killHelp": "Desactiva una función para todo el mundo al instante.",
+    "maintenance": "Aviso de mantenimiento",
+    "fallbackMap": "Modelos de respaldo por perspectiva"
+  },
+  "content": {
+    "title": "Contenido",
+    "intro": "Idiomas, lugares, resúmenes, notificaciones y test.",
+    "languages": "Idiomas",
+    "languageHelp": "Los idiomas salen del registro de idiomas. Solo se puede activar uno cuando sus traducciones están completas.",
+    "quizItems": "Preguntas del test de percepción",
+    "addQuiz": "Añadir pregunta",
+    "quizFields": {
+      "place": "Código de país",
+      "topic": "Tema",
+      "questionEn": "Pregunta (inglés)",
+      "questionEs": "Pregunta (español de España)",
+      "trueValue": "Valor de la encuesta (%)",
+      "margin": "Margen (± puntos)",
+      "sourceName": "Nombre de la fuente",
+      "sourceUrl": "URL de la fuente",
+      "originalWording": "Formulación original",
+      "year": "Año"
+    },
+    "saveQuiz": "Guardar pregunta"
+  },
+  "review": {
+    "title": "Revisión",
+    "intro": "Análisis discutidos, fallos de coherencia, notificaciones de error y muestras aleatorias.",
+    "empty": "No hay nada que revisar.",
+    "kinds": {
+      "disagreement": "Los modelos discrepan",
+      "briefing": "Edición del resumen",
+      "ledger": "Entrada del Registro",
+      "error_report": "Notificación de error",
+      "appeal": "Recurso",
+      "reply": "Respuesta de un actor",
+      "consistency": "Coherencia de la redacción",
+      "sample": "Muestra aleatoria"
+    },
+    "open": "Abrir",
+    "reviewer": "Tu nombre (queda registrado)",
+    "approve": "Aprobar y publicar",
+    "markReviewed": "Marcar como revisado",
+    "escalate": "Elevar al panel",
+    "notes": "Notas",
+    "due": "Vence el {date, date, short}",
+    "correct": "Publicar corrección",
+    "newGrade": "Nueva calificación",
+    "newConfidence": "Nueva confianza",
+    "reasonEn": "Motivo (inglés)",
+    "reasonEs": "Motivo (español de España)",
+    "corrected": "Corrección publicada: versión {version}."
+  },
+  "metrics": {
+    "title": "Métricas",
+    "intro": "Solo cifras agregadas. No se puede consultar a ningún usuario concreto.",
+    "range": "Periodo",
+    "days": "{n} días",
+    "export": "Exportar CSV",
+    "sections": {
+      "truth": "Exactitud (evaluación)",
+      "evenhandedness": "Imparcialidad",
+      "models": "Modelos",
+      "operations": "Funcionamiento",
+      "usage": "Uso",
+      "costs": "Costes"
+    },
+    "labels": {
+      "accuracy": "Exactitud en el conjunto de referencia",
+      "calibration": "Error de calibración",
+      "citation": "Precisión de las citas",
+      "parity": "Paridad espejo",
+      "gradeBySide": "Calificaciones",
+      "agreementMatrix": "Frecuencia de coincidencia entre perspectivas",
+      "refusalsBySlot": "Negativas por perspectiva",
+      "coi": "Exclusiones por conflicto de intereses",
+      "latency": "Latencia por perspectiva (p95, s)",
+      "costBySlot": "Coste por perspectiva",
+      "checks": "Comprobaciones por día",
+      "failures": "Comprobaciones fallidas",
+      "fallbackUse": "Llamadas al respaldo",
+      "briefings": "Resúmenes abiertos",
+      "quiz": "Respuestas al test",
+      "languages": "Comprobaciones por idioma",
+      "costByDay": "Gasto en IA por día",
+      "costByStep": "Gasto en IA por paso"
+    }
+  },
+  "alerts": {
+    "title": "Avisos",
+    "intro": "Quién recibe aviso cuando algo necesita atención.",
+    "recent": "Avisos recientes",
+    "none": "No hay avisos.",
+    "acknowledge": "Marcar como visto"
+  },
+  "audit": {
+    "title": "Registro de cambios",
+    "intro": "Cada cambio de administración, con su motivo. Deshaz cualquier cambio de configuración con un clic.",
+    "when": "Cuándo",
+    "action": "Acción",
+    "target": "Objeto",
+    "reason": "Motivo",
+    "revert": "Deshacer",
+    "export": "Exportar"
+  },
+  "ledger": {
+    "title": "Registro de actores",
+    "intro": "Perfiles de actores públicos. Solo se publica un perfil tras la revisión jurídica de la rúbrica y del perfil. Describe conductas, nunca el carácter.",
+    "add": "Añadir o actualizar actor",
+    "fields": {
+      "name": "Nombre",
+      "slug": "Identificador (URL)",
+      "type": "Tipo",
+      "country": "País (código)",
+      "homePlaceId": "Región (código, opcional)",
+      "partyFamily": "Familia política (opcional)",
+      "roleEn": "Cargo (inglés)",
+      "roleEs": "Cargo (español)"
+    },
+    "save": "Guardar actor",
+    "link": "Vincular un análisis",
+    "linkHelp": "Pega el enlace o el identificador de un análisis publicado de una afirmación de este actor.",
+    "reach": "Alcance (peso)",
+    "publish": "Publicar perfil",
+    "unpublish": "Retirar perfil",
+    "legalConfirm": "Confirmo que este perfil ha pasado la revisión jurídica",
+    "published": "Publicado",
+    "draft": "Borrador",
+    "claims": "{n} afirmaciones analizadas",
+    "dimension": "Dimensión (entrada editorial)",
+    "saveDimension": "Guardar dimensión",
+    "reply": "Publicar respuesta verificada",
+    "replyHelp": "Hasta 300 palabras y enlaces, recibida por un canal de contacto verificado.",
+    "empty": "Aún no hay actores."
+  }
 }

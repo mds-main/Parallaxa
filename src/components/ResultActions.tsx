@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { loadPreferences, savePreferences } from '@/lib/prefs/storage';
+import { useStoredPreferences } from '@/lib/prefs/hooks';
 import { defaultPreferences } from '@/lib/prefs/types';
 import { PushBack } from './PushBack';
 import { ReportError } from './ReportError';
@@ -10,7 +11,7 @@ export function ResultActions({ analysisId, version, pushBackEnabled, maxTurns }
   const t = useTranslations('result.actions');
   const [panel, setPanel] = useState<'push' | 'report' | null>(null);
   const [copied, setCopied] = useState(false);
-  const [following, setFollowing] = useState(() => (typeof window !== 'undefined' ? Boolean(loadPreferences()?.follows.analyses.includes(analysisId)) : false));
+  const following = Boolean(useStoredPreferences()?.follows.analyses.includes(analysisId));
 
   async function share() {
     const url = window.location.href;
@@ -33,7 +34,6 @@ export function ResultActions({ analysisId, version, pushBackEnabled, maxTurns }
     if (set.has(analysisId)) set.delete(analysisId);
     else set.add(analysisId);
     savePreferences({ ...p, follows: { ...p.follows, analyses: [...set] } });
-    setFollowing(set.has(analysisId));
   }
 
   return (

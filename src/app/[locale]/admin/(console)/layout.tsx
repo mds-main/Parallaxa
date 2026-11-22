@@ -5,7 +5,7 @@ import { logoutAction } from '../actions';
 import { isDemoMode } from '@/lib/ai/client';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
-const NAV = ['overview', 'models', 'investigation', 'pipeline', 'limits', 'content', 'review', 'metrics', 'alerts', 'audit'] as const;
+const NAV = ['overview', 'models', 'investigation', 'pipeline', 'limits', 'content', 'review', 'ledger', 'metrics', 'alerts', 'audit'] as const;
 
 export const metadata = { robots: { index: false, follow: false }, title: 'Admin' };
 

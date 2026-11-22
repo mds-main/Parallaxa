@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { resolveReviewAction } from '@/app/[locale]/admin/actions';
+import { CorrectionForm } from './CorrectionForm';
 
 type Task = { id: string; kind: string; refId: string; priority: number; dueAt: string | null; notes: string | null; createdAt: string; summary?: string };
 
@@ -42,6 +43,7 @@ export function ReviewQueue({ tasks }: { tasks: Task[] }) {
                 <span className="muted">{t('notes')}</span>
                 <input className="field mt-1 !min-h-9" value={notes[task.id] ?? ''} onChange={(e) => setNotes({ ...notes, [task.id]: e.target.value })} />
               </label>
+              {analysisId && /^[0-9a-f-]{36}$/.test(analysisId) && <CorrectionForm analysisId={analysisId} taskId={task.id} reviewer={reviewer} />}
               <div className="flex flex-wrap gap-2">
                 <button className="btn !min-h-9 !py-1 text-sm" disabled={!reviewer.trim() || busy === task.id} onClick={() => act(task.id, 'approve')}>{t('approve')}</button>
                 <button className="btn btn-ghost !min-h-9 !py-1 text-sm" disabled={!reviewer.trim() || busy === task.id} onClick={() => act(task.id, 'reviewed')}>{t('markReviewed')}</button>

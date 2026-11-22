@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { loadPreferences } from '@/lib/prefs/storage';
+import { useStoredPreferences } from '@/lib/prefs/hooks';
 import { defaultPreferences } from '@/lib/prefs/types';
 import { assembleBriefing, type EditionStory } from '@/lib/briefing/assemble';
 import { GradeIcon } from './VerdictChip';
@@ -19,11 +19,10 @@ type Props = {
 export function Briefing({ editions, parents, placeNames, topicNames, gradeLabels }: Props) {
   const t = useTranslations('today');
   const locale = useLocale();
-  const [prefs, setPrefs] = useState(() => defaultPreferences());
+  const stored = useStoredPreferences();
+  const prefs = useMemo(() => stored ?? defaultPreferences(), [stored]);
   const [index, setIndex] = useState(0);
   useEffect(() => {
-    const p = loadPreferences();
-    if (p) setPrefs(p);
     fetch('/api/usage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'briefing_opened', lang: locale }) }).catch(() => undefined);
   }, [locale]);
   const result = useMemo(() => assembleBriefing(editions, prefs, (id) => parents[id] ?? null), [editions, prefs, parents]);

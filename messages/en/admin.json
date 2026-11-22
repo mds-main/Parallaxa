@@ -1,7 +1,29 @@
 {
   "title": "Parallaxa admin",
-  "nav": { "overview": "Overview", "models": "Models", "investigation": "Investigation", "pipeline": "Pipeline", "limits": "Reliability & limits", "content": "Content", "review": "Review queue", "metrics": "Metrics", "alerts": "Alerts", "audit": "Audit log", "logout": "Sign out", "viewSite": "View site" },
-  "login": { "title": "Sign in to the admin console", "username": "Username", "password": "Password", "submit": "Sign in", "invalid": "Wrong username or password.", "locked": "Too many attempts. Try again in 15 minutes.", "disabled": "The admin console is disabled: set ADMIN_USERNAME, ADMIN_PASSWORD (20+ characters) and ADMIN_SESSION_SECRET." },
+  "nav": {
+    "overview": "Overview",
+    "models": "Models",
+    "investigation": "Investigation",
+    "pipeline": "Pipeline",
+    "limits": "Reliability & limits",
+    "content": "Content",
+    "review": "Review queue",
+    "metrics": "Metrics",
+    "alerts": "Alerts",
+    "audit": "Audit log",
+    "logout": "Sign out",
+    "viewSite": "View site",
+    "ledger": "Ledger"
+  },
+  "login": {
+    "title": "Sign in to the admin console",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "invalid": "Wrong username or password.",
+    "locked": "Too many attempts. Try again in 15 minutes.",
+    "disabled": "The admin console is disabled: set ADMIN_USERNAME, ADMIN_PASSWORD (20+ characters) and ADMIN_SESSION_SECRET."
+  },
   "common": {
     "reason": "Why are you making this change?",
     "reasonPlaceholder": "e.g. Lower costs while traffic is quiet",
@@ -28,7 +50,15 @@
     "loading": "Loading…",
     "demoMode": "Demo mode: no VENICE_API_KEY is set, so AI calls are simulated and costs are zero."
   },
-  "features": { "check": "Check", "briefing": "Briefing", "dialogue": "Push back", "ledger": "Ledger", "quiz": "Quiz", "admin": "Admin", "costs": "Costs" },
+  "features": {
+    "check": "Check",
+    "briefing": "Briefing",
+    "dialogue": "Push back",
+    "ledger": "Ledger",
+    "quiz": "Quiz",
+    "admin": "Admin",
+    "costs": "Costs"
+  },
   "overview": {
     "title": "Is everything OK?",
     "allGood": "Everything looks normal.",
@@ -70,9 +100,23 @@
     "breaker": "Circuit",
     "breakerOpen": "Out of rotation",
     "breakerClosed": "Healthy",
-    "badges": { "tools": "Tool calling", "schema": "Structured output", "web": "Web search", "x": "X search" },
+    "badges": {
+      "tools": "Tool calling",
+      "schema": "Structured output",
+      "web": "Web search",
+      "x": "X search"
+    },
     "change": "Change model",
-    "picker": { "title": "Choose a model for {slot}", "search": "Search models", "vendor": "Company", "origin": "Origin", "compatible": "Compatible", "incompatible": "Not compatible: {reasons}", "estimate": "≈ {value} per investigation", "select": "Select" },
+    "picker": {
+      "title": "Choose a model for {slot}",
+      "search": "Search models",
+      "vendor": "Company",
+      "origin": "Origin",
+      "compatible": "Compatible",
+      "incompatible": "Not compatible: {reasons}",
+      "estimate": "≈ {value} per investigation",
+      "select": "Select"
+    },
     "test": "Test (harness check)",
     "testing": "Running a short investigation on 5 gold-set claims…",
     "testPassed": "Harness check passed",
@@ -88,12 +132,27 @@
     "removeSlot": "Remove slot",
     "fallback": "Backup model (AI Gateway)",
     "roles": "Supporting roles",
-    "roleNames": { "canonicalize": "Claim clean-up (removes personal data)", "decompose": "Claim splitting", "tag": "Place & topic tagging", "reader": "Source reader", "renderer": "Writer for readers (per language)", "checker": "Consistency checker", "pushBack": "Push back dialogue", "embedding": "Embeddings (similar-claim cache)", "vision": "Screenshot text reader", "writer": "Analysis writer" },
+    "roleNames": {
+      "canonicalize": "Claim clean-up (removes personal data)",
+      "decompose": "Claim splitting",
+      "tag": "Place & topic tagging",
+      "reader": "Source reader",
+      "renderer": "Writer for readers (per language)",
+      "checker": "Consistency checker",
+      "pushBack": "Push back dialogue",
+      "embedding": "Embeddings (similar-claim cache)",
+      "vision": "Screenshot text reader",
+      "writer": "Analysis writer"
+    },
     "rotate": "Rotate among slots",
     "history": "Change history",
     "rollback": "Roll back to this version",
     "version": "v{id}",
-    "leaning": { "right": "perceived right-leaning", "left": "perceived left-leaning", "none": "—" },
+    "leaning": {
+      "right": "perceived right-leaning",
+      "left": "perceived left-leaning",
+      "none": "—"
+    },
     "catalogSync": "Refresh model catalog",
     "catalogUpdated": "Catalog updated: {count} models."
   },
@@ -121,11 +180,148 @@
     "coiHelp": "One per line. On these topics this slot's verdict is shown but not counted.",
     "systemPromptLocked": "Venice system prompt: off (locked)"
   },
-  "pipeline": { "title": "Pipeline", "intro": "How verdicts are combined and when people review. Prompts change only through the public repository and the eval gate.", "promptVersion": "Prompt version in use" },
-  "limits": { "title": "Reliability and limits", "intro": "Failures, spending and usage limits.", "kill": "Kill switches", "killHelp": "Turn a feature off for everyone immediately.", "maintenance": "Maintenance banner", "fallbackMap": "Backup models per slot" },
-  "content": { "title": "Content", "intro": "Languages, places, briefings, notifications and the quiz.", "languages": "Languages", "languageHelp": "Languages come from the language registry. A language can only be switched on when its translations are complete.", "quizItems": "Perception quiz items", "addQuiz": "Add a quiz item", "quizFields": { "place": "Country code", "topic": "Topic", "questionEn": "Question (English)", "questionEs": "Question (Spanish, Spain)", "trueValue": "Survey value (%)", "margin": "Margin (± points)", "sourceName": "Source name", "sourceUrl": "Source URL", "originalWording": "Original wording", "year": "Year" }, "saveQuiz": "Save quiz item" },
-  "review": { "title": "Review queue", "intro": "Disputed analyses, consistency failures, error reports and random samples.", "empty": "Nothing to review.", "kinds": { "disagreement": "Models disagree", "briefing": "Briefing edition", "ledger": "Ledger entry", "error_report": "Error report", "appeal": "Appeal", "reply": "Actor reply", "consistency": "Translation consistency", "sample": "Random sample" }, "open": "Open", "reviewer": "Your name (recorded)", "approve": "Approve and publish", "markReviewed": "Mark reviewed", "escalate": "Escalate to panel", "notes": "Notes", "due": "Due {date, date, short}" },
-  "metrics": { "title": "Metrics", "intro": "Aggregate figures only. No individual user can be looked up.", "range": "Period", "days": "{n} days", "export": "Export CSV", "sections": { "truth": "Truth (eval)", "evenhandedness": "Even-handedness", "models": "Models", "operations": "Operations", "usage": "Usage", "costs": "Costs" }, "labels": { "accuracy": "Gold-set accuracy", "calibration": "Calibration error", "citation": "Citation precision", "parity": "Mirror parity", "gradeBySide": "Grades", "agreementMatrix": "How often slots agree", "refusalsBySlot": "Refusals by slot", "coi": "Conflict-of-interest exclusions", "latency": "Latency by slot (p95, s)", "costBySlot": "Cost by slot", "checks": "Checks per day", "failures": "Failed checks", "fallbackUse": "Backup provider calls", "briefings": "Briefings opened", "quiz": "Quiz answers", "languages": "Checks by language", "costByDay": "AI spend per day", "costByStep": "AI spend by step" } },
-  "alerts": { "title": "Alerts", "intro": "Who gets told when something needs attention.", "recent": "Recent alerts", "none": "No alerts.", "acknowledge": "Acknowledge" },
-  "audit": { "title": "Audit log", "intro": "Every admin change, with its reason. Revert any configuration change in one click.", "when": "When", "action": "Action", "target": "Target", "reason": "Reason", "revert": "Revert", "export": "Export" }
+  "pipeline": {
+    "title": "Pipeline",
+    "intro": "How verdicts are combined and when people review. Prompts change only through the public repository and the eval gate.",
+    "promptVersion": "Prompt version in use"
+  },
+  "limits": {
+    "title": "Reliability and limits",
+    "intro": "Failures, spending and usage limits.",
+    "kill": "Kill switches",
+    "killHelp": "Turn a feature off for everyone immediately.",
+    "maintenance": "Maintenance banner",
+    "fallbackMap": "Backup models per slot"
+  },
+  "content": {
+    "title": "Content",
+    "intro": "Languages, places, briefings, notifications and the quiz.",
+    "languages": "Languages",
+    "languageHelp": "Languages come from the language registry. A language can only be switched on when its translations are complete.",
+    "quizItems": "Perception quiz items",
+    "addQuiz": "Add a quiz item",
+    "quizFields": {
+      "place": "Country code",
+      "topic": "Topic",
+      "questionEn": "Question (English)",
+      "questionEs": "Question (Spanish, Spain)",
+      "trueValue": "Survey value (%)",
+      "margin": "Margin (± points)",
+      "sourceName": "Source name",
+      "sourceUrl": "Source URL",
+      "originalWording": "Original wording",
+      "year": "Year"
+    },
+    "saveQuiz": "Save quiz item"
+  },
+  "review": {
+    "title": "Review queue",
+    "intro": "Disputed analyses, consistency failures, error reports and random samples.",
+    "empty": "Nothing to review.",
+    "kinds": {
+      "disagreement": "Models disagree",
+      "briefing": "Briefing edition",
+      "ledger": "Ledger entry",
+      "error_report": "Error report",
+      "appeal": "Appeal",
+      "reply": "Actor reply",
+      "consistency": "Translation consistency",
+      "sample": "Random sample"
+    },
+    "open": "Open",
+    "reviewer": "Your name (recorded)",
+    "approve": "Approve and publish",
+    "markReviewed": "Mark reviewed",
+    "escalate": "Escalate to panel",
+    "notes": "Notes",
+    "due": "Due {date, date, short}",
+    "correct": "Publish a correction",
+    "newGrade": "New grade",
+    "newConfidence": "New confidence",
+    "reasonEn": "Reason (English)",
+    "reasonEs": "Reason (Spanish, Spain)",
+    "corrected": "Correction published: version {version}."
+  },
+  "metrics": {
+    "title": "Metrics",
+    "intro": "Aggregate figures only. No individual user can be looked up.",
+    "range": "Period",
+    "days": "{n} days",
+    "export": "Export CSV",
+    "sections": {
+      "truth": "Truth (eval)",
+      "evenhandedness": "Even-handedness",
+      "models": "Models",
+      "operations": "Operations",
+      "usage": "Usage",
+      "costs": "Costs"
+    },
+    "labels": {
+      "accuracy": "Gold-set accuracy",
+      "calibration": "Calibration error",
+      "citation": "Citation precision",
+      "parity": "Mirror parity",
+      "gradeBySide": "Grades",
+      "agreementMatrix": "How often slots agree",
+      "refusalsBySlot": "Refusals by slot",
+      "coi": "Conflict-of-interest exclusions",
+      "latency": "Latency by slot (p95, s)",
+      "costBySlot": "Cost by slot",
+      "checks": "Checks per day",
+      "failures": "Failed checks",
+      "fallbackUse": "Backup provider calls",
+      "briefings": "Briefings opened",
+      "quiz": "Quiz answers",
+      "languages": "Checks by language",
+      "costByDay": "AI spend per day",
+      "costByStep": "AI spend by step"
+    }
+  },
+  "alerts": {
+    "title": "Alerts",
+    "intro": "Who gets told when something needs attention.",
+    "recent": "Recent alerts",
+    "none": "No alerts.",
+    "acknowledge": "Acknowledge"
+  },
+  "audit": {
+    "title": "Audit log",
+    "intro": "Every admin change, with its reason. Revert any configuration change in one click.",
+    "when": "When",
+    "action": "Action",
+    "target": "Target",
+    "reason": "Reason",
+    "revert": "Revert",
+    "export": "Export"
+  },
+  "ledger": {
+    "title": "Ledger",
+    "intro": "Public-actor profiles. A profile is published only after legal review of the rubric and the profile. Describe conduct, never character.",
+    "add": "Add or update an actor",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug (URL)",
+      "type": "Type",
+      "country": "Country code",
+      "homePlaceId": "Region code (optional)",
+      "partyFamily": "Party family (optional)",
+      "roleEn": "Role (English)",
+      "roleEs": "Role (Spanish)"
+    },
+    "save": "Save actor",
+    "link": "Link an analysis",
+    "linkHelp": "Paste the link or id of a published analysis of a claim this actor made.",
+    "reach": "Reach (weight)",
+    "publish": "Publish profile",
+    "unpublish": "Unpublish",
+    "legalConfirm": "I confirm this profile has passed legal review",
+    "published": "Published",
+    "draft": "Draft",
+    "claims": "{n} analyzed claims",
+    "dimension": "Dimension (editorial entry)",
+    "saveDimension": "Save dimension",
+    "reply": "Publish a verified reply",
+    "replyHelp": "Up to 300 words plus links, received through a verified contact channel.",
+    "empty": "No actors yet."
+  }
 }

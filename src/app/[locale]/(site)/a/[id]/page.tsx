@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { getAnalysis, getPlaces, getTopics } from '@/lib/queries';
+import { getAnalysis, getCorrections, getPlaces, getTopics } from '@/lib/queries';
 import { ensureRendering } from '@/lib/pipeline/render';
 import { getActiveConfig } from '@/lib/config/store';
 import { modelVendor } from '@/lib/config/models';
@@ -69,7 +69,7 @@ export default async function AnalysisPage({ params }: Props) {
   const s = a.structured;
   const rendered: RenderedAnalysis | null = await ensureRendering(id, locale).catch(() => null);
   const { config } = await getActiveConfig();
-  const [places, topics] = await Promise.all([getPlaces(), getTopics()]);
+  const [places, topics, history] = await Promise.all([getPlaces(), getTopics(), getCorrections(id)]);
   const placeName = (pid: string) => places.find((p) => p.id === pid)?.names[locale] ?? pid;
   const topicName = (tid: string) => topics.find((x) => x.id === tid)?.names[locale] ?? tid;
   const slotLabel = (slotId: string) => config.slots.find((x) => x.id === slotId)?.label[locale] ?? slotId;
@@ -232,6 +232,20 @@ export default async function AnalysisPage({ params }: Props) {
           {a.promptVersion && <p className="muted">{t('meta.prompt', { version: a.promptVersion })}</p>}
           <p className="muted">{format.dateTime(a.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}</p>
         </section>
+
+        {history.length > 0 && (
+          <section className="card p-4 text-sm">
+            <h2 className="font-semibold">{t('history.title')}</h2>
+            <ol className="mt-2 space-y-2">
+              {history.map((c) => (
+                <li key={c.id}>
+                  {t('history.item', { from: c.fromVersion, to: c.toVersion, reason: c.reason[locale] ?? c.reason.en ?? '' })}
+                  <ul className="mt-1 text-xs muted">{c.diff.map((d) => <li key={d.field}>{d.field}: {String(d.before ?? '—')} → {String(d.after ?? '—')}</li>)}</ul>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
 
         <section className="card p-4 text-sm">
           <h2 className="font-semibold">{t('places')}</h2>
