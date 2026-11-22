@@ -1,0 +1,1 @@
+Transcribe all readable text in this image exactly, including captions, chart labels and numbers. Do not interpret or summarise. Remove names, handles and faces of private individuals by writing [private person]. Return plain text only.

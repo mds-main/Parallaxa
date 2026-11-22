@@ -54,6 +54,8 @@ export const rolesSchema = z.object({
   checker: z.string(),
   pushBack: z.string(),
   embedding: z.string(),
+  /** Vision-capable Private model that transcribes text from screenshots. */
+  vision: z.string().default('qwen-3-8-27b'),
   /** 'rotate' cycles the writer among enabled perspective slots. */
   writer: z.string().default('rotate'),
 });
@@ -180,6 +182,7 @@ export function defaultConfig(): AppConfig {
       checker: 'deepseek-v4-flash',
       pushBack: 'kimi-k3',
       embedding: 'text-embedding-bge-m3',
+      vision: 'qwen-3-8-27b',
       writer: 'rotate',
     },
     pipeline: {},

@@ -7,7 +7,7 @@ import { buildCsp, createNonce } from './lib/security/csp';
 import { clientIp, ipAllowed } from './lib/security/ip';
 
 const intl = createMiddleware(routing);
-const PREFIXES = new Set(LANGUAGES.map((l) => l.prefix));
+const PREFIXES = new Set<string>(LANGUAGES.map((l) => l.prefix));
 const ADMIN_COOKIE = 'plx_admin';
 
 function withCsp(res: NextResponse, csp: string) {

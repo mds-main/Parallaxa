@@ -137,11 +137,12 @@ export type RenderedAnalysis = {
   valuesPositions?: { label: string; steelman: string }[];
 };
 
+/** Live analyses store the mirrored claim for audits; graded mirror pairs are checked in the eval suite. */
 export type MirrorTest = {
   mirroredClaim: string;
   originalGrade: Grade;
-  mirroredGrade: Grade;
-  parity: boolean;
+  mirroredGrade?: Grade;
+  parity?: boolean;
   note?: string;
 };
 
