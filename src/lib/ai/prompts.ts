@@ -4,7 +4,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { DEFAULT_LOCALE } from '../../i18n/languages';
 
-export type PromptName = 'canonicalize' | 'tag' | 'investigate' | 'compose' | 'mirror' | 'render' | 'consistency' | 'pushback' | 'ocr';
+export type PromptName = 'canonicalize' | 'research-plan' | 'tag' | 'investigate' | 'compose' | 'mirror' | 'render' | 'consistency' | 'pushback' | 'ocr';
 
 const cache = new Map<string, string>();
 

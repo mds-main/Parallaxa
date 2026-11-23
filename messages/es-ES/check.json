@@ -22,5 +22,16 @@
     "invalid": "Pega un texto, un enlace o una captura.",
     "tooLarge": "El archivo es demasiado grande (máximo 5 MB).",
     "generic": "Algo ha fallado. Inténtalo de nuevo."
+  },
+  "place": {
+    "title": "¿De qué lugar se trata?",
+    "intro": "La afirmación no dice dónde, y la respuesta depende de ello. Elige el lugar y la comprobaremos allí.",
+    "suggested": "Sugerencias",
+    "home": "tu lugar",
+    "search": "O busca un país o una región",
+    "global": "No se refiere a un lugar concreto",
+    "sending": "Empezando la comprobación…",
+    "error": "No ha funcionado. Inténtalo de nuevo.",
+    "note": "Todas las personas que pregunten por esta afirmación sobre el mismo lugar verán el mismo análisis."
   }
 }

@@ -28,6 +28,7 @@ import type {
   VerdictSource,
   MirrorTest,
   AnalysisProgress,
+  PendingCheck,
 } from '../domain/types';
 import type { AppConfig } from '../config/schema';
 
@@ -119,7 +120,7 @@ export const analyses = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     claimId: uuid('claim_id').references(() => claims.id),
     version: integer('version').notNull().default(1),
-    status: text('status').$type<'queued' | 'running' | 'review' | 'published' | 'failed'>().notNull(),
+    status: text('status').$type<'queued' | 'running' | 'needs_input' | 'review' | 'published' | 'failed'>().notNull(),
     inputKind: text('input_kind').$type<'text' | 'url' | 'image'>().notNull(),
     inputLang: text('input_lang'),
     grade: text('grade').$type<Grade>(),
@@ -133,6 +134,8 @@ export const analyses = pgTable(
     disagreement: boolean('disagreement').notNull().default(false),
     humanReviewed: boolean('human_reviewed').notNull().default(false),
     progress: jsonb('progress').$type<AnalysisProgress>(),
+    /** While waiting for the reader to say which place a claim is about: the cleaned, PII-free claims and tags. */
+    pending: jsonb('pending').$type<PendingCheck>(),
     error: text('error'),
     costUsd: doublePrecision('cost_usd'),
     createdAt: createdAt(),

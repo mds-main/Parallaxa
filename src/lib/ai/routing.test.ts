@@ -67,6 +67,10 @@ describe('vendor routing', () => {
     expect(legacy(false)).toEqual({ primary: 'venice', fallback: false });
     expect(legacy(true)).toEqual({ primary: 'venice', fallback: true });
     expect(legacy()).toEqual({ primary: 'venice', fallback: true });
+    // Versions saved before search engines were configurable get the defaults.
+    const { search: _s, ...noSearch } = defaultConfig();
+    void _s;
+    expect(appConfigSchema.parse(noSearch).search).toEqual({ primary: 'exa', fallbacks: ['brave', 'venice-exa', 'venice-brave'], combine: false, depth: 'deep' });
     expect(appConfigSchema.parse({ ...defaultConfig(), routing: { primary: 'gateway', fallback: false } }).routing).toEqual({ primary: 'gateway', fallback: false });
   });
 });

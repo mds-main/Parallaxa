@@ -221,7 +221,43 @@
     "temperatureDefault": "Model default",
     "coiTopics": "Conflict-of-interest topics",
     "coiHelp": "One per line. On these topics this slot's verdict is shown but not counted.",
-    "systemPromptLocked": "Venice system prompt: off (locked)"
+    "systemPromptLocked": "Venice system prompt: off (locked)",
+    "search": {
+      "title": "Search engines",
+      "order": "Searches run",
+      "none": "no engine available",
+      "intro": "Every search in an investigation goes through these engines: the primary first, then the backups in order when it fails or finds nothing. Changes reach new analyses within about 10 seconds and are kept in the change history.",
+      "primary": "Primary engine",
+      "engines": {
+        "exa": "Its own index; returns full page text and dates, so pages need no separate fetch.",
+        "brave": "Independent index with broad coverage; snippets only.",
+        "venice-exa": "Exa through Venice with zero data retention; snippets only.",
+        "venice-brave": "Brave through Venice with zero data retention; snippets only."
+      },
+      "zeroRetention": "Zero data retention",
+      "fullText": "Full page text",
+      "price": "≈ ${usd} per 1,000 searches",
+      "keySet": "API key set",
+      "keyMissing": "API key missing ({env})",
+      "backups": "Backups, in order",
+      "backupsHelp": "Used when the engine before them fails or finds nothing. Engines without a key are skipped.",
+      "moveUp": "Move {engine} up",
+      "moveDown": "Move {engine} down",
+      "swap": "Make {engine} the primary",
+      "combine": "Combine the primary and the first backup",
+      "combineHelp": "Both run for every search and their results are merged: more varied sources, so no single engine decides what evidence the models see. About twice the search cost.",
+      "depth": "Research before the models start",
+      "depths": {
+        "standard": "Standard",
+        "deep": "Deep"
+      },
+      "recommended": "Recommended",
+      "depthHelp": "{queries} planned searches (primary source, exact figure, reporting, existing fact-checks, counter-evidence, local language), then the best {pages} pages are read for every model.",
+      "privacyNote": "Searches only ever contain the cleaned, personal-data-free claim or the models' own queries, never the user's words.",
+      "exaRetentionNote": "Exa's self-serve plan has no zero-data-retention option (Enterprise only); \"Exa via Venice\" has it, with snippets instead of full text.",
+      "primaryMissing": "{engine} has no API key, so searches start with {first}.",
+      "blockNoEngine": "No search engine in this order has an API key: investigations could not search."
+    }
   },
   "pipeline": {
     "title": "Pipeline",

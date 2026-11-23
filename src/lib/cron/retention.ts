@@ -1,5 +1,5 @@
 /** Data retention (PRD 9.3, TODO 7.7): short-lived security data, aggregate-then-delete telemetry. */
-import { lt, sql } from 'drizzle-orm';
+import { and, eq, lt, sql } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import * as s from '../db/schema';
 
@@ -18,6 +18,14 @@ export async function runRetention(now = new Date()) {
     loginAttempts: (await db.delete(s.adminLoginAttempts).where(lt(s.adminLoginAttempts.at, days(7))).returning({ id: s.adminLoginAttempts.id })).length,
     sessions: (await db.delete(s.adminSessions).where(lt(s.adminSessions.expiresAt, days(7))).returning({ id: s.adminSessions.id })).length,
     usageEvents: (await db.delete(s.usageEvents).where(lt(s.usageEvents.at, days(400))).returning({ id: s.usageEvents.id })).length,
+    // Checks still waiting for the reader to choose a place after a day: drop the saved claim and close them.
+    unansweredChecks: (
+      await db
+        .update(s.analyses)
+        .set({ status: 'failed', error: 'expired: no place was chosen', pending: null })
+        .where(and(eq(s.analyses.status, 'needs_input'), lt(s.analyses.createdAt, days(1))))
+        .returning({ id: s.analyses.id })
+    ).length,
   };
   return results;
 }

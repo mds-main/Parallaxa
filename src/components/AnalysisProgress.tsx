@@ -3,13 +3,16 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { PIPELINE_STAGES, type PipelineStage } from '@/lib/domain/types';
+import { PlaceQuestion, type PlaceChoice } from './PlaceQuestion';
 
-type Status = { status: string; reusedFrom?: string; progress?: { stage: PipelineStage; done: PipelineStage[] }; error?: string };
+type Status = { status: string; reusedFrom?: string; progress?: { stage: PipelineStage; done: PipelineStage[] }; error?: string; question?: { kind: 'place'; suggestions: string[] } };
 
-export function AnalysisProgress({ id }: { id: string }) {
+export function AnalysisProgress({ id, places = [] }: { id: string; places?: PlaceChoice[] }) {
   const t = useTranslations('check');
   const router = useRouter();
   const [s, setS] = useState<Status | null>(null);
+  // Bumped after the reader answers a question, to start polling again.
+  const [round, setRound] = useState(0);
   useEffect(() => {
     let stop = false;
     const tick = async () => {
@@ -21,6 +24,7 @@ export function AnalysisProgress({ id }: { id: string }) {
         if (json.status === 'reused' && json.reusedFrom) return router.replace(`/a/${json.reusedFrom}`);
         if (json.status === 'published' || json.status === 'review') return router.refresh();
         if (json.status === 'failed') return;
+        if (json.status === 'needs_input') return; // waits for the reader's answer
       } catch {
         /* retry */
       }
@@ -30,7 +34,7 @@ export function AnalysisProgress({ id }: { id: string }) {
     return () => {
       stop = true;
     };
-  }, [id, router]);
+  }, [id, router, round]);
 
   if (s?.status === 'failed') {
     return (
@@ -38,6 +42,19 @@ export function AnalysisProgress({ id }: { id: string }) {
         <p>{t('failed', { reason: s.error ?? '' })}</p>
         <a href="./" className="btn mt-4 no-underline">{t('retry')}</a>
       </div>
+    );
+  }
+  if (s?.status === 'needs_input' && s.question?.kind === 'place') {
+    return (
+      <PlaceQuestion
+        id={id}
+        suggestions={s.question.suggestions}
+        places={places}
+        onAnswered={() => {
+          setS({ ...s, status: 'running', question: undefined });
+          setRound((r) => r + 1);
+        }}
+      />
     );
   }
   const done = new Set(s?.progress?.done ?? []);

@@ -72,4 +72,12 @@ export const PLACE_KEYWORDS: Record<string, string[]> = {
   'ES-GA': ['galicia', 'xunta'],
   GB: ['united kingdom', 'reino unido', 'britain', 'uk ', 'westminster'],
   MX: ['mexico', 'méxico'],
+  AT: ['austria', 'österreich'], BE: ['belgium', 'bélgica', 'belgique', 'belgië'], BG: ['bulgaria'], HR: ['croatia', 'croacia', 'hrvatska'],
+  CY: ['cyprus', 'chipre'], CZ: ['czechia', 'czech republic', 'chequia', 'república checa'], DK: ['denmark', 'dinamarca', 'danmark'],
+  EE: ['estonia', 'eesti'], FI: ['finland', 'finlandia', 'suomi'], FR: ['france', 'francia', 'french government', 'gobierno francés'],
+  DE: ['germany', 'alemania', 'deutschland'], GR: ['greece', 'grecia'], HU: ['hungary', 'hungría', 'magyarország'], IE: ['ireland', 'irlanda'],
+  IT: ['italy', 'italia'], LV: ['latvia', 'letonia'], LT: ['lithuania', 'lituania'], LU: ['luxembourg', 'luxemburgo'], MT: ['malta'],
+  NL: ['netherlands', 'países bajos', 'holanda', 'nederland'], PL: ['poland', 'polonia', 'polska'], PT: ['portugal'],
+  RO: ['romania', 'rumanía', 'românia'], SK: ['slovakia', 'eslovaquia'], SI: ['slovenia', 'eslovenia'], SE: ['sweden', 'suecia', 'sverige'],
+  NO: ['norway', 'noruega', 'norge'], CH: ['switzerland', 'suiza', 'schweiz'], IS: ['iceland', 'islandia'], UA: ['ukraine', 'ucrania'],
 };

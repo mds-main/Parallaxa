@@ -51,7 +51,10 @@ export default async function AnalysisPage({ params }: Props) {
   const tc = await getTranslations('common');
   const format = await getFormatter();
 
-  if (a.status === 'queued' || a.status === 'running') return <AnalysisProgress id={id} />;
+  if (a.status === 'queued' || a.status === 'running' || a.status === 'needs_input') {
+    const places = a.status === 'needs_input' ? await getPlaces() : [];
+    return <AnalysisProgress id={id} places={places.map((p) => ({ id: p.id, parentId: p.parentId, level: p.level, names: p.names, localName: p.localName }))} />;
+  }
   if (a.status === 'failed') {
     const reused = a.error?.startsWith('reused:') ? a.error.slice(7) : null;
     if (reused) return <AnalysisProgress id={id} />;
@@ -79,14 +82,18 @@ export default async function AnalysisPage({ params }: Props) {
   const grade = s.grade as Grade;
   const isValues = Boolean(s.valuesQuestion) || (grade === 'not_checkable' && s.verdicts.length === 0);
   const r = rendered;
+  // The checked claim in the reader's language when the cleaned local version is in it; otherwise the canonical (English) one.
+  const mainClaim = s.claims.find((c) => c.id === s.mainClaimId);
+  const readerLang = locale.split('-')[0]!;
+  const shown = mainClaim?.localized && claim?.lang?.split('-')[0] === readerLang ? { text: mainClaim.localized, lang: readerLang } : { text: claim?.canonicalText, lang: 'en' };
 
   return (
     <article className="grid gap-8 lg:grid-cols-[1fr_20rem]">
       <div className="space-y-6">
         <header className="space-y-3">
           <p className="text-sm muted">{t('claim')}</p>
-          <blockquote className="font-serif text-xl leading-snug md:text-2xl" lang={claim?.lang === 'es' ? 'es' : claim?.lang === 'en' ? 'en' : undefined}>
-            “{claim?.canonicalText}”
+          <blockquote className="font-serif text-xl leading-snug md:text-2xl" lang={shown.lang}>
+            “{shown.text}”
           </blockquote>
           <div className="flex flex-wrap items-center gap-3">
             {isValues ? <span className="chip">{t('banners.values')}</span> : <VerdictChip grade={grade} label={tc(`grades.${grade}`)} large />}

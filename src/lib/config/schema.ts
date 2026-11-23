@@ -100,6 +100,23 @@ export const routingSchema = z.object({
 });
 export type RoutingConfig = z.infer<typeof routingSchema>;
 
+/**
+ * Search engines for investigations (Admin › Investigation › Search engines). Tried in order: the primary,
+ * then each backup, skipping engines without a key. `combine` queries the first two together and merges them.
+ */
+export const SEARCH_ENGINES = ['exa', 'brave', 'venice-exa', 'venice-brave'] as const;
+export type SearchEngineId = (typeof SEARCH_ENGINES)[number];
+
+export const searchSchema = z.object({
+  primary: z.enum(SEARCH_ENGINES).default('exa'),
+  fallbacks: z.array(z.enum(SEARCH_ENGINES)).max(3).default(['brave', 'venice-exa', 'venice-brave']),
+  /** Query the first two available engines together and merge their results: more varied sources, about twice the search cost. */
+  combine: z.boolean().default(false),
+  /** Research before the perspective models start: standard = 4 planned searches and 4 pages read; deep = 6 and 8. */
+  depth: z.enum(['standard', 'deep']).default('deep'),
+});
+export type SearchConfig = z.infer<typeof searchSchema>;
+
 export const killSwitchesSchema = z.object({
   check: z.boolean().default(true),
   pushBack: z.boolean().default(true),
@@ -129,11 +146,19 @@ export const alertsSchema = z.object({
   onLoginLockout: z.boolean().default(true),
 });
 
-/** Versions saved before the vendor switch existed only had `limits.fallbackEnabled`; carry its value over. */
+/**
+ * Fills sections added after a version was saved: `routing` (carrying over the old `limits.fallbackEnabled`)
+ * and `search` (defaults).
+ */
 function migrateLegacy(raw: unknown): unknown {
-  if (!raw || typeof raw !== 'object' || 'routing' in raw) return raw;
-  const legacy = (raw as { limits?: { fallbackEnabled?: unknown } }).limits?.fallbackEnabled;
-  return { ...raw, routing: { primary: 'venice', fallback: legacy !== false } };
+  if (!raw || typeof raw !== 'object') return raw;
+  const out: Record<string, unknown> = { ...(raw as Record<string, unknown>) };
+  if (!('routing' in out)) {
+    const legacy = (out as { limits?: { fallbackEnabled?: unknown } }).limits?.fallbackEnabled;
+    out.routing = { primary: 'venice', fallback: legacy !== false };
+  }
+  if (!('search' in out)) out.search = {};
+  return out;
 }
 
 export const appConfigSchema = z.preprocess(
@@ -142,6 +167,7 @@ export const appConfigSchema = z.preprocess(
     slots: z.array(slotSchema).min(1).max(5),
     roles: rolesSchema,
     routing: routingSchema,
+    search: searchSchema,
     pipeline: pipelineSchema,
     limits: limitsSchema,
     killSwitches: killSwitchesSchema,
@@ -205,6 +231,7 @@ export function defaultConfig(): AppConfig {
       writer: 'rotate',
     },
     routing: {},
+    search: {},
     pipeline: {},
     limits: {},
     killSwitches: {},

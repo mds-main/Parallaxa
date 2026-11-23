@@ -221,7 +221,43 @@
     "temperatureDefault": "Por defecto del modelo",
     "coiTopics": "Temas con conflicto de intereses",
     "coiHelp": "Uno por línea. En estos temas el veredicto de esta perspectiva se muestra, pero no cuenta.",
-    "systemPromptLocked": "Instrucciones de sistema de Venice: desactivadas (bloqueado)"
+    "systemPromptLocked": "Instrucciones de sistema de Venice: desactivadas (bloqueado)",
+    "search": {
+      "title": "Buscadores",
+      "order": "Orden de búsqueda",
+      "none": "ningún buscador disponible",
+      "intro": "Todas las búsquedas de una investigación pasan por estos buscadores: primero el principal y, si falla o no encuentra nada, los de respaldo en orden. Los cambios llegan a los análisis nuevos en unos 10 segundos y quedan en el historial de cambios.",
+      "primary": "Buscador principal",
+      "engines": {
+        "exa": "Índice propio; devuelve el texto completo de la página y su fecha, así que no hace falta descargarla aparte.",
+        "brave": "Índice independiente con amplia cobertura; solo fragmentos.",
+        "venice-exa": "Exa a través de Venice, sin retención de datos; solo fragmentos.",
+        "venice-brave": "Brave a través de Venice, sin retención de datos; solo fragmentos."
+      },
+      "zeroRetention": "Sin retención de datos",
+      "fullText": "Texto completo",
+      "price": "≈ {usd} $ por 1.000 búsquedas",
+      "keySet": "Clave de API configurada",
+      "keyMissing": "Falta la clave de API ({env})",
+      "backups": "Respaldos, en orden",
+      "backupsHelp": "Se usan si el buscador anterior falla o no encuentra nada. Se omiten los que no tienen clave.",
+      "moveUp": "Subir {engine}",
+      "moveDown": "Bajar {engine}",
+      "swap": "Poner {engine} como principal",
+      "combine": "Combinar el principal y el primer respaldo",
+      "combineHelp": "Ambos se consultan en cada búsqueda y se unen los resultados: fuentes más variadas, para que ningún buscador decida por sí solo qué pruebas ven los modelos. Aproximadamente el doble de coste de búsqueda.",
+      "depth": "Investigación previa a los modelos",
+      "depths": {
+        "standard": "Estándar",
+        "deep": "Profunda"
+      },
+      "recommended": "Recomendado",
+      "depthHelp": "{queries} búsquedas planificadas (fuente primaria, cifra exacta, cobertura periodística, verificaciones previas, pruebas en contra, idioma local) y después se leen las {pages} mejores páginas para todos los modelos.",
+      "privacyNote": "Las búsquedas solo contienen la afirmación depurada, sin datos personales, o las consultas de los propios modelos; nunca las palabras del usuario.",
+      "exaRetentionNote": "El plan de autoservicio de Exa no ofrece retención cero de datos (solo Enterprise); «Exa a través de Venice» sí, con fragmentos en lugar de texto completo.",
+      "primaryMissing": "{engine} no tiene clave de API, así que las búsquedas empiezan por {first}.",
+      "blockNoEngine": "Ningún buscador de este orden tiene clave de API: las investigaciones no podrían buscar."
+    }
   },
   "pipeline": {
     "title": "Proceso",

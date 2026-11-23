@@ -40,7 +40,8 @@ Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type f
 | `NEXT_PUBLIC_SITE_URL` | yes | Public URL used in feeds and share links |
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | for push | `npx web-push generate-vapid-keys` |
 | `RESEND_API_KEY`, `ALERT_EMAIL_TO`, `ALERT_EMAIL_FROM` | for alerts | Resend, EU region |
-| `BRAVE_SEARCH_API_KEY` | optional | Secondary search; otherwise Venice `/augment/search` is used |
+| `EXA_API_KEY` | recommended | Default primary search engine for investigations (full page text). Order and backups: Admin › Investigation › Search engines |
+| `BRAVE_SEARCH_API_KEY` | optional | Default first backup search engine. Without Exa or Brave keys, searches use Exa or Brave through Venice (zero data retention) |
 | `EDGE_CONFIG`, `EDGE_CONFIG_ID`, `VERCEL_API_TOKEN` | optional | Fast config reads; token scoped to that Edge Config only |
 
 ## 3. Cron jobs (vercel.json)

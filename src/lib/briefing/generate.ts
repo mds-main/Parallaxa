@@ -107,7 +107,8 @@ export async function generateEdition(placeId: string, opts: { force?: boolean }
   for (const c of candidates) {
     const input = { kind: 'text' as const, text: c.claim };
     const pendingId = await createPendingAnalysis(input, 'en');
-    const result = await runAnalysis(pendingId, input, 'en');
+    // The edition's place answers "which place is this about?" when a candidate claim doesn't say.
+    const result = await runAnalysis(pendingId, input, 'en', { place: placeId });
     if (result.status === 'failed') continue;
     const analysisId = result.analysisId;
     const [a] = await db.select().from(s.analyses).where(eq(s.analyses.id, analysisId));

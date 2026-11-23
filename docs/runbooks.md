@@ -9,6 +9,11 @@ Every action below can be taken from the admin console without a deploy, and eve
 4. For a long or planned outage, switch vendors proactively: **Models → AI vendors → "AI Gateway, with Venice as backup"**, give a reason, type CONFIRM, apply. Live within about 10 seconds; switch back the same way.
 5. If the backup is also failing: **Reliability & limits → Kill switches → Check** off, and set a maintenance banner in both languages.
 
+## Search engine outage or poor results
+1. Investigations fall back automatically: the primary engine, then each backup in order (Exa → Brave → Exa via Venice → Brave via Venice by default).
+2. To switch for good: **Investigation → Search engines**, pick another primary (the old one becomes the first backup), give a reason, apply. Live within about 10 seconds.
+3. For more varied sources on contested topics, turn on **Combine the primary and the first backup** (about twice the search cost).
+
 ## Spend spike
 1. Alert at the configured percentage of the daily ceiling.
 2. **Metrics → Costs**: find the step or slot driving cost.

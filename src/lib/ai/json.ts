@@ -22,8 +22,8 @@ export const CANONICALIZE_SCHEMA = {
         items: {
           type: 'object',
           additionalProperties: false,
-          required: ['canonical', 'type', 'checkable'],
-          properties: { canonical: str, type: { type: 'string', enum: [...CLAIM_TYPES] }, checkable: { type: 'boolean' } },
+          required: ['canonical', 'local', 'type', 'checkable'],
+          properties: { canonical: str, local: str, type: { type: 'string', enum: [...CLAIM_TYPES] }, checkable: { type: 'boolean' } },
         },
       },
       sourceLanguage: str,
@@ -34,7 +34,12 @@ export const CANONICALIZE_SCHEMA = {
 const tagItem = { type: 'object', additionalProperties: false, required: ['id', 'confidence'], properties: { id: str, confidence: { type: 'number' } } };
 export const TAG_SCHEMA = {
   name: 'tags',
-  schema: { type: 'object', additionalProperties: false, required: ['places', 'topics'], properties: { places: { type: 'array', items: tagItem }, topics: { type: 'array', items: tagItem } } },
+  schema: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['places', 'topics', 'placeNeeded'],
+    properties: { places: { type: 'array', items: tagItem }, topics: { type: 'array', items: tagItem }, placeNeeded: { type: 'boolean' } },
+  },
 };
 
 export const VERDICT_PARAMETERS = {

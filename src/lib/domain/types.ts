@@ -63,6 +63,8 @@ export type AtomicClaim = {
   id: string;
   /** Neutral, self-contained, PII-free statement (the only user-derived text Anonymized models see). */
   canonical: string;
+  /** The same PII-free statement in the input's language (non-English inputs), used to search local sources. */
+  localized?: string;
   type: ClaimType;
   checkable: boolean;
 };
@@ -155,6 +157,22 @@ export type AnalysisProgress = {
   stage: PipelineStage;
   done: PipelineStage[];
   updatedAt: string;
+  /** The pipeline is waiting for the reader (only 'place' today: which place the claim is about). */
+  question?: 'place';
+};
+
+export type ClaimTags = { places: { id: string; confidence: number }[]; topics: { id: string; confidence: number }[]; placeNeeded?: boolean };
+
+/** Saved while a check waits for the reader: everything needed to continue, without the reader's original text. */
+export type PendingCheck = {
+  ingested: { kind: 'text' | 'url' | 'image'; excerpt: string; lang: string };
+  atomic: AtomicClaim[];
+  mainId: string;
+  tags: ClaimTags;
+  lang: string;
+  skipCache: boolean;
+  /** Places offered first (the tagger's guesses, then countries of the input language). */
+  suggestions: string[];
 };
 
 export const PIPELINE_STAGES = [

@@ -65,3 +65,24 @@ test('switch AI vendors from the Models page', async ({ page }) => {
   await page.goto('/en/admin');
   await expect(page.getByText('Venice first · backup: AI Gateway')).toBeVisible();
 });
+
+test('reorder search engines from the Investigation page', async ({ page }) => {
+  await page.goto('/en/admin/login');
+  await page.getByLabel('Username').fill('e2e-admin');
+  await page.getByLabel('Password').fill('e2e-password-0123456789-abcdef');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await expect(page.getByRole('heading', { name: 'Is everything OK?' })).toBeVisible();
+  await page.goto('/en/admin/investigation');
+  const search = page.getByRole('region', { name: 'Search engines' });
+  await expect(search).toBeVisible();
+  await expect(search.getByRole('radio', { name: 'Exa', exact: true })).toBeChecked();
+  await expect(search.getByRole('radio', { name: 'Deep' })).toBeChecked();
+  // One click makes the first backup (Brave) the primary; Exa becomes the first backup.
+  await search.getByRole('button', { name: 'Make Brave Search the primary' }).click();
+  await expect(search.getByRole('radio', { name: 'Brave Search', exact: true })).toBeChecked();
+  await expect(search.getByRole('button', { name: 'Make Exa the primary' })).toBeVisible();
+  await expect(page.getByText('Primary search engine: Exa → Brave Search')).toBeVisible();
+  await page.screenshot({ path: 'test-results/admin-search-engines.png', fullPage: false });
+  await page.getByRole('button', { name: 'Discard' }).click();
+  await expect(search.getByRole('radio', { name: 'Exa', exact: true })).toBeChecked();
+});

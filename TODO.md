@@ -124,7 +124,7 @@ Resolution order: URL prefix → saved choice (account setting or `NEXT_LOCALE` 
 
 ## 1. Milestones and exit criteria
 
-- [ ] **M0: Foundations complete [P0].** Legal entity exists; name cleared; methodology v1, taxonomy v1 and place list published; gold set v1 (500 claims, en + es) ready; panel recruited; DPIA signed off; Spanish translator and native reviewers contracted; repo, infra and CI running with an empty localized shell deployed; admin login and Models page working with the three default slots passing the harness check.
+- [ ] **M0: Foundations complete [P0].** Legal entity exists; name cleared; methodology v1, taxonomy v1 and place list published; gold set v1 (500 claims, en + es) ready; panel recruited; DPIA signed off; Spanish translator and native reviewers contracted; repo, infra and local checks (`pnpm verify`) running with an empty localized shell deployed; admin login and Models page working with the three default slots passing the harness check.
 - [ ] **M1: Closed beta [P1].** F1, F2 (Global + ES + US + 2–3 Spanish regions), F4 (side-by-side, quiz ES/US, steelman, Push back), read-only F3 (parties + national leaders), F5, F6 core, F7 (`en` + `es-ES`, registry ready for more) and F8 (admin console with models, settings, metrics, alerts, audit log) live for invited users, with three perspective slots investigating every claim. Eval gates are green, the first symmetry report is published internally, and SLOs have been met for 2 weeks.
 - [ ] **M2: Public launch [P2].** Full Ledger with reply and appeals; regional actors; community review (invite-only); prediction tracker; prebunk lessons; UK and Mexico country editions; named admin accounts; all Spanish regions and the largest US states; email digest and RSS; first public symmetry audit; first RCT running.
 - [ ] **M3: Expansion [P3].** Browser extension, debate maps, common-ground rooms pilot, first additional language(s) via the playbook with their country editions, municipal-scope pilot, institutional licences, external audit published.
@@ -170,14 +170,14 @@ Resolution order: URL prefix → saved choice (account setting or `NEXT_LOCALE` 
 Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so that adding a language later is configuration and content work, not code.
 
 ### 4.A Engineering
-- [x] 4.1 [P0] Language registry (`src/i18n/languages.ts`): the single source of truth per language (BCP 47 tag, URL prefix, primary-subtag matcher, native name, `dir`, `Intl` locale, enabled flag). Middleware, switcher, sitemaps, `hreflang`, manifests, emails, CI checks, prompt loading and evals all read from it. Launch entries: `en`, `es-ES`.
+- [x] 4.1 [P0] Language registry (`src/i18n/languages.ts`): the single source of truth per language (BCP 47 tag, URL prefix, primary-subtag matcher, native name, `dir`, `Intl` locale, enabled flag). Middleware, switcher, sitemaps, `hreflang`, manifests, emails, automated checks, prompt loading and evals all read from it. Launch entries: `en`, `es-ES`.
 - [x] 4.2 [P0] Lint rule forbidding hard-coded locale lists or locale literals outside the registry.
 - [x] 4.3 [P0] next-intl configured from the registry; URL prefixes `/en` and `/es`; default and fallback `en`.
 - [x] 4.4 [P0] Locale negotiation in Routing Middleware, in order: URL prefix → `NEXT_LOCALE` cookie or account setting → `Accept-Language` by q-value, primary-subtag match among *enabled* languages (`es-*`→`es-ES`, `en-*`→`en`) → `en`. Never use IP. Redirect `/` to the resolved prefix (302, `Vary: Accept-Language, Cookie`).
 - [x] 4.5 [P0] Negotiation tests: `es-MX,es;q=0.9`→es-ES; `es-419`→es-ES; `ca,es;q=0.8,en;q=0.5`→es-ES; `en-GB`→en; `fr-FR,de;q=0.8`→en; empty header→en; cookie overrides header; URL overrides cookie. Plus a parameterized suite that runs for every registry entry, so new languages are covered automatically.
 - [x] 4.6 [P0] Language switcher (header menu, settings, onboarding) listing enabled languages by their own names ("English", "Español"), never flags. It persists the choice (cookie or account) and keeps the current path.
 - [x] 4.7 [P0] Message catalogs at `messages/<lang>/<namespace>.json`, English as source, ICU plurals/select, generated TypeScript key types.
-- [x] 4.8 [P0] CI i18n checks that loop over the registry: missing keys, unused keys, ICU syntax, placeholder parity. An enabled language can have no gaps; a disabled, in-progress language may.
+- [x] 4.8 [P0] i18n checks (`pnpm i18n:check`, part of `check:all`) that loop over the registry: missing keys, unused keys, ICU syntax, placeholder parity. An enabled language can have no gaps; a disabled, in-progress language may.
 - [ ] 4.9 [P0] Pseudo-locale (accented, +40% length) registered as a dev-only language; Playwright snapshots in pseudo and es-ES at all breakpoints, so longer future languages (German, French) fit without redesign.
 - [x] 4.10 [P0] Formatting helpers on `Intl` (dates, relative time, numbers, percentages, currency, lists) per locale; device time zone; never hand-formatted strings.
 - [x] 4.11 [P0] `lang` on `<html>` and on every mixed-language fragment (original-language quotes, source titles); `hyphens: auto`; logical CSS properties with `dir` from the registry (RTL-ready); font stack with full Latin Extended coverage.
@@ -187,9 +187,9 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 4.15 [P1] Localized PWA manifests per language (`lang`, `description`, shortcuts, `start_url` with prefix); serve the one matching the active locale (needs: 20.1).
 - [x] 4.16 [P1] Localized emails (Resend templates) and push payloads in the recipient's saved language.
 - [x] 4.17 [P1] Localized share cards (OG images) in the sharer's language.
-- [x] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in CI and in the nightly eval.
+- [x] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in `pnpm check:all` and in the nightly eval.
 - [ ] 4.19 [P1] Translation workflow: export new and changed keys → professional translation → native review → import via PR; *decide* git-only vs a translation management system; glossary enforcement.
-- [x] 4.20 [P1] "Add a language" dry run in CI: register the pseudo-locale as a test language and confirm that nothing outside the registry, `messages/`, `prompts/` and `methodology/` has to change.
+- [x] 4.20 [P1] "Add a language" dry run as an automated test: register the pseudo-locale as a test language and confirm that nothing outside the registry, `messages/`, `prompts/` and `methodology/` has to change.
 
 ### 4.B Content and operations
 - [ ] 4.21 [P0] Style guides for en and es-ES: tone (curious, plain, non-humiliating), form of address (es-ES "tú"/"vosotros"; a direct "you" in English), English spelling convention, number style, quotation marks, inclusive-language policy.
@@ -210,15 +210,15 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
   Target: ≤ 6 weeks of content work and no core code changes.
 - [ ] 4.26 [P3] Add the first new language through the playbook (candidates: French, German, Italian, Portuguese), together with its country edition.
 
-## 5. Repository, tooling and CI/CD
+## 5. Repository and tooling
 - [x] 5.1 [P0] Scaffold Next.js (App Router, TS strict, `src/` layout), pnpm, Node LTS pinned (`.nvmrc`, `engines`).
 - [x] 5.2 [P0] ESLint, Prettier, typecheck, import boundaries (`app/`, `features/*`, `lib/*`, `server/*`), conventional commits.
 - [x] 5.3 [P0] Vitest with coverage; Playwright projects for mobile, tablet and desktop in Chromium, WebKit and Firefox; axe-core integration.
-- [x] 5.4 [P0] GitHub Actions: lint, typecheck, unit, i18n checks (4.8), E2E on preview URL, axe, LLM eval gate on prompt-touching PRs (23.6), OSV scan, SBOM generation.
+- [x] 5.4 [P0] No hosted CI/CD by decision (Nov 2026; GitHub Actions and Dependabot removed). The same checks run locally: `pnpm verify` (typecheck, lint, i18n 4.8, migrations, unit, E2E with axe, client-secret scan) before every push, `pnpm eval` (23.6) before prompt or model changes, `pnpm audit:deps` for dependencies. Deploys build on Vercel, which runs the safe migrations (5.7a).
 - [x] 5.5 [P0] Renovate config, pnpm lockfile enforcement, dependency review.
 - [x] 5.6 [P0] Licences: AGPL-3.0 for code, CC BY 4.0 for `/methodology` and `/prompts`; `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`.
 - [x] 5.7 [P0] Env var schema with Zod (fail fast on boot) covering `VENICE_API_KEY`, `AI_GATEWAY_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, optional `ADMIN_IP_ALLOWLIST`, Edge Config and Vercel API tokens, database and email keys; `.env.example` with names only; secrets never committed.
-- [x] 5.7a [P0] Safe migrations on every build (`pnpm db:migrate`): schema-drift check, safety rules for the live version (opt-in marker for reviewed destructive changes), history integrity, one locked and verified transaction with lock-timeout retries, preview builds never migrate the production database, restore point and optional Neon backup branch. `pnpm db:check` in CI and `check:all`.
+- [x] 5.7a [P0] Safe migrations on every build (`pnpm db:migrate`): schema-drift check, safety rules for the live version (opt-in marker for reviewed destructive changes), history integrity, one locked and verified transaction with lock-timeout retries, preview builds never migrate the production database, restore point and optional Neon backup branch. `pnpm db:check` in `check:all`.
 - [x] 5.8 [P0] `CLAUDE.md`/`AGENTS.md` for the repo: stack, commands, non-negotiable rules (0.3), locale rules (0.5), model-slot rules (0.6).
 - [x] 5.9 [P0] Seed and fixture scripts: places, topics, sample analyses in en and es-ES, demo actors (fictional) for previews and tests.
 
@@ -347,6 +347,8 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 11.7 [P0] Source snapshotting to Blob (dated, hashed) for every cited page; respect robots.txt; snapshots private; only short quotes displayed.
 - [x] 11.8 [P0] Outlet registry: type, country, language. **No** left/right bias scores.
 - [x] 11.9 [P0] Retrieval that is aware of place and language: per-claim query plans use place tags to pick authoritative local sources and search in the claim's language plus English; deliberately retrieve outlets from both sides when coverage diverges.
+- [x] 11.9a [P0] Deep research before the perspective slots: a planner turns the canonical claim (and its PII-free local-language version) into 4–6 targeted queries (primary source, exact figure, reporting, existing fact-checks, counter-evidence, local language); they run in parallel across the search engines, results are ranked (tier, agreement across queries, ≤ 2 per domain) and the best 4–8 pages are read and archived, with verbatim excerpts. Slots open those pages free, and `search_web` takes up to 3 phrasings per call. The user's own words are never searched.
+- [x] 11.9b [P0] Interchangeable search engines (Exa, Brave, Exa via Venice, Brave via Venice): primary, ordered backups, optional combined mode and research depth in Admin › Investigation › Search engines, as an audited config version.
 
 ## 12. Truth-seeking pipeline (F1 engine)
 - [x] 12.1 [P0] Workflow skeleton: each stage is a durable, retryable step with persisted state and OpenTelemetry spans; progress events streamed to the UI.
@@ -518,14 +520,14 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 23.3 [P1] Language parity suite: the same claims in every supported language (en and es-ES at launch); ≥ 98% cross-language grade agreement; native fluency and terminology ratings ≥ 4.5/5 (es-ES raters for Spanish); es-ES lexicon check (4.18).
 - [x] 23.4 [P1] Tag accuracy evals: country ≥ 95%, region and topic ≥ 90%.
 - [x] 23.5 [P1] Nightly regression on the gold set, with alerts.
-- [x] 23.6 [P1] Release gate in CI: no prompt or model change ships if accuracy drops > 1 point or any symmetry or language-parity metric regresses beyond tolerance.
+- [x] 23.6 [P1] Release gate (`pnpm eval` before shipping; also automatic after every model swap in the admin console): no prompt or model change ships if accuracy drops > 1 point or any symmetry or language-parity metric regresses beyond tolerance.
 - [ ] 23.7 [P2] Perceived-slant panels (Westwood-style) stratified by ideology in ES, US, UK and MX, then each country added with a new language; goal: no significant perceived slant on ≥ 80% of topics.
 - [ ] 23.8 [P1] Hallucination tests: quote verification coverage, "Not checkable" downgrade behaviour, prompt-injection red-team set.
 
 ## 24. Security and abuse prevention
 - [ ] 24.1 [P1] Rate limits and quotas (WAF + app level), BotID on expensive and write routes, account age and reputation signals.
 - [x] 24.2 [P1] Anomaly detection for rating bursts, coordinated reports and brigading on errors and appeals.
-- [x] 24.3 [P1] Secrets: environment-scoped Vercel env vars, quarterly rotation runbook, no secrets in client bundles (CI check).
+- [x] 24.3 [P1] Secrets: environment-scoped Vercel env vars, quarterly rotation runbook, no secrets in client bundles (`pnpm check:secrets`, part of `pnpm verify`).
 - [ ] 24.4 [P1] Abuse reporting channel; no bulk API in the MVP.
 - [ ] 24.5 [P1] Third-party penetration test before public launch (focus: SSRF, prompt injection, auth, RLS); fix all high and critical findings.
 - [x] 24.6 [P1] Incident response plan (security, model outage, viral error, legal notice) with on-call rotation.

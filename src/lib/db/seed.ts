@@ -7,12 +7,10 @@ import { QUIZ_ITEMS } from '../data/quiz';
 import { OUTLETS } from '../data/outlets';
 import { defaultConfig } from '../config/schema';
 
-/** Idempotent reference-data seed: places, topics, quiz items and the initial active configuration. */
+/** Idempotent reference-data seed: places (missing ones are always added), topics, quiz items and the initial active configuration. */
 export async function seedIfEmpty(db: Db) {
-  const [{ count } = { count: 0 }] = await db.select({ count: sql<number>`count(*)::int` }).from(s.places);
-  if (count === 0) {
-    await db.insert(s.places).values(PLACES.map((p) => ({ ...p, localName: p.localName ?? null })));
-  }
+  // Places are added by id on every run, so new places (e.g. new countries) reach existing databases; existing rows are kept.
+  await db.insert(s.places).values(PLACES.map((p) => ({ ...p, localName: p.localName ?? null }))).onConflictDoNothing();
   const [{ tc } = { tc: 0 }] = await db.select({ tc: sql<number>`count(*)::int` }).from(s.topics);
   if (tc === 0) {
     await db.insert(s.topics).values(TOPICS.map((t) => ({ ...t, countryCode: t.countryCode ?? null })));

@@ -7,6 +7,8 @@ import { readMigrationFiles } from 'drizzle-orm/migrator';
 import { blocking, lintMigrations, normaliseHost, readLocalMigrations, runSafeMigrations, UnsafeMigrationError, type RunOptions, type SqlClient } from './migrate-safe';
 
 const REAL = path.join(process.cwd(), 'drizzle');
+/** Tag of the extra migration the tests append after the real ones. */
+const NEXT = `${String(readLocalMigrations(REAL).length).padStart(4, '0')}_test`;
 const temps: string[] = [];
 afterEach(() => {
   for (const t of temps.splice(0)) fs.rmSync(t, { recursive: true, force: true });
@@ -60,7 +62,7 @@ describe('safe migrations', () => {
     await runSafeMigrations(db, opts(REAL));
     const dir = withExtra('ALTER TABLE "llm_calls" ADD COLUMN "note" text;', (c) => (c.note = { name: 'note', type: 'text', primaryKey: false, notNull: false }));
     const r = await runSafeMigrations(db, opts(dir));
-    expect(r.applied).toEqual(['0006_test']);
+    expect(r.applied).toEqual([NEXT]);
     expect(await columns(db)).toContain('note');
   });
 
@@ -92,7 +94,7 @@ describe('safe migrations', () => {
     expect(await appliedCount(db)).toBe(before);
     // With the code updated too, the approved change applies.
     const r = await runSafeMigrations(db, opts(withExtra(sql, (c) => delete c.fallback)));
-    expect(r.applied).toEqual(['0006_test']);
+    expect(r.applied).toEqual([NEXT]);
     expect(r.warnings.some((w) => w.approved === 'column unused since v2')).toBe(true);
     expect(await columns(db)).not.toContain('fallback');
   });
@@ -114,7 +116,7 @@ describe('safe migrations', () => {
     await expect(runSafeMigrations(db, opts(dir, { environment: 'preview', host: 'ep-prod.eu-central-1.aws.neon.tech' }))).rejects.toThrow(/points at the production database/);
     expect(await columns(db)).not.toContain('note');
     // A preview on its own Neon branch (different host; the branch copied the production marker) may migrate.
-    expect((await runSafeMigrations(db, opts(dir, { environment: 'preview', host: 'ep-branch.eu-central-1.aws.neon.tech' }))).applied).toEqual(['0006_test']);
+    expect((await runSafeMigrations(db, opts(dir, { environment: 'preview', host: 'ep-branch.eu-central-1.aws.neon.tech' }))).applied).toEqual([NEXT]);
   });
 
   it('is cautious when a preview cannot tell which database it has', async () => {

@@ -7,7 +7,7 @@ import { AiError } from './client';
 import { callModel } from './provider';
 import { getModel } from './catalog';
 import { loadPrompt } from './prompts';
-import { TOOL_DEFINITIONS, executeTool, sourceReachable, verifySourceQuote, type ToolContext } from './tools';
+import { TOOL_DEFINITIONS, executeTool, sourceReachable, verifySourceQuote, type PageCache, type ToolContext } from './tools';
 import { parseJson } from './json';
 import { dedupeSources, inferTier } from './sources';
 import { isConflictOfInterest } from './aggregate';
@@ -18,6 +18,8 @@ export type InvestigateInput = {
   slot: SlotConfig;
   claim: AtomicClaim;
   pool: VerdictSource[];
+  /** Pages the research step already read: opening them is free and instant. */
+  pages?: PageCache;
   config: AppConfig;
   analysisId?: string;
   /** Run a candidate model instead of the slot's model (shadow mode / harness check). */
@@ -52,7 +54,8 @@ export async function investigate(input: InvestigateInput): Promise<SlotVerdict 
   const reasoningEffort = h.reasoningEffort && catalogModel?.capabilities.reasoningEffortOptions.includes(h.reasoningEffort) ? h.reasoningEffort : undefined;
 
   const ctx: ToolContext = {
-    pageCache: new Map(),
+    pageCache: new Map(input.pages ?? []),
+    search: config.search,
     counters: { web: 0, x: 0, scrape: 0, toolCalls: 0 },
     budget: { maxWebSearches: h.maxWebSearches, maxScrapes: h.maxScrapes },
   };
@@ -61,7 +64,7 @@ export async function investigate(input: InvestigateInput): Promise<SlotVerdict 
     minSources: config.pipeline.minSources,
     staleMonths: config.pipeline.staleDataMonths,
   });
-  const poolForModel = pool.map((s, i) => ({ n: i + 1, title: s.title, url: s.url, tier: s.tier, snippet: s.quote ?? '' }));
+  const poolForModel = pool.map((s, i) => ({ n: i + 1, title: s.title, url: s.url, tier: s.tier, date: s.publishedAt, ...(s.quoteVerified ? { excerpt: s.quote ?? '', alreadyRead: true } : { snippet: s.quote ?? '' }) }));
   const messages: ChatMessage[] = [
     { role: 'system', content: system.text },
     {

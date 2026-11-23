@@ -131,10 +131,13 @@ export function demoRespond(step: string, req: ChatRequest): ChatResponse {
     case 'tag': {
       const claim = between(text, 'claim');
       const places = matchKeywords(claim, PLACE_KEYWORDS).map((id) => ({ id, confidence: 0.7 }));
+      const worldwide = /\b(global|world|worldwide|mundial|mundo|planet|planeta|wmo|unhcr|united nations|naciones unidas)\b/i.test(claim);
+      // A statistic with no place named depends on where it applies: the reader is asked (as the real tagger would).
+      const placeNeeded = !places.length && !worldwide && /\d/.test(claim);
       const topics = matchKeywords(claim, TOPIC_KEYWORDS)
         .slice(0, 3)
         .map((id) => ({ id, confidence: 0.7 }));
-      return response(JSON.stringify({ places: places.length ? places : [{ id: 'GLOBAL', confidence: 0.4 }], topics: topics.length ? topics : [{ id: 'culture', confidence: 0.3 }] }));
+      return response(JSON.stringify({ places: places.length ? places : [{ id: 'GLOBAL', confidence: 0.4 }], topics: topics.length ? topics : [{ id: 'culture', confidence: 0.3 }], placeNeeded }));
     }
     case 'investigate': {
       const slot = step.split(':')[1] ?? 'X';

@@ -8,7 +8,7 @@ export type FieldType = 'number' | 'boolean' | 'select' | 'text' | 'list';
 export type FieldDescriptor = {
   /** Dotted path into AppConfig, e.g. 'pipeline.minSources'. */
   path: string;
-  section: 'pipeline' | 'routing' | 'limits' | 'content' | 'alerts';
+  section: 'pipeline' | 'routing' | 'search' | 'limits' | 'content' | 'alerts';
   type: FieldType;
   label: { en: string; 'es-ES': string };
   help: { en: string; 'es-ES': string };
@@ -115,6 +115,45 @@ export const FIELDS: FieldDescriptor[] = [
     label: L('"Push back" turns', 'Turnos de «Rebatir»'),
     help: L('Maximum exchanges in one Push back conversation.', 'Máximo de intercambios en una conversación de Rebatir.'), affects: ['dialogue'],
   },
+  // ── Search engines and research depth (edited on Admin › Investigation) ──
+  ...(() => {
+    const engines = [
+      { value: 'exa', label: L('Exa', 'Exa') },
+      { value: 'brave', label: L('Brave Search', 'Brave Search') },
+      { value: 'venice-exa', label: L('Exa via Venice', 'Exa a través de Venice') },
+      { value: 'venice-brave', label: L('Brave via Venice', 'Brave a través de Venice') },
+    ];
+    return [
+      {
+        path: 'search.primary', section: 'search', type: 'select', options: engines, needsTest: true,
+        label: L('Primary search engine', 'Buscador principal'),
+        help: L('Tried first for every search in an investigation.', 'Se usa primero en cada búsqueda de una investigación.'),
+        affects: ['check', 'briefing', 'costs'],
+      },
+      {
+        path: 'search.fallbacks', section: 'search', type: 'list', options: engines,
+        label: L('Backup search engines', 'Buscadores de respaldo'),
+        help: L('Tried in this order when the primary fails or finds nothing.', 'Se prueban en este orden si el principal falla o no encuentra nada.'),
+        affects: ['check', 'briefing'],
+      },
+      {
+        path: 'search.combine', section: 'search', type: 'boolean', needsTest: true,
+        label: L('Combine two engines', 'Combinar dos buscadores'),
+        help: L('Queries the primary and the first backup together and merges the results: more varied sources, about twice the search cost.', 'Consulta a la vez el principal y el primer respaldo y une los resultados: fuentes más variadas, aproximadamente el doble de coste de búsqueda.'),
+        affects: ['check', 'costs'],
+      },
+      {
+        path: 'search.depth', section: 'search', type: 'select', needsTest: true,
+        options: [
+          { value: 'standard', label: L('Standard research', 'Investigación estándar') },
+          { value: 'deep', label: L('Deep research', 'Investigación profunda') },
+        ],
+        label: L('Research before the models start', 'Investigación previa a los modelos'),
+        help: L('Standard: 4 planned searches and 4 pages read. Deep: 6 searches and 8 pages.', 'Estándar: 4 búsquedas planificadas y 4 páginas leídas. Profunda: 6 búsquedas y 8 páginas.'),
+        affects: ['check', 'briefing', 'costs'],
+      },
+    ] satisfies FieldDescriptor[];
+  })(),
   // ── AI vendors (edited with the vendor switch on Admin › Models) ──
   {
     path: 'routing.primary', section: 'routing', type: 'select', dangerous: true,

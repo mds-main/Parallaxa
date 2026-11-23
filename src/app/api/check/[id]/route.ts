@@ -14,6 +14,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       reusedFrom: reused,
       progress: a.progress,
       error: a.status === 'failed' && !reused ? a.error : undefined,
+      question: a.status === 'needs_input' ? { kind: 'place', suggestions: a.pending?.suggestions ?? [] } : undefined,
     },
     { headers: { 'Cache-Control': 'no-store' } },
   );

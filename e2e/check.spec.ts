@@ -38,3 +38,16 @@ test('first visit goes to onboarding, which can be skipped', async ({ page }) =>
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.getByRole('heading', { name: 'Check something you saw' })).toBeVisible();
 });
+
+test('asks which place a claim is about when it does not say, then checks it there', async ({ page }) => {
+  await skipOnboarding(page);
+  await page.goto('/en');
+  await page.getByRole('textbox').first().fill('House prices have risen 40% in 5 years.');
+  await page.getByRole('button', { name: 'Check it' }).click();
+  await expect(page).toHaveURL(/\/en\/a\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole('heading', { name: 'Which place is this about?' })).toBeVisible({ timeout: 30_000 });
+  await page.getByLabel('Or search a country or region').fill('Portu');
+  await page.getByRole('option', { name: /Portugal/ }).click();
+  await expect(page.getByRole('heading', { name: 'Who investigated' })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('(Portugal).').first()).toBeVisible();
+});

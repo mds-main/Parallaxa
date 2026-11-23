@@ -1,4 +1,4 @@
-/** Place list (TODO 3.10): ISO 3166-1 countries and ISO 3166-2 first-level regions for launch countries. */
+/** Place list (TODO 3.10): ISO 3166-1 countries and ISO 3166-2 first-level regions for launch countries, plus the main European countries. */
 export type PlaceSeed = {
   id: string;
   parentId: string | null;
@@ -65,6 +65,47 @@ const US_STATES: [string, string, string, string][] = [
   ['WY', 'Wyoming', 'Wyoming', 'America/Denver'],
 ];
 
+const C = (id: string, en: string, es: string, localName: string | undefined, timezone: string): PlaceSeed => ({
+  id, parentId: 'GLOBAL', level: 'country', names: { en, 'es-ES': es }, ...(localName ? { localName } : {}), timezone, coverageLevel: 'limited', hasEdition: false,
+});
+
+/** EU member states (Spain is listed separately with its regions). */
+export const EU_MEMBERS = new Set(['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE']);
+
+/** Main European countries beyond Spain and the UK: the EU, plus Norway, Switzerland, Iceland and Ukraine. */
+const EUROPE: PlaceSeed[] = [
+  C('AT', 'Austria', 'Austria', 'Österreich', 'Europe/Vienna'),
+  C('BE', 'Belgium', 'Bélgica', 'België / Belgique', 'Europe/Brussels'),
+  C('BG', 'Bulgaria', 'Bulgaria', 'България', 'Europe/Sofia'),
+  C('HR', 'Croatia', 'Croacia', 'Hrvatska', 'Europe/Zagreb'),
+  C('CY', 'Cyprus', 'Chipre', 'Κύπρος', 'Asia/Nicosia'),
+  C('CZ', 'Czechia', 'Chequia', 'Česko', 'Europe/Prague'),
+  C('DK', 'Denmark', 'Dinamarca', 'Danmark', 'Europe/Copenhagen'),
+  C('EE', 'Estonia', 'Estonia', 'Eesti', 'Europe/Tallinn'),
+  C('FI', 'Finland', 'Finlandia', 'Suomi', 'Europe/Helsinki'),
+  C('FR', 'France', 'Francia', undefined, 'Europe/Paris'),
+  C('DE', 'Germany', 'Alemania', 'Deutschland', 'Europe/Berlin'),
+  C('GR', 'Greece', 'Grecia', 'Ελλάδα', 'Europe/Athens'),
+  C('HU', 'Hungary', 'Hungría', 'Magyarország', 'Europe/Budapest'),
+  C('IE', 'Ireland', 'Irlanda', 'Éire', 'Europe/Dublin'),
+  C('IT', 'Italy', 'Italia', 'Italia', 'Europe/Rome'),
+  C('LV', 'Latvia', 'Letonia', 'Latvija', 'Europe/Riga'),
+  C('LT', 'Lithuania', 'Lituania', 'Lietuva', 'Europe/Vilnius'),
+  C('LU', 'Luxembourg', 'Luxemburgo', 'Lëtzebuerg', 'Europe/Luxembourg'),
+  C('MT', 'Malta', 'Malta', undefined, 'Europe/Malta'),
+  C('NL', 'Netherlands', 'Países Bajos', 'Nederland', 'Europe/Amsterdam'),
+  C('PL', 'Poland', 'Polonia', 'Polska', 'Europe/Warsaw'),
+  C('PT', 'Portugal', 'Portugal', undefined, 'Europe/Lisbon'),
+  C('RO', 'Romania', 'Rumanía', 'România', 'Europe/Bucharest'),
+  C('SK', 'Slovakia', 'Eslovaquia', 'Slovensko', 'Europe/Bratislava'),
+  C('SI', 'Slovenia', 'Eslovenia', 'Slovenija', 'Europe/Ljubljana'),
+  C('SE', 'Sweden', 'Suecia', 'Sverige', 'Europe/Stockholm'),
+  C('NO', 'Norway', 'Noruega', 'Norge', 'Europe/Oslo'),
+  C('CH', 'Switzerland', 'Suiza', 'Schweiz / Suisse / Svizzera', 'Europe/Zurich'),
+  C('IS', 'Iceland', 'Islandia', 'Ísland', 'Atlantic/Reykjavik'),
+  C('UA', 'Ukraine', 'Ucrania', 'Україна', 'Europe/Kyiv'),
+];
+
 export const PLACES: PlaceSeed[] = [
   { id: 'GLOBAL', parentId: null, level: 'global', names: { en: 'Global', 'es-ES': 'Global' }, timezone: 'UTC', coverageLevel: 'full', hasEdition: true },
   { id: 'ES', parentId: 'GLOBAL', level: 'country', names: { en: 'Spain', 'es-ES': 'España' }, timezone: 'Europe/Madrid', coverageLevel: 'full', hasEdition: true },
@@ -77,4 +118,5 @@ export const PLACES: PlaceSeed[] = [
   R('GB-WLS', 'Wales', 'Gales', 'Europe/London'),
   R('GB-NIR', 'Northern Ireland', 'Irlanda del Norte', 'Europe/London'),
   { id: 'MX', parentId: 'GLOBAL', level: 'country', names: { en: 'Mexico', 'es-ES': 'México' }, timezone: 'America/Mexico_City', coverageLevel: 'limited', hasEdition: false },
+  ...EUROPE,
 ];

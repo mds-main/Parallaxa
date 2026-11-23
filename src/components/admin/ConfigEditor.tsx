@@ -33,8 +33,10 @@ function show(v: unknown): string {
 
 /** Select settings show their option label (e.g. "Vercel AI Gateway"), everything else its value. */
 function valueLabel(p: string, v: unknown, locale: 'en' | 'es-ES'): string {
-  const option = FIELDS.find((f) => f.path === p)?.options?.find((o) => o.value === v);
-  return option ? option.label[locale] : show(v);
+  const options = FIELDS.find((f) => f.path === p)?.options;
+  const label = (x: unknown) => options?.find((o) => o.value === x)?.label[locale];
+  if (Array.isArray(v) && options) return v.map((x) => label(x) ?? String(x)).join(', ') || '—';
+  return label(v) ?? show(v);
 }
 
 function pathLabel(p: string, draft: AppConfig, locale: 'en' | 'es-ES'): string {

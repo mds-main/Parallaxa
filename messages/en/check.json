@@ -22,5 +22,16 @@
     "invalid": "Please paste some text, a link or a screenshot.",
     "tooLarge": "That file is too large (maximum 5 MB).",
     "generic": "Something went wrong. Please try again."
+  },
+  "place": {
+    "title": "Which place is this about?",
+    "intro": "The claim doesn't say where, and the answer depends on it. Choose the place and we'll check it there.",
+    "suggested": "Suggestions",
+    "home": "your home",
+    "search": "Or search a country or region",
+    "global": "Not about a particular place",
+    "sending": "Starting the check…",
+    "error": "That didn't work. Please try again.",
+    "note": "Everyone who asks this claim about the same place gets the same analysis."
   }
 }

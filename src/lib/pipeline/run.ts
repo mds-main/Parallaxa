@@ -12,20 +12,21 @@ import { loadPrompt } from '../ai/prompts';
 import { CANONICALIZE_SCHEMA, COMPOSE_SCHEMA, TAG_SCHEMA, parseJson } from '../ai/json';
 import { investigate } from '../ai/harness';
 import { aggregateVerdicts } from '../ai/aggregate';
-import { searchWeb } from '../ai/tools';
-import { dedupeSources, inferTier } from '../ai/sources';
+import { buildEvidencePool } from '../research/pool';
+import { dedupeSources } from '../ai/sources';
 import { isDemoMode } from '../ai/client';
 import { hash } from '../ai/demo';
 import { ingest, textHash, type CheckInput } from './ingest';
 import { embedText, findCached } from './cache';
 import { renderAnalysis } from './render';
-import { PRIMARY_SOURCES } from '../data/outlets';
 import { domainOf } from '../ai/sources';
 import { trace } from '@opentelemetry/api';
 import { withSpan } from '../telemetry';
 import {
   CLAIM_TYPES,
   type AnalysisProgress,
+  type ClaimTags,
+  type PendingCheck,
   type MirrorTest,
   type AtomicClaim,
   type PipelineStage,
@@ -33,10 +34,15 @@ import {
   type StructuredAnalysis,
   type Technique,
   TECHNIQUES,
-  type VerdictSource,
 } from '../domain/types';
 
-export type RunResult = { analysisId: string; status: 'published' | 'review' | 'failed'; reusedFrom?: string };
+export type RunResult = { analysisId: string; status: 'published' | 'review' | 'failed' | 'needs_input'; reusedFrom?: string };
+
+export type RunOptions = {
+  skipCache?: boolean;
+  /** The place the claim is about when it doesn't say (a briefing knows its edition's place). Without it, the reader is asked. */
+  place?: string;
+};
 
 const POLITICAL_TOPICS = new Set(['elections', 'immigration', 'justice', 'territorial', 'economy', 'economy.taxes', 'pensions', 'security', 'equality', 'public_spending', 'housing', 'climate']);
 
@@ -66,11 +72,26 @@ async function canonicalize(text: string, config: AppConfig, analysisId: string,
     analysisId,
     request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<user_input>${text}</user_input>` }], responseSchema: CANONICALIZE_SCHEMA, temperature: 0 },
   });
-  const out = parseJson<{ claims: { canonical: string; type: string; checkable: boolean }[] }>(res.content);
-  return out.claims
+  return toAtomicClaims(parseJson<{ claims: RawClaim[] }>(res.content).claims, config.pipeline.maxClaimsPerCheck);
+}
+
+type RawClaim = { canonical: string; local?: string; type: string; checkable: boolean };
+
+/** Model output → claims. `local` is the same PII-free claim in the input's language, used to search local sources. */
+export function toAtomicClaims(raw: RawClaim[], max: number): AtomicClaim[] {
+  return raw
     .filter((c) => c.canonical?.trim())
-    .slice(0, config.pipeline.maxClaimsPerCheck)
-    .map((c, i) => ({ id: `c${i + 1}`, canonical: c.canonical.trim(), type: (CLAIM_TYPES as readonly string[]).includes(c.type) ? (c.type as AtomicClaim['type']) : 'fact', checkable: Boolean(c.checkable) }));
+    .slice(0, max)
+    .map((c, i) => {
+      const local = c.local?.trim();
+      return {
+        id: `c${i + 1}`,
+        canonical: c.canonical.trim(),
+        ...(local && local !== c.canonical.trim() ? { localized: local } : {}),
+        type: (CLAIM_TYPES as readonly string[]).includes(c.type) ? (c.type as AtomicClaim['type']) : 'fact',
+        checkable: Boolean(c.checkable),
+      };
+    });
 }
 
 async function tag(claim: string, config: AppConfig, analysisId: string) {
@@ -86,7 +107,7 @@ async function tag(claim: string, config: AppConfig, analysisId: string) {
     analysisId,
     request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<claim>${claim}</claim>` }], responseSchema: TAG_SCHEMA, temperature: 0 },
   });
-  const out = parseJson<{ places: { id: string; confidence: number }[]; topics: { id: string; confidence: number }[] }>(res.content);
+  const out = parseJson<{ places: { id: string; confidence: number }[]; topics: { id: string; confidence: number }[]; placeNeeded?: boolean }>(res.content);
   const places = out.places
     .map((p) => {
       // Low-confidence region tags fall back to their parent country (PRD F1 stage 2b).
@@ -104,45 +125,7 @@ async function tag(claim: string, config: AppConfig, analysisId: string) {
     })
     .filter((x): x is { id: string; confidence: number } => Boolean(x))
     .slice(0, 3);
-  return { places: places.length ? places : [{ id: 'GLOBAL', confidence: 0.3 }], topics: topics.length ? topics : [{ id: 'culture', confidence: 0.2 }] };
-}
-
-/** Stage 3: the shared evidence pool every perspective slot starts from. */
-async function buildPool(claim: string, config: AppConfig, analysisId: string, ctx: { placeIds: string[]; originalText: string; lang: string }): Promise<VerdictSource[]> {
-  if (isDemoMode()) return [];
-  const pool: VerdictSource[] = [];
-  // Place- and language-aware retrieval (TODO 11.9): search the canonical (English) claim and, for
-  // non-English input, the original wording, so local-language sources are found too.
-  const queries = [claim, ...(ctx.lang !== 'en' && ctx.originalText ? [ctx.originalText.slice(0, 300)] : [])];
-  for (const q of queries) {
-    try {
-      for (const r of (await searchWeb(q)).slice(0, 5)) pool.push({ url: r.url, title: r.title, tier: inferTier(r.url), stance: 'context', quote: r.snippet.slice(0, 280), origin: 'pool', publishedAt: r.date });
-    } catch {
-      /* secondary search unavailable */
-    }
-  }
-  const hints = [...new Set(ctx.placeIds.flatMap((p) => PRIMARY_SOURCES[p.split('-')[0]!] ?? []).concat(PRIMARY_SOURCES.GLOBAL!))];
-  try {
-    const res = await callModel({
-      step: 'retrieve',
-      model: config.roles.reader,
-      config,
-      analysisId,
-      searches: { web: 1, x: 0, scrape: 0 },
-      request: {
-        messages: [
-          { role: 'system', content: `List the most relevant primary and reputable sources for checking the claim, from across the political spectrum. Prefer the authoritative primary sources for the places involved: ${hints.join(', ')}. Reply with one line per source: title — URL.` },
-          { role: 'user', content: `<claim>${claim}</claim>` },
-        ],
-        veniceParameters: { enable_web_search: 'on', enable_web_citations: true },
-        temperature: 0,
-      },
-    });
-    for (const c of res.citations) pool.push({ url: c.url, title: c.title ?? c.url, tier: inferTier(c.url), stance: 'context', quote: c.content?.slice(0, 280), origin: 'pool', publishedAt: c.date });
-  } catch {
-    /* reader search failed; slots will search themselves */
-  }
-  return dedupeSources(pool).sort((a, b) => a.tier - b.tier).slice(0, 10);
+  return { places: places.length ? places : [{ id: 'GLOBAL', confidence: 0.3 }], topics: topics.length ? topics : [{ id: 'culture', confidence: 0.2 }], placeNeeded: Boolean(out.placeNeeded) } satisfies ClaimTags;
 }
 
 async function shadowQuota(slot: SlotConfig, configActivatedAt: Date | null): Promise<boolean> {
@@ -161,18 +144,35 @@ function pickWriter(config: AppConfig, analysisId: string): SlotConfig {
   return enabled[hash(analysisId) % enabled.length]!;
 }
 
-export function runAnalysis(analysisId: string, input: CheckInput, lang: string, opts: { skipCache?: boolean } = {}): Promise<RunResult> {
+export function runAnalysis(analysisId: string, input: CheckInput, lang: string, opts: RunOptions = {}): Promise<RunResult> {
   return withSpan('pipeline.run', { 'plx.input_kind': input.kind, 'plx.lang': lang }, () => runAnalysisInner(analysisId, input, lang, opts), (r) => ({ 'plx.status': r.status, 'plx.reused': Boolean(r.reusedFrom) }));
 }
 
-async function runAnalysisInner(analysisId: string, input: CheckInput, lang: string, opts: { skipCache?: boolean }): Promise<RunResult> {
+type PipelineCtx = Awaited<ReturnType<typeof pipelineContext>>;
+
+async function pipelineContext(analysisId: string, alreadyDone: PipelineStage[] = []) {
   const db = await getDb();
   const { id: configVersionId, config, activatedAt } = await getActiveConfig();
-  const done: PipelineStage[] = [];
+  const done: PipelineStage[] = [...alreadyDone];
   const step = async (stage: PipelineStage) => {
     trace.getActiveSpan()?.addEvent(`stage.${stage}`);
     await setProgress(analysisId, stage, [...done]);
   };
+  return { db, config, configVersionId, activatedAt, done, step };
+}
+
+const pickMain = (atomic: AtomicClaim[]) => atomic.find((c) => c.checkable && c.type !== 'value') ?? atomic[0]!;
+const isValuesClaim = (c: AtomicClaim) => c.type === 'value' || c.type === 'prediction' || !c.checkable;
+
+async function fail(analysisId: string, e: unknown): Promise<RunResult> {
+  const db = await getDb();
+  await db.update(s.analyses).set({ status: 'failed', error: (e as Error).message.slice(0, 500), pending: null }).where(eq(s.analyses.id, analysisId));
+  return { analysisId, status: 'failed' };
+}
+
+async function runAnalysisInner(analysisId: string, input: CheckInput, lang: string, opts: RunOptions): Promise<RunResult> {
+  const ctx = await pipelineContext(analysisId);
+  const { config, step, done } = ctx;
   try {
     await step('ingest');
     const ingested = await ingest(input, config, analysisId);
@@ -182,13 +182,97 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
     await step('decompose');
     const atomic = await canonicalize(ingested.text, config, analysisId, ingested.kind !== 'url');
     if (!atomic.length) throw new Error('No claim found in the input.');
-    const main = atomic.find((c) => c.checkable && c.type !== 'value') ?? atomic[0]!;
-    const isValues = main.type === 'value' || main.type === 'prediction' || !main.checkable;
+    done.push('decompose');
+
+    const main = pickMain(atomic);
+    await step('tag');
+    const tags = await tag(main.canonical, config, analysisId);
+    done.push('tag');
+
+    let pending: PendingCheck = {
+      ingested: { kind: ingested.kind, excerpt: ingested.excerpt, lang: ingested.lang },
+      atomic,
+      mainId: main.id,
+      tags,
+      lang,
+      skipCache: Boolean(opts.skipCache),
+      suggestions: placeSuggestions(tags, ingested.lang),
+    };
+    if (tags.placeNeeded && !isValuesClaim(main)) {
+      if (opts.place) pending = await applyPlace(pending, opts.place);
+      else return await pauseForPlace(analysisId, pending, done);
+    }
+    return await finishAnalysis(analysisId, pending, ctx);
+  } catch (e) {
+    return fail(analysisId, e);
+  }
+}
+
+/** Places offered first when asking: the tagger's own guesses, then the main countries of the input's language. */
+export function placeSuggestions(tags: ClaimTags, inputLang: string): string[] {
+  const byLanguage: Record<string, string[]> = { es: ['ES', 'MX'], en: ['US', 'GB'], fr: ['FR', 'BE'], de: ['DE', 'AT'], it: ['IT'], pt: ['PT'] };
+  const guesses = tags.places.map((p) => p.id).filter((id) => id !== 'GLOBAL');
+  return [...new Set([...guesses, ...(byLanguage[inputLang.split('-')[0]!] ?? [])])].slice(0, 4);
+}
+
+async function pauseForPlace(analysisId: string, pending: PendingCheck, done: PipelineStage[]): Promise<RunResult> {
+  const db = await getDb();
+  const progress: AnalysisProgress = { stage: 'tag', done: [...done], updatedAt: new Date().toISOString(), question: 'place' };
+  await db.update(s.analyses).set({ status: 'needs_input', pending, progress }).where(eq(s.analyses.id, analysisId));
+  return { analysisId, status: 'needs_input' };
+}
+
+/** "Unemployment is at a 15-year low." + Spain → "Unemployment is at a 15-year low (Spain)." Deterministic, so the same claim and place always meet the same analysis. */
+export function withPlace(text: string, placeName: string): string {
+  return `${text.trim().replace(/[.!?。]+$/u, '')} (${placeName}).`;
+}
+
+/** Puts the chosen place into the main claim (canonical and local versions) and its tags. */
+export async function applyPlace(pending: PendingCheck, placeId: string): Promise<PendingCheck> {
+  const db = await getDb();
+  const [place] = await db.select().from(s.places).where(eq(s.places.id, placeId));
+  if (!place) throw new Error('Unknown place.');
+  if (placeId === 'GLOBAL') return { ...pending, tags: { ...pending.tags, places: [{ id: 'GLOBAL', confidence: 1 }], placeNeeded: false } };
+  const localName = pending.ingested.lang.startsWith('es') ? (place.names['es-ES'] ?? place.names.en!) : (place.localName ?? place.names.en!);
+  return {
+    ...pending,
+    atomic: pending.atomic.map((c) =>
+      c.id !== pending.mainId ? c : { ...c, canonical: withPlace(c.canonical, place.names.en!), ...(c.localized ? { localized: withPlace(c.localized, localName) } : {}) },
+    ),
+    tags: { ...pending.tags, places: [{ id: placeId, confidence: 1 }], placeNeeded: false },
+  };
+}
+
+/** Continues a check that was waiting for the reader to choose a place. The API has already moved it to "running". */
+export async function resumeWithPlace(analysisId: string, placeId: string): Promise<RunResult> {
+  const db = await getDb();
+  const [row] = await db.select({ pending: s.analyses.pending, progress: s.analyses.progress }).from(s.analyses).where(eq(s.analyses.id, analysisId));
+  if (!row?.pending) return { analysisId, status: 'failed' };
+  return withSpan('pipeline.resume', { 'plx.place': placeId }, async () => {
+    const ctx = await pipelineContext(analysisId, row.progress?.done ?? ['ingest', 'decompose', 'tag']);
+    try {
+      const pending = await applyPlace(row.pending!, placeId);
+      await db.update(s.analyses).set({ pending: null }).where(eq(s.analyses.id, analysisId));
+      return await finishAnalysis(analysisId, pending, ctx);
+    } catch (e) {
+      return fail(analysisId, e);
+    }
+  });
+}
+
+/** Everything after tagging: similar-claim cache, research, investigation, aggregation, writing and publishing. */
+async function finishAnalysis(analysisId: string, prepared: PendingCheck, ctx: PipelineCtx): Promise<RunResult> {
+  const { db, config, configVersionId, activatedAt, step, done } = ctx;
+  const { ingested, atomic, tags, lang } = prepared;
+  const opts = { skipCache: prepared.skipCache };
+  try {
+    const main = atomic.find((c) => c.id === prepared.mainId) ?? pickMain(atomic);
+    const isValues = isValuesClaim(main);
     const h = textHash(main.canonical);
     const embedding = await embedText(main.canonical, config.roles.embedding);
     const cached = opts.skipCache ? null : await findCached(h, embedding, config.pipeline.cacheSimilarity);
     if (cached && cached.analysisId !== analysisId) {
-      await db.update(s.analyses).set({ status: 'failed', error: `reused:${cached.analysisId}` }).where(eq(s.analyses.id, analysisId));
+      await db.update(s.analyses).set({ status: 'failed', error: `reused:${cached.analysisId}`, pending: null }).where(eq(s.analyses.id, analysisId));
       return { analysisId: cached.analysisId, status: 'published', reusedFrom: cached.analysisId };
     }
     const [claimRow] = await db
@@ -196,14 +280,12 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
       .values({ canonicalText: main.canonical, lang: ingested.lang, claimType: main.type, textHash: h, embedding })
       .onConflictDoUpdate({ target: s.claims.textHash, set: { embedding, lang: ingested.lang } })
       .returning({ id: s.claims.id });
-    done.push('decompose');
-
-    await step('tag');
-    const tags = await tag(main.canonical, config, analysisId);
-    done.push('tag');
 
     await step('retrieve');
-    const pool = isValues ? [] : await buildPool(main.canonical, config, analysisId, { placeIds: tags.places.map((p) => p.id), originalText: ingested.text, lang: ingested.lang });
+    // Deep research on canonical, PII-free text only (never the user's own words): plan, search, rank, read.
+    const research = isValues || isDemoMode() ? null : await buildEvidencePool(main, config, analysisId, { placeIds: tags.places.map((p) => p.id) });
+    const pool = research?.pool ?? [];
+    const pages = research?.pages;
     done.push('retrieve');
 
     await step('investigate');
@@ -212,7 +294,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
     const shadows: (SlotVerdict & { techniques: string[] })[] = [];
     if (!isValues) {
       const runs = enabled.map((slot) =>
-        investigate({ slot, claim: main, pool, config, analysisId }).catch(
+        investigate({ slot, claim: main, pool, pages, config, analysisId }).catch(
           (e): SlotVerdict & { techniques: string[]; confidenceReason: string } => ({
             slot: slot.id, model: slot.model, provider: 'venice', grade: null, confidence: null, abstained: true, coiExcluded: false,
             reasoning: `Investigation failed: ${(e as Error).message.slice(0, 200)}`, sources: [], toolCalls: 0, searches: { web: 0, x: 0, scrape: 0 }, costUsd: 0, latencyMs: 0, techniques: [], confidenceReason: '',
@@ -221,7 +303,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
       );
       const shadowRuns = [];
       for (const slot of enabled) {
-        if (await shadowQuota(slot, activatedAt)) shadowRuns.push(investigate({ slot, claim: main, pool, config, analysisId, modelOverride: slot.shadowModel }).catch(() => null));
+        if (await shadowQuota(slot, activatedAt)) shadowRuns.push(investigate({ slot, claim: main, pool, pages, config, analysisId, modelOverride: slot.shadowModel }).catch(() => null));
       }
       verdicts = await Promise.all(runs);
       for (const sv of await Promise.all(shadowRuns)) if (sv) shadows.push(sv);
@@ -360,7 +442,6 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
     });
     return { analysisId, status };
   } catch (e) {
-    await db.update(s.analyses).set({ status: 'failed', error: (e as Error).message.slice(0, 500) }).where(eq(s.analyses.id, analysisId));
-    return { analysisId, status: 'failed' };
+    return fail(analysisId, e);
   }
 }
