@@ -1,6 +1,6 @@
 /* Parallaxa service worker (PRD 8.5): offline reading of recent briefings and saved checks,
    network-first for the API, stale-while-revalidate for briefing pages, Web Push. */
-const VERSION = 'plx-v1';
+const VERSION = 'plx-v2';
 const SHELL = `${VERSION}-shell`;
 const PAGES = `${VERSION}-pages`;
 const MAX_PAGES = 40;
@@ -59,7 +59,7 @@ self.addEventListener('push', (event) => {
     self.registration.showNotification(data.title || 'Parallaxa', {
       body: data.body || '',
       icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      badge: '/icons/badge-96.png',
       data: { url: data.url || '/' },
       tag: data.tag || 'plx-briefing',
     }),

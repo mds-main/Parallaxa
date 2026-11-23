@@ -32,6 +32,7 @@ export async function pushBackReply(opts: { analysisId: string; structured: Stru
     model: config.roles.pushBack,
     config,
     analysisId: opts.analysisId,
+    rawUserText: true,
     searches: { web: 1, x: 0, scrape: 0 },
     request: {
       messages: [

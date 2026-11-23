@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ScopeChip } from './ScopeChip';
+import { BrandMark, Wordmark } from './BrandMark';
 import { getPlaces } from '@/lib/queries';
 import { getActiveConfig } from '@/lib/config/store';
 
@@ -16,11 +17,10 @@ export async function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5 whitespace-nowrap hyphens-none">
         <Link href="/" className="flex items-center gap-2 no-underline">
-          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-            <circle cx="9" cy="13" r="7.5" fill="none" stroke="currentColor" strokeWidth="2" />
-            <circle cx="17" cy="13" r="7.5" fill="none" stroke="var(--accent)" strokeWidth="2" />
-          </svg>
-          <span className="font-serif text-xl font-semibold">{t('appName')}</span>
+          <BrandMark height={28} id="plx-header" />
+          <span className="font-serif text-xl font-semibold tracking-tight">
+            <Wordmark name={t('appName')} />
+          </span>
         </Link>
         <nav aria-label="Main" className="ml-4 hidden items-center gap-1 lg:flex">
           {(

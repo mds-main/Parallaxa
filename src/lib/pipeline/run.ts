@@ -55,11 +55,13 @@ export async function createPendingAnalysis(input: CheckInput, lang: string): Pr
   return row!.id;
 }
 
-async function canonicalize(text: string, config: AppConfig, analysisId: string): Promise<AtomicClaim[]> {
+/** `rawUserText`: typed text and screenshots are the user's own words and stay on Venice's private models; fetched pages may use either vendor. */
+async function canonicalize(text: string, config: AppConfig, analysisId: string, rawUserText: boolean): Promise<AtomicClaim[]> {
   const prompt = loadPrompt('canonicalize', 'en', { maxClaims: config.pipeline.maxClaimsPerCheck });
   const res = await callModel({
     step: 'canonicalize',
     model: config.roles.canonicalize,
+    rawUserText,
     config,
     analysisId,
     request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<user_input>${text}</user_input>` }], responseSchema: CANONICALIZE_SCHEMA, temperature: 0 },
@@ -178,7 +180,7 @@ async function runAnalysisInner(analysisId: string, input: CheckInput, lang: str
     done.push('ingest');
 
     await step('decompose');
-    const atomic = await canonicalize(ingested.text, config, analysisId);
+    const atomic = await canonicalize(ingested.text, config, analysisId, ingested.kind !== 'url');
     if (!atomic.length) throw new Error('No claim found in the input.');
     const main = atomic.find((c) => c.checkable && c.type !== 'value') ?? atomic[0]!;
     const isValues = main.type === 'value' || main.type === 'prediction' || !main.checkable;

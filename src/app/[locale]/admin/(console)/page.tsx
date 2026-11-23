@@ -3,6 +3,8 @@ import { Link } from '@/i18n/navigation';
 import { requireAdmin } from '@/lib/admin/auth';
 import { getOverview } from '@/lib/admin/metrics';
 
+const VENDOR = { venice: 'Venice', gateway: 'AI Gateway' } as const;
+
 function Card({ title, value, sub, warn, href }: { title: string; value: React.ReactNode; sub?: React.ReactNode; warn?: boolean; href?: string }) {
   const body = (
     <div className={`card h-full p-4 ${warn ? 'border-2 border-ink' : ''}`}>
@@ -31,7 +33,7 @@ export default async function Overview() {
       </p>
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Card title={t('venice')} value={o.veniceErrorRate > 0.2 ? '⚠' : '✓'} sub={`${pct(o.veniceErrorRate)} errors (30 min)`} warn={o.veniceErrorRate > 0.2} href="/admin/models" />
-        <Card title={t('fallback')} value={o.fallbackActive ? t('fallbackActive') : t('fallbackIdle')} warn={o.fallbackActive} href="/admin/limits" />
+        <Card title={t('fallback')} value={o.fallbackActive ? t('fallbackActive') : t('fallbackIdle')} sub={t('routing', { primary: VENDOR[o.routing.primary], backup: o.routing.fallback ? VENDOR[o.routing.primary === 'venice' ? 'gateway' : 'venice'] : t('noBackup') })} warn={o.fallbackActive} href="/admin/models" />
         <Card title={t('breakers')} value={o.breakers.length || '0'} sub={o.breakers.join(', ') || undefined} warn={o.breakers.length > 0} href="/admin/models" />
         <Card title={t('alerts')} value={o.openAlerts} warn={o.openAlerts > 0} href="/admin/alerts" />
         <Card title={t('checksToday')} value={o.checksToday} sub={`${t('cacheHits')}: ${o.reusedToday}`} href="/admin/metrics" />

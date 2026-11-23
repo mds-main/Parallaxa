@@ -31,7 +31,7 @@
   },
   "banners": {
     "disagree": "Los modelos discrepan. Mostramos todos los razonamientos y una persona está revisando este análisis.",
-    "fallback": "Generado con nuestro proveedor de respaldo (Vercel AI Gateway) durante una caída de Venice. No había búsqueda web ni en X de Venice.",
+    "fallback": "Generado con Vercel AI Gateway en lugar de Venice, así que no estaban disponibles las búsquedas web y en X integradas de Venice.",
     "stale": "Algunas pruebas tienen más de {months} meses. Puede haber datos más recientes.",
     "demo": "Modo demostración: este análisis es simulado y sus fuentes son de ejemplo.",
     "review": "Este análisis está pendiente de revisión humana antes de publicarse.",

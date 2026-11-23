@@ -31,6 +31,12 @@ function show(v: unknown): string {
   return String(v);
 }
 
+/** Select settings show their option label (e.g. "Vercel AI Gateway"), everything else its value. */
+function valueLabel(p: string, v: unknown, locale: 'en' | 'es-ES'): string {
+  const option = FIELDS.find((f) => f.path === p)?.options?.find((o) => o.value === v);
+  return option ? option.label[locale] : show(v);
+}
+
 function pathLabel(p: string, draft: AppConfig, locale: 'en' | 'es-ES'): string {
   const field = FIELDS.find((f) => f.path === p);
   if (field) return field.label[locale];
@@ -120,7 +126,7 @@ function SaveBar({ onReset, costEstimate }: { onReset: () => void; costEstimate?
               <ul className="flex flex-wrap gap-1 text-xs">
                 {changed.slice(0, 8).map((p) => (
                   <li key={p} className="chip">
-                    {pathLabel(p, draft, locale)}: {show(getPath(initial, p)).slice(0, 40)} → <strong>{show(getPath(draft, p)).slice(0, 40)}</strong>
+                    {pathLabel(p, draft, locale)}: {valueLabel(p, getPath(initial, p), locale).slice(0, 40)} → <strong>{valueLabel(p, getPath(draft, p), locale).slice(0, 40)}</strong>
                   </li>
                 ))}
               </ul>

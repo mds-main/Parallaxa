@@ -30,7 +30,8 @@ export async function getOverview() {
   const ms = durations.map((d) => Number(d.ms)).filter((x) => Number.isFinite(x));
   const [total24] = await db.select({ n: sql<number>`count(*)::int` }).from(s.analyses).where(gte(s.analyses.createdAt, dayAgo));
   const [failed24] = await db.select({ n: sql<number>`count(*)::int` }).from(s.analyses).where(and(gte(s.analyses.createdAt, dayAgo), eq(s.analyses.status, 'failed'), not(like(s.analyses.error, 'reused:%'))));
-  const [fallback] = await db.select({ n: sql<number>`count(*)::int` }).from(s.llmCalls).where(and(gte(s.llmCalls.createdAt, halfHour), eq(s.llmCalls.provider, 'gateway')));
+  // Calls the backup vendor actually served: the primary (whichever is configured) is failing.
+  const [fallback] = await db.select({ n: sql<number>`count(*)::int` }).from(s.llmCalls).where(and(gte(s.llmCalls.createdAt, halfHour), eq(s.llmCalls.fallback, true), isNull(s.llmCalls.errorClass)));
   const [veniceErrors] = await db.select({ n: sql<number>`count(*)::int` }).from(s.llmCalls).where(and(gte(s.llmCalls.createdAt, halfHour), eq(s.llmCalls.provider, 'venice'), sql`${s.llmCalls.errorClass} is not null`));
   const [veniceTotal] = await db.select({ n: sql<number>`count(*)::int` }).from(s.llmCalls).where(and(gte(s.llmCalls.createdAt, halfHour), eq(s.llmCalls.provider, 'venice')));
   const editions = await db.select({ placeId: s.briefingEditions.placeId, status: s.briefingEditions.status, date: s.briefingEditions.date }).from(s.briefingEditions).orderBy(desc(s.briefingEditions.createdAt)).limit(50);
@@ -68,6 +69,7 @@ export async function getOverview() {
     spendToday: spend,
     ceiling: config.limits.dailySpendCeilingUsd,
     fallbackActive: (fallback?.n ?? 0) > 0,
+    routing: config.routing,
     veniceErrorRate: veniceTotal?.n ? (veniceErrors?.n ?? 0) / veniceTotal.n : 0,
     breakers,
     editions: todaysEditions,
@@ -78,6 +80,29 @@ export async function getOverview() {
     attention,
   };
 }
+
+/** Model calls per vendor over the last `hours`: served, failed, and served as the backup. */
+export async function getProviderUsage(hours = 24) {
+  const db = await getDb();
+  const since = new Date(Date.now() - hours * 3600_000);
+  const rows = await db
+    .select({
+      provider: s.llmCalls.provider,
+      served: sql<number>`count(*) filter (where ${s.llmCalls.errorClass} is null)::int`,
+      failed: sql<number>`count(*) filter (where ${s.llmCalls.errorClass} is not null)::int`,
+      asBackup: sql<number>`count(*) filter (where ${s.llmCalls.fallback} and ${s.llmCalls.errorClass} is null)::int`,
+    })
+    .from(s.llmCalls)
+    .where(gte(s.llmCalls.createdAt, since))
+    .groupBy(s.llmCalls.provider);
+  const empty = { served: 0, failed: 0, asBackup: 0 };
+  const pick = (p: string) => {
+    const r = rows.find((x) => x.provider === p);
+    return r ? { served: Number(r.served), failed: Number(r.failed), asBackup: Number(r.asBackup) } : empty;
+  };
+  return { hours, venice: pick('venice'), gateway: pick('gateway') };
+}
+export type ProviderUsage = Awaited<ReturnType<typeof getProviderUsage>>;
 
 export async function getSlotStats(days = 7) {
   const db = await getDb();

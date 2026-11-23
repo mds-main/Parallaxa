@@ -1,4 +1,5 @@
 'use client';
+import { gatewayModelFor } from '@/lib/ai/routing';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
@@ -76,7 +77,7 @@ function Picker({ slot, catalog, onPick, onClose }: { slot: SlotConfig; catalog:
   );
 }
 
-export function ModelsManager({ catalog, stats, matrix, breakers, versions }: { catalog: CatalogModel[]; stats: SlotStat[]; matrix: { slots: string[]; values: (number | null)[][] }; breakers: Record<string, { open: boolean; forced?: string }>; versions: Version[] }) {
+export function ModelsManager({ catalog, gatewayIds, stats, matrix, breakers, versions }: { catalog: CatalogModel[]; gatewayIds: string[] | null; stats: SlotStat[]; matrix: { slots: string[]; values: (number | null)[][] }; breakers: Record<string, { open: boolean; forced?: string }>; versions: Version[] }) {
   const t = useTranslations('admin.models');
   const locale = useLocale();
   const router = useRouter();
@@ -197,7 +198,15 @@ export function ModelsManager({ catalog, stats, matrix, breakers, versions }: { 
               )}
               <label className="block text-sm">
                 <span className="muted">{t('fallback')}</span>
-                <input className="field mt-1 !min-h-9 !py-1" value={slot.fallbackModel} onChange={(e) => setSlot(i, { fallbackModel: e.target.value })} />
+                <input className="field mt-1 !min-h-9 !py-1" value={slot.fallbackModel} placeholder={gatewayModelFor(slot.model, '', gatewayIds) ?? ''} onChange={(e) => setSlot(i, { fallbackModel: e.target.value })} aria-describedby={`gw-${slot.id}`} />
+                <span id={`gw-${slot.id}`} className="mt-1 block text-xs muted">
+                  {(() => {
+                    const used = gatewayModelFor(slot.model, slot.fallbackModel, gatewayIds);
+                    if (!used) return `⚠ ${t('fallbackNone')}`;
+                    if (slot.fallbackModel.trim() && used !== slot.fallbackModel.trim()) return `⚠ ${t('fallbackMissing', { model: used })}`;
+                    return slot.fallbackModel.trim() ? null : t('fallbackAuto', { model: used });
+                  })()}
+                </span>
               </label>
               {i >= 3 && (
                 <button className="text-sm underline" onClick={() => replace({ ...draft, slots: draft.slots.filter((_, j) => j !== i) })}>{t('removeSlot')}</button>

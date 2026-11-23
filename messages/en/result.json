@@ -31,7 +31,7 @@
   },
   "banners": {
     "disagree": "Models disagree. We show every rationale below, and a person is reviewing this analysis.",
-    "fallback": "Generated via our backup provider (Vercel AI Gateway) during a Venice outage. Venice web and X search were not available.",
+    "fallback": "Generated via Vercel AI Gateway instead of Venice, so Venice's built-in web and X search were not available.",
     "stale": "Some evidence is older than {months} months. Newer data may exist.",
     "demo": "Demo mode: this analysis is simulated and its sources are placeholders.",
     "review": "This analysis is waiting for human review before it is published.",

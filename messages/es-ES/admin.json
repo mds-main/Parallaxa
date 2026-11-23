@@ -82,7 +82,9 @@
     "evals": "Última evaluación",
     "alerts": "Avisos abiertos",
     "seconds": "{value} s",
-    "noData": "Aún no hay datos"
+    "noData": "Aún no hay datos",
+    "routing": "Primero {primary} · respaldo: {backup}",
+    "noBackup": "ninguno"
   },
   "models": {
     "title": "Modelos",
@@ -130,7 +132,7 @@
     "disabled": "Desactivada",
     "addSlot": "Añadir perspectiva",
     "removeSlot": "Quitar perspectiva",
-    "fallback": "Modelo de respaldo (AI Gateway)",
+    "fallback": "Modelo en AI Gateway",
     "roles": "Funciones auxiliares",
     "roleNames": {
       "canonicalize": "Limpieza de afirmaciones (quita datos personales)",
@@ -154,7 +156,48 @@
       "none": "—"
     },
     "catalogSync": "Actualizar catálogo de modelos",
-    "catalogUpdated": "Catálogo actualizado: {count} modelos."
+    "catalogUpdated": "Catálogo actualizado: {count} modelos.",
+    "routing": {
+      "title": "Proveedores de IA",
+      "live": "Activo ahora",
+      "intro": "Elige qué proveedor atiende primero las llamadas a los modelos y si el otro entra cuando falla. El cambio llega a los análisis nuevos en unos 10 segundos y queda en el historial de cambios.",
+      "recommended": "Recomendado",
+      "modes": {
+        "veniceBackup": {
+          "label": "Venice, con AI Gateway de respaldo",
+          "help": "Modelos privados con la búsqueda web y en X integrada de Venice. El Gateway solo entra durante una caída de Venice."
+        },
+        "gatewayBackup": {
+          "label": "AI Gateway, con Venice de respaldo",
+          "help": "Atiende primero el equivalente de cada modelo en AI Gateway. Venice entra si el Gateway falla."
+        },
+        "veniceOnly": {
+          "label": "Solo Venice",
+          "help": "Sin respaldo. Si Venice cae, las comprobaciones y los resúmenes nuevos esperan a que se recupere."
+        },
+        "gatewayOnly": {
+          "label": "AI Gateway, sin respaldo",
+          "help": "Sin respaldo. Los pasos con las palabras del usuario y los modelos sin equivalente en el Gateway siguen usando Venice."
+        }
+      },
+      "swap": "Poner {vendor} como principal",
+      "pendingHint": "Aún no está activo: indica el motivo y aplícalo abajo.",
+      "rolePrimary": "Principal",
+      "roleBackup": "Respaldo",
+      "roleUnused": "Sin uso",
+      "keySet": "Clave de API configurada",
+      "keyMissing": "Falta la clave de API ({env})",
+      "usage": "Últimas {hours} h: {served} llamadas atendidas · {failed} fallidas · {backup} como respaldo",
+      "privacyNote": "Leer capturas, dividir las afirmaciones escritas y Rebatir llevan las palabras del propio usuario, así que siempre se quedan en los modelos privados de Venice, elijas lo que elijas aquí.",
+      "embeddingsNote": "Los embeddings (la caché de afirmaciones parecidas) siempre usan Venice.",
+      "gatewaySearchNote": "En AI Gateway no están disponibles la búsqueda web, la búsqueda en X ni las citas integradas de Venice. Los modelos de perspectiva siguen buscando con las herramientas propias de Parallaxa, y cada análisis que haya usado el Gateway lo indica.",
+      "noBackupKey": "No hay clave de API para {vendor}, así que en la práctica no hay respaldo.",
+      "noEquivalent": "Sin equivalente en AI Gateway, así que estos siguen en Venice: {list}.",
+      "blockMissingKey": "{vendor} no puede ser el principal: falta {env}."
+    },
+    "fallbackAuto": "Automático: {model}",
+    "fallbackMissing": "No está en AI Gateway, así que se usa {model}.",
+    "fallbackNone": "Sin equivalente en AI Gateway: esta posición siempre usa Venice."
   },
   "investigation": {
     "title": "Ajustes de investigación",

@@ -82,7 +82,9 @@
     "evals": "Latest eval",
     "alerts": "Open alerts",
     "seconds": "{value} s",
-    "noData": "No data yet"
+    "noData": "No data yet",
+    "routing": "{primary} first · backup: {backup}",
+    "noBackup": "none"
   },
   "models": {
     "title": "Models",
@@ -130,7 +132,7 @@
     "disabled": "Disabled",
     "addSlot": "Add a slot",
     "removeSlot": "Remove slot",
-    "fallback": "Backup model (AI Gateway)",
+    "fallback": "AI Gateway model",
     "roles": "Supporting roles",
     "roleNames": {
       "canonicalize": "Claim clean-up (removes personal data)",
@@ -154,7 +156,48 @@
       "none": "—"
     },
     "catalogSync": "Refresh model catalog",
-    "catalogUpdated": "Catalog updated: {count} models."
+    "catalogUpdated": "Catalog updated: {count} models.",
+    "routing": {
+      "title": "AI vendors",
+      "live": "Live now",
+      "intro": "Choose which vendor serves model calls first, and whether the other one steps in when it fails. A change reaches new analyses within about 10 seconds and is kept in the change history.",
+      "recommended": "Recommended",
+      "modes": {
+        "veniceBackup": {
+          "label": "Venice, with AI Gateway as backup",
+          "help": "Private models with Venice's built-in web and X search. The Gateway takes over only during a Venice outage."
+        },
+        "gatewayBackup": {
+          "label": "AI Gateway, with Venice as backup",
+          "help": "Each model's AI Gateway equivalent serves first. Venice steps in if the Gateway fails."
+        },
+        "veniceOnly": {
+          "label": "Venice only",
+          "help": "No backup. If Venice is down, new checks and briefings wait until it recovers."
+        },
+        "gatewayOnly": {
+          "label": "AI Gateway, no backup",
+          "help": "No backup. Steps with the user's own words, and models without a Gateway equivalent, still use Venice."
+        }
+      },
+      "swap": "Make {vendor} the primary",
+      "pendingHint": "Not live yet: give a reason and apply it below.",
+      "rolePrimary": "Primary",
+      "roleBackup": "Backup",
+      "roleUnused": "Not used",
+      "keySet": "API key set",
+      "keyMissing": "API key missing ({env})",
+      "usage": "Last {hours} h: {served} calls served · {failed} failed · {backup} as backup",
+      "privacyNote": "Reading screenshots, splitting typed claims and Push back carry the user's own words, so they always stay on Venice's private models, whatever you choose here.",
+      "embeddingsNote": "Embeddings (the similar-claim cache) always use Venice.",
+      "gatewaySearchNote": "On the AI Gateway, Venice's built-in web search, X search and citations aren't available. Perspective models still search with Parallaxa's own tools, and every analysis that used the Gateway says so.",
+      "noBackupKey": "There is no API key for {vendor}, so in practice there is no backup.",
+      "noEquivalent": "No AI Gateway equivalent, so these stay on Venice: {list}.",
+      "blockMissingKey": "{vendor} can't be the primary: {env} is not set."
+    },
+    "fallbackAuto": "Automatic: {model}",
+    "fallbackMissing": "Not on AI Gateway, so {model} is used instead.",
+    "fallbackNone": "No AI Gateway equivalent: this slot always uses Venice."
   },
   "investigation": {
     "title": "Investigation settings",

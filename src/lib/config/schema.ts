@@ -37,7 +37,7 @@ export const slotSchema = z.object({
   harness: harnessSchema,
   /** Keywords that mark conflict-of-interest topics for this model family. */
   coiTopics: z.array(z.string()).default([]),
-  /** AI Gateway model used when Venice is unavailable (same family and origin when possible). */
+  /** AI Gateway model for this slot. Empty = automatic: the Gateway's twin of `model`, else the vendor default. */
   fallbackModel: z.string().default(''),
   /** Candidate running in shadow mode next to this slot (results stored, never published). */
   shadowModel: z.string().optional(),
@@ -80,7 +80,6 @@ export const limitsSchema = z.object({
   checksPerHourAnonymous: z.number().int().min(1).max(500).default(20),
   checksPerHourSignedIn: z.number().int().min(1).max(1000).default(60),
   dialogueMaxTurns: z.number().int().min(1).max(30).default(10),
-  fallbackEnabled: z.boolean().default(true),
   breakerFailures: z.number().int().min(1).max(50).default(5),
   breakerWindowSec: z.number().int().min(10).max(600).default(60),
   breakerLatencyMultiplier: z.number().min(1.5).max(10).default(3),
@@ -88,6 +87,18 @@ export const limitsSchema = z.object({
   timeoutFirstTokenSec: z.number().int().min(2).max(60).default(8),
   timeoutStepSec: z.number().int().min(10).max(300).default(45),
 });
+
+/** AI vendors. Venice is the default primary; Vercel AI Gateway the default backup. Switchable in Admin › Models. */
+export const PROVIDERS = ['venice', 'gateway'] as const;
+export type ProviderId = (typeof PROVIDERS)[number];
+
+export const routingSchema = z.object({
+  /** Vendor tried first for every model call. */
+  primary: z.enum(PROVIDERS).default('venice'),
+  /** Try the other vendor when the primary fails. Calls that carry the user's own words never leave Venice. */
+  fallback: z.boolean().default(true),
+});
+export type RoutingConfig = z.infer<typeof routingSchema>;
 
 export const killSwitchesSchema = z.object({
   check: z.boolean().default(true),
@@ -118,15 +129,26 @@ export const alertsSchema = z.object({
   onLoginLockout: z.boolean().default(true),
 });
 
-export const appConfigSchema = z.object({
-  slots: z.array(slotSchema).min(1).max(5),
-  roles: rolesSchema,
-  pipeline: pipelineSchema,
-  limits: limitsSchema,
-  killSwitches: killSwitchesSchema,
-  content: contentSchema,
-  alerts: alertsSchema,
-});
+/** Versions saved before the vendor switch existed only had `limits.fallbackEnabled`; carry its value over. */
+function migrateLegacy(raw: unknown): unknown {
+  if (!raw || typeof raw !== 'object' || 'routing' in raw) return raw;
+  const legacy = (raw as { limits?: { fallbackEnabled?: unknown } }).limits?.fallbackEnabled;
+  return { ...raw, routing: { primary: 'venice', fallback: legacy !== false } };
+}
+
+export const appConfigSchema = z.preprocess(
+  migrateLegacy,
+  z.object({
+    slots: z.array(slotSchema).min(1).max(5),
+    roles: rolesSchema,
+    routing: routingSchema,
+    pipeline: pipelineSchema,
+    limits: limitsSchema,
+    killSwitches: killSwitchesSchema,
+    content: contentSchema,
+    alerts: alertsSchema,
+  }),
+);
 export type AppConfig = z.infer<typeof appConfigSchema>;
 
 const COI = {
@@ -148,7 +170,6 @@ export function defaultConfig(): AppConfig {
         allowedPrivacy: ['private', 'anonymized'],
         harness: {},
         coiTopics: COI.xai,
-        fallbackModel: 'xai/grok-4',
       },
       {
         id: 'US-L',
@@ -159,7 +180,6 @@ export function defaultConfig(): AppConfig {
         allowedPrivacy: ['private', 'anonymized'],
         harness: { xSearch: false },
         coiTopics: COI.openai,
-        fallbackModel: 'openai/gpt-5',
       },
       {
         id: 'CN',
@@ -170,7 +190,6 @@ export function defaultConfig(): AppConfig {
         allowedPrivacy: ['private', 'anonymized'],
         harness: { xSearch: false },
         coiTopics: COI.china,
-        fallbackModel: 'deepseek/deepseek-v3.2',
       },
     ],
     roles: {
@@ -185,6 +204,7 @@ export function defaultConfig(): AppConfig {
       vision: 'qwen-3-8-27b',
       writer: 'rotate',
     },
+    routing: {},
     pipeline: {},
     limits: {},
     killSwitches: {},

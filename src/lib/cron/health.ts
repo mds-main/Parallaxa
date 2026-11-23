@@ -1,6 +1,7 @@
 /** Health and alert checks (TODO 10.10, 25.3): model pings, spend, error rate, latency, fallback. */
 import { getActiveConfig } from '../config/store';
 import { callModel } from '../ai/provider';
+import { PROVIDER_NAMES } from '../ai/routing';
 import { getOverview } from '../admin/metrics';
 import { raiseAlert } from '../admin/alerts';
 import { checkLateEditions } from '../briefing/generate';
@@ -24,7 +25,11 @@ export async function runHealthChecks() {
   if (o.spendToday >= (config.limits.dailySpendCeilingUsd * config.limits.spendAlertPercent) / 100) {
     await raiseAlert('spend', `AI spend today is $${o.spendToday.toFixed(2)} of the $${config.limits.dailySpendCeilingUsd} ceiling.`, recipients);
   }
-  if (o.fallbackActive && config.alerts.onFallback) await raiseAlert('fallback', 'The AI Gateway fallback is in use: Venice may be degraded.', recipients);
+  if (o.fallbackActive && config.alerts.onFallback) {
+    const primary = PROVIDER_NAMES[config.routing.primary];
+    const backup = PROVIDER_NAMES[config.routing.primary === 'venice' ? 'gateway' : 'venice'];
+    await raiseAlert('fallback', `${backup} (backup) is serving requests: ${primary} (primary) may be degraded.`, recipients);
+  }
   if (o.errorRate > config.alerts.errorRatePercent / 100) await raiseAlert('error_rate', `Failed checks in the last 24 h: ${(o.errorRate * 100).toFixed(1)}%.`, recipients);
   if (o.p95Seconds !== null && o.p95Seconds > config.alerts.sloP95Seconds) await raiseAlert('slo', `p95 time to result is ${o.p95Seconds}s (target ${config.alerts.sloP95Seconds}s).`, recipients);
   // Coordinated-report detection (TODO 24.2): a burst of reports overall or against one analysis.

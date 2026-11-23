@@ -5,8 +5,9 @@ Every action below can be taken from the admin console without a deploy, and eve
 ## Venice outage or degradation
 1. **Overview** shows "Backup provider: In use" and an alert is emailed.
 2. Check **Models**: circuit state per slot. If one model is failing, swap that slot (Test → Activate) or pause it with the circuit button.
-3. If Venice is fully down, the AI Gateway fallback keeps Check and Briefing running (disclosed on every analysis). Push back pauses automatically.
-4. If the fallback is also failing: **Reliability & limits → Kill switches → Check** off, and set a maintenance banner in both languages.
+3. If Venice is fully down, the AI Gateway backup keeps the Briefing and link checks running (disclosed on every analysis). Typed-text and screenshot checks, and Push back, carry the user's own words, so they only run on Venice's private models and pause until it recovers.
+4. For a long or planned outage, switch vendors proactively: **Models → AI vendors → "AI Gateway, with Venice as backup"**, give a reason, type CONFIRM, apply. Live within about 10 seconds; switch back the same way.
+5. If the backup is also failing: **Reliability & limits → Kill switches → Check** off, and set a maintenance banner in both languages.
 
 ## Spend spike
 1. Alert at the configured percentage of the daily ceiling.
@@ -33,6 +34,14 @@ Every action below can be taken from the admin console without a deploy, and eve
 3. Restrict `/admin` with `ADMIN_IP_ALLOWLIST` and Firewall rules.
 4. If personal data may be affected, notify the DPO; GDPR requires notifying the authority within 72 hours where applicable.
 
+## A deploy fails at "[db]"
+1. Nothing was changed in the database and the previous deployment is still live. Read the `[db]` lines in the build log; each failure says what to do.
+2. Schema drift: run `pnpm db:generate`, commit the migration, push.
+3. Unsafe migration: split it into two deploys (see `docs/deployment.md`, "Database migrations"), or, after review, add `-- parallaxa:allow-destructive <reason>` to the file.
+4. "Database is busy" after all retries: redeploy at a quieter moment, or raise `MIGRATION_LOCK_TIMEOUT` for one deploy.
+5. Preview blocked from the production database: give previews their own Neon branch, or merge to main.
+
 ## Rollback
 - Configuration: **Models → Change history → Roll back**, or **Audit log → Revert**.
-- Code: Vercel instant rollback to the previous production deployment (confirm first: it affects production).
+- Code: Vercel instant rollback to the previous production deployment (confirm first: it affects production). Migrations are additive by rule, so older code keeps working with the newer schema.
+- Database (last resort): Neon point-in-time restore to the restore point printed in the build log, or the `pre-<migration>-<time>` backup branch.

@@ -41,6 +41,7 @@ export async function ingest(input: CheckInput, config: AppConfig, analysisId: s
     model: config.roles.vision,
     config,
     analysisId,
+    rawUserText: true,
     request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: [{ type: 'image_url', image_url: { url: input.dataUrl } }] }] },
   });
   const text = normalizeText(res.content).slice(0, 8000);

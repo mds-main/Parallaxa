@@ -420,6 +420,8 @@ export const llmCalls = pgTable(
     latencyMs: integer('latency_ms').notNull().default(0),
     finishReason: text('finish_reason'),
     errorClass: text('error_class'),
+    /** Served (or attempted) by the backup vendor because the primary failed. */
+    fallback: boolean('fallback').notNull().default(false),
     createdAt: createdAt(),
   },
   (t) => [index('llm_calls_created_idx').on(t.createdAt)],

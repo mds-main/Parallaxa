@@ -8,7 +8,7 @@ export type FieldType = 'number' | 'boolean' | 'select' | 'text' | 'list';
 export type FieldDescriptor = {
   /** Dotted path into AppConfig, e.g. 'pipeline.minSources'. */
   path: string;
-  section: 'pipeline' | 'limits' | 'content' | 'alerts';
+  section: 'pipeline' | 'routing' | 'limits' | 'content' | 'alerts';
   type: FieldType;
   label: { en: string; 'es-ES': string };
   help: { en: string; 'es-ES': string };
@@ -115,10 +115,21 @@ export const FIELDS: FieldDescriptor[] = [
     label: L('"Push back" turns', 'Turnos de «Rebatir»'),
     help: L('Maximum exchanges in one Push back conversation.', 'Máximo de intercambios en una conversación de Rebatir.'), affects: ['dialogue'],
   },
+  // ── AI vendors (edited with the vendor switch on Admin › Models) ──
   {
-    path: 'limits.fallbackEnabled', section: 'limits', type: 'boolean', dangerous: true,
-    label: L('Use AI Gateway when Venice fails', 'Usar AI Gateway si Venice falla'),
-    help: L('Keeps Check and Briefing running during a Venice outage (disclosed on each analysis).', 'Mantiene Comprobar y el Resumen durante una caída de Venice (se indica en cada análisis).'),
+    path: 'routing.primary', section: 'routing', type: 'select', dangerous: true,
+    options: [
+      { value: 'venice', label: L('Venice', 'Venice') },
+      { value: 'gateway', label: L('Vercel AI Gateway', 'Vercel AI Gateway') },
+    ],
+    label: L('Primary AI vendor', 'Proveedor de IA principal'),
+    help: L('Serves every model call first. Calls with the user\'s own words always stay on Venice\'s private models.', 'Atiende primero todas las llamadas a modelos. Las que llevan las palabras del usuario siempre se quedan en los modelos privados de Venice.'),
+    needsTest: true, affects: ['check', 'briefing', 'dialogue', 'costs'],
+  },
+  {
+    path: 'routing.fallback', section: 'routing', type: 'boolean', dangerous: true,
+    label: L('Use the other vendor as backup', 'Usar el otro proveedor como respaldo'),
+    help: L('When the primary fails, the call is retried on the other vendor (disclosed on each analysis that used the Gateway).', 'Si el principal falla, la llamada se repite en el otro proveedor (se indica en cada análisis que haya usado el Gateway).'),
     affects: ['check', 'briefing'],
   },
   {

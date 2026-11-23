@@ -26,6 +26,8 @@ jobs:
         run: pnpm lint
       - name: i18n catalogs (every registry language, es-ES lexicon)
         run: pnpm i18n:check
+      - name: Database migrations (schema drift, safety rules for the live version)
+        run: pnpm db:check
       - name: Unit and integration tests (demo mode, in-memory database)
         run: pnpm test
       - name: Dependency audit

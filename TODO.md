@@ -218,6 +218,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 5.5 [P0] Renovate config, pnpm lockfile enforcement, dependency review.
 - [x] 5.6 [P0] Licences: AGPL-3.0 for code, CC BY 4.0 for `/methodology` and `/prompts`; `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`.
 - [x] 5.7 [P0] Env var schema with Zod (fail fast on boot) covering `VENICE_API_KEY`, `AI_GATEWAY_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, optional `ADMIN_IP_ALLOWLIST`, Edge Config and Vercel API tokens, database and email keys; `.env.example` with names only; secrets never committed.
+- [x] 5.7a [P0] Safe migrations on every build (`pnpm db:migrate`): schema-drift check, safety rules for the live version (opt-in marker for reviewed destructive changes), history integrity, one locked and verified transaction with lock-timeout retries, preview builds never migrate the production database, restore point and optional Neon backup branch. `pnpm db:check` in CI and `check:all`.
 - [x] 5.8 [P0] `CLAUDE.md`/`AGENTS.md` for the repo: stack, commands, non-negotiable rules (0.3), locale rules (0.5), model-slot rules (0.6).
 - [x] 5.9 [P0] Seed and fixture scripts: places, topics, sample analyses in en and es-ES, demo actors (fictional) for previews and tests.
 
@@ -284,6 +285,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 10.11 [P0] `llm_calls` logging: provider, model, slot, step, tokens, searches (web, X, scrape), cost, latency, finish reason, error class; OpenTelemetry spans. Never send user identifiers to providers.
 - [x] 10.12 [P1] Spend controls: app-level daily spend ceiling (set in the admin console) and Gateway budget alerts. During fallback only Check and Briefing run; dialogue pauses with a friendly localized message.
 - [x] 10.13 [P0] Contract tests for the Venice and Gateway adapters (recorded fixtures), covering tool calls, structured output, web search, X search and refusals.
+- [x] 10.13a [P0] Vendor switch in Admin › Models › AI vendors: Venice or Vercel AI Gateway first, the other as backup or off, applied as an audited config version. Steps with the user's own words (screenshot OCR, canonicalization of typed text, Push back) stay on Venice's private models whatever the routing; `llm_calls.fallback` records backup use for alerts and the overview.
 
 ### 10.B Perspective slots and utility roles
 - [x] 10.14 [P0] Slot model. Up to 5 slots; each has a model, allowed privacy tiers, harness settings and conflict-of-interest topics. Verify the defaults against the live catalog at build time.

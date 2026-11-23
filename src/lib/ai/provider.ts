@@ -1,6 +1,7 @@
 /**
  * callModel: the single entry point for every model call (TODO 10.6–10.12).
- * Retries per error class, circuit breaker, AI Gateway fallback, demo mode, llm_calls logging.
+ * Vendor routing from the admin console (Venice / AI Gateway, either first, backup on or off),
+ * retries per error class, circuit breaker, demo mode, llm_calls logging.
  */
 import { AiError, chat, isDemoMode, providerKey, type ChatRequest, type ChatResponse } from './client';
 import { breakerAllows, recordFailure, recordSuccess, type BreakerSettings } from './breaker';
@@ -9,7 +10,8 @@ import { getDb } from '../db/client';
 import { llmCalls } from '../db/schema';
 import { getModel } from './catalog';
 import type { AppConfig } from '../config/schema';
-import { modelVendor } from '../config/models';
+import { planRoute, type RouteStep } from './routing';
+import { getGatewayModelIds } from './gateway-catalog';
 import { withSpan } from '../telemetry';
 
 export type CallOptions = {
@@ -19,31 +21,16 @@ export type CallOptions = {
   config: AppConfig;
   slot?: string;
   analysisId?: string;
+  /** AI Gateway model for this call (the slot's choice); defaults to the vendor equivalent. */
   fallbackModel?: string;
+  /** The request contains the user's own words (typed text, screenshot, dialogue): it stays on Venice's private models. */
+  rawUserText?: boolean;
   /** Perspective slots record refusals as abstentions instead of switching model. */
   refusalIsAbstention?: boolean;
   searches?: { web: number; x: number; scrape: number };
 };
 
 export type CallResult = Omit<ChatResponse, 'provider' | 'costUsd'> & { provider: 'venice' | 'gateway' | 'demo'; usedFallback: boolean; costUsd: number };
-
-/** Gateway equivalents by vendor (same family and origin). Editable per slot in the admin console. */
-export const GATEWAY_FALLBACKS: Record<string, string> = {
-  xai: 'xai/grok-4',
-  openai: 'openai/gpt-5',
-  anthropic: 'anthropic/claude-sonnet-4.5',
-  google: 'google/gemini-2.5-pro',
-  deepseek: 'deepseek/deepseek-v3.2',
-  moonshot: 'moonshotai/kimi-k2',
-  alibaba: 'alibaba/qwen3-max',
-  zhipu: 'zai/glm-4.6',
-  mistral: 'mistral/mistral-medium',
-  meta: 'meta/llama-4-maverick',
-};
-
-export function gatewayFallbackFor(model: string): string | undefined {
-  return GATEWAY_FALLBACKS[modelVendor(model).vendor];
-}
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -64,7 +51,7 @@ async function estimateCost(model: string, res: ChatResponse, searches?: CallOpt
   return tokens + s;
 }
 
-async function log(opts: CallOptions, provider: string, model: string, res: Partial<ChatResponse> & { costUsd?: number }, errorClass?: string) {
+async function log(opts: CallOptions, provider: string, model: string, res: Partial<ChatResponse> & { costUsd?: number }, errorClass?: string, fallback = false) {
   try {
     const db = await getDb();
     await db.insert(llmCalls).values({
@@ -80,6 +67,7 @@ async function log(opts: CallOptions, provider: string, model: string, res: Part
       latencyMs: res.latencyMs ?? 0,
       finishReason: res.finishReason ?? null,
       errorClass: errorClass ?? null,
+      fallback,
     });
   } catch (e) {
     console.error('llm_calls log failed', e);
@@ -103,54 +91,56 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
   }
 
   const bs = breakerSettings(opts.config);
-  const fallbackModel = opts.fallbackModel || gatewayFallbackFor(opts.model);
-  const canFallback = opts.config.limits.fallbackEnabled && Boolean(providerKey('gateway')) && Boolean(fallbackModel);
   const timeoutMs = opts.request.timeoutMs ?? opts.config.limits.timeoutStepSec * 1000;
+  const plan = planRoute({
+    routing: opts.config.routing,
+    model: opts.model,
+    gatewayModel: opts.fallbackModel,
+    rawUserText: opts.rawUserText,
+    keys: { venice: Boolean(providerKey('venice')), gateway: Boolean(providerKey('gateway')) },
+    gatewayIds: providerKey('gateway') && !opts.rawUserText ? await getGatewayModelIds() : null,
+  });
+  if (!plan.length) throw new AiError(`No AI vendor can serve ${opts.model}`, 'auth');
 
-  const attemptVenice = async (): Promise<CallResult> => {
-    const res = await chat('venice', { ...opts.request, model: opts.model, timeoutMs });
-    recordSuccess(opts.model, res.latencyMs);
-    const costUsd = await estimateCost(opts.model, res, opts.searches);
-    await log(opts, 'venice', opts.model, { ...res, costUsd });
-    return { ...res, provider: 'venice', usedFallback: false, costUsd };
+  const attempt = async (step: RouteStep): Promise<CallResult> => {
+    // Venice-only parameters (web/X search, citations) do not exist on the Gateway; the analysis discloses it.
+    const { veniceParameters, ...rest } = opts.request;
+    const request = step.provider === 'venice' ? { ...rest, veniceParameters } : rest;
+    const res = await chat(step.provider, { ...request, model: step.model, timeoutMs });
+    recordSuccess(step.model, res.latencyMs);
+    const costUsd = step.provider === 'venice' ? await estimateCost(step.model, res, opts.searches) : (res.costUsd ?? 0);
+    await log(opts, step.provider, step.model, { ...res, costUsd }, undefined, step.isFallback);
+    return { ...res, provider: step.provider, usedFallback: step.isFallback, costUsd };
   };
-
-  const attemptGateway = async (): Promise<CallResult> => {
-    // Venice-only parameters (web/X search) do not exist on the Gateway path; the caller discloses this.
-    const { veniceParameters: _drop, ...rest } = opts.request;
-    void _drop;
-    const res = await chat('gateway', { ...rest, model: fallbackModel!, timeoutMs });
-    const costUsd = res.costUsd ?? 0;
-    await log(opts, 'gateway', fallbackModel!, { ...res, costUsd });
-    return { ...res, provider: 'gateway', usedFallback: true, costUsd };
-  };
-
-  if (!breakerAllows(opts.model, bs)) {
-    if (canFallback) return attemptGateway();
-    throw new AiError(`Circuit open for ${opts.model}`, 'server');
-  }
 
   let lastError: AiError | null = null;
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      return await attemptVenice();
-    } catch (e) {
-      const err = e instanceof AiError ? e : new AiError(String(e), 'unknown');
-      lastError = err;
-      await log(opts, 'venice', opts.model, {}, err.errorClass);
-      if (err.errorClass === 'schema' || err.errorClass === 'not_found' || err.errorClass === 'forbidden') throw err;
-      if (err.errorClass === 'refusal') {
-        if (opts.refusalIsAbstention) throw err;
-        break;
-      }
-      recordFailure(opts.model, bs);
-      if (err.errorClass === 'auth' || err.errorClass === 'payment') break;
-      if (attempt === 0) {
-        const wait = err.errorClass === 'rate_limit' ? Math.min(err.retryAfterMs ?? 1000, 2000) : 250;
-        await sleep(wait + Math.random() * 250);
+  for (const step of plan) {
+    if (!breakerAllows(step.model, bs)) {
+      lastError = new AiError(`Circuit open for ${step.model}`, 'server');
+      continue;
+    }
+    for (let tries = 0; tries < 2; tries++) {
+      try {
+        return await attempt(step);
+      } catch (e) {
+        const err = e instanceof AiError ? e : new AiError(String(e), 'unknown');
+        lastError = err;
+        await log(opts, step.provider, step.model, {}, err.errorClass, step.isFallback);
+        // A malformed request would fail on any vendor; an unknown or blocked model is vendor-specific.
+        if (err.errorClass === 'schema') throw err;
+        if (err.errorClass === 'not_found' || err.errorClass === 'forbidden') break;
+        if (err.errorClass === 'refusal') {
+          if (opts.refusalIsAbstention) throw err;
+          break;
+        }
+        recordFailure(step.model, bs);
+        if (err.errorClass === 'auth' || err.errorClass === 'payment') break;
+        if (tries === 0) {
+          const wait = err.errorClass === 'rate_limit' ? Math.min(err.retryAfterMs ?? 1000, 2000) : 250;
+          await sleep(wait + Math.random() * 250);
+        }
       }
     }
   }
-  if (canFallback) return attemptGateway();
   throw lastError ?? new AiError('Model call failed', 'unknown');
 }

@@ -21,7 +21,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       languages: { ...Object.fromEntries(ENABLED_LANGUAGES.map((l) => [l.tag, `/${l.prefix}`])), 'x-default': '/en' },
     },
     openGraph: { siteName: 'Parallaxa', locale, type: 'website' },
-    icons: { icon: '/icons/icon.svg', apple: '/icons/apple-touch-icon.png' },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: '16x16 32x32 48x48' },
+        { url: '/icons/icon.svg', type: 'image/svg+xml' },
+      ],
+      apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180' }],
+    },
   };
 }
 

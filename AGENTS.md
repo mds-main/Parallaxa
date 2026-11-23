@@ -4,8 +4,8 @@ Read `TODO.md` section 0 first: it summarizes the product, the non-negotiable ru
 
 ## Commands
 - `pnpm dev`, `pnpm build`, `pnpm start`
-- `pnpm check:all` before every commit (typecheck, lint, i18n, tests); `pnpm e2e` for end-to-end and accessibility.
-- `pnpm db:generate` after changing `src/lib/db/schema.ts`; commit the generated migration.
+- `pnpm check:all` before every commit (typecheck, lint, i18n, tests, migration checks); `pnpm e2e` for end-to-end and accessibility.
+- `pnpm db:generate` after changing `src/lib/db/schema.ts`; commit the generated migration. Never edit a released migration. Migrations must not break the live version (no drops, renames, type changes or new NOT NULL without default); ship those in two deploys or mark the file `-- parallaxa:allow-destructive <reason>` after review. Builds apply migrations through `pnpm db:migrate` (see `docs/deployment.md`).
 
 ## Rules that must hold
 - Truth over balance; values are never graded; "what each side gets right" may be empty.
