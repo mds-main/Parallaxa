@@ -28,21 +28,29 @@ Check any environment without changing it: `pnpm db:check` (with that environmen
 
 Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type for secrets). Names only are listed in `.env.example`.
 
-| Name | Required | Notes |
-|---|---|---|
-| `DATABASE_URL` | yes | Injected by the Neon integration |
-| `VENICE_API_KEY` | yes (production) | Without it the site runs in demo mode |
-| `AI_GATEWAY_API_KEY` | recommended | Backup vendor when Venice fails, or the primary if chosen in Admin › Models › AI vendors |
-| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | yes | Password ≥ 20 random characters, secret ≥ 32; use different values per environment |
-| `ADMIN_IP_ALLOWLIST` | optional | Comma-separated IPs allowed into `/admin` |
-| `DATA_ENCRYPTION_KEY` | yes | `openssl rand -base64 32`; encrypts push subscriptions and future account data |
-| `CRON_SECRET` | yes | Vercel sends it to the cron routes |
-| `NEXT_PUBLIC_SITE_URL` | yes | Public URL used in feeds and share links |
-| `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | for push | `npx web-push generate-vapid-keys` |
-| `RESEND_API_KEY`, `ALERT_EMAIL_TO`, `ALERT_EMAIL_FROM` | for alerts | Resend, EU region |
-| `EXA_API_KEY` | recommended | Default primary search engine for investigations (full page text). Order and backups: Admin › Investigation › Search engines |
-| `BRAVE_SEARCH_API_KEY` | optional | Default first backup search engine. Without Exa or Brave keys, searches use Exa or Brave through Venice (zero data retention) |
-| `EDGE_CONFIG`, `EDGE_CONFIG_ID`, `VERCEL_API_TOKEN` | optional | Fast config reads; token scoped to that Edge Config only |
+| Name | Environments | Required | Notes |
+|---|---|---|---|
+| `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | all | yes | Injected by the Neon integration (migrations use the unpooled one). Give previews their own Neon branch |
+| `VENICE_API_KEY` | production, preview | yes | Without it the site runs in demo mode. A separate, lower-limit key for previews is safer |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | production, preview | yes | Password ≥ 20 random characters, secret ≥ 32; different values per environment. The secret also salts the daily IP hashes used for rate limits |
+| `USER_SESSION_SECRET` | production, preview | yes | ≥ 32 characters. Enables the optional reader accounts; without it accounts are switched off |
+| `EMAIL_HASH_SECRET` | production, preview | recommended | Hashes reader emails; falls back to `USER_SESSION_SECRET` if unset |
+| `DATA_ENCRYPTION_KEY` | production, preview | yes | `openssl rand -base64 32`; encrypts push subscriptions and account data |
+| `CRON_SECRET` | production | yes | Vercel sends it to the cron routes (`vercel.json`) |
+| `NEXT_PUBLIC_SITE_URL` | production, preview | yes | Public URL used in feeds, share links and sign-in emails |
+| `AI_GATEWAY_API_KEY` | production, preview | recommended | Backup AI vendor, or the primary if chosen in Admin › Models › AI vendors |
+| `EXA_API_KEY` | production, preview | recommended | Default primary search engine (full page text). Order and backups: Admin › Investigation › Search engines |
+| `BRAVE_SEARCH_API_KEY` | production, preview | optional | Default first backup search engine. Without Exa or Brave keys, searches use Exa or Brave through Venice (zero data retention) |
+| `RESEND_API_KEY`, `AUTH_EMAIL_FROM` | production, preview | yes for accounts | Sends sign-in links (Resend, EU region); `AUTH_EMAIL_FROM` like `Parallaxa <signin@your-domain>` on a verified domain |
+| `ALERT_EMAIL_TO`, `ALERT_EMAIL_FROM` | production | for alerts | Admin alerts (spend, errors, late briefing, backup vendor in use) |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | production | for push | `npx web-push generate-vapid-keys`; subject is a `mailto:` address |
+| `ADMIN_IP_ALLOWLIST` | production | optional | Comma-separated IPs allowed into `/admin` |
+| `EDGE_CONFIG`, `EDGE_CONFIG_ID`, `VERCEL_API_TOKEN` | production | optional | Fast config reads; token scoped to that Edge Config only |
+| `NEON_API_KEY`, `NEON_PROJECT_ID`, `NEON_BRANCH_ID` | production | optional | Neon backup branch before every production migration (see **Database migrations**) |
+| `MIGRATIONS`, `MIGRATION_LOCK_TIMEOUT`, `MIGRATION_STATEMENT_TIMEOUT` | any | optional | Migration overrides (see **Database migrations**) |
+| `BRIEFING_AUTO_PUBLISH` | preview only | optional | `1` publishes editions without human review. Never in production |
+
+Never set in production: `AUTH_DEV_LINKS` (shows sign-in links on screen), `PARALLAXA_DB` (local and test database), `VENICE_CATALOG_LIVE` (local development). Vercel sets `VERCEL_ENV` and `NODE_ENV` itself.
 
 ## 3. Cron jobs (vercel.json)
 
@@ -58,6 +66,5 @@ Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type f
 ## 4. Before going public
 
 - Firewall: add rate-limit rules for `/api/check`, `/api/dialogue`, `/api/report` and `/en/admin/login`, `/es/admin/login` in the Vercel Firewall; enable BotID for those routes.
-- Set `BRIEFING_AUTO_PUBLISH` only on preview deployments (production editions wait for human review).
 - Replace the seed gold set (`evals/gold-set.json`) with the fact-checker-graded set and set `evals/baseline.json`.
 - Complete the legal items in TODO block 2 (terms, privacy policy, DPIA, insurance) before any public Ledger profile.
