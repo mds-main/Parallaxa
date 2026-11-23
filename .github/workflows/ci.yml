@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -40,7 +40,7 @@ jobs:
     needs: checks
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -72,7 +72,7 @@ jobs:
         id: changed
         run: |
           if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^(prompts/|src/lib/ai/|src/lib/pipeline/|evals/)'; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.changed.outputs.run == 'true'
       - uses: actions/setup-node@v4
         if: steps.changed.outputs.run == 'true'
