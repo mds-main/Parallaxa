@@ -6,7 +6,7 @@ const LOCALE_LITERAL = /^(en|es-ES|es)$/;
 const config = [
   ...nextVitals,
   ...nextTs,
-  { ignores: ['.next/**', 'node_modules/**', 'drizzle/**', '.data/**', 'playwright-report/**', 'test-results/**', 'next-env.d.ts', 'public/sw.js'] },
+  { ignores: ['.next/**', 'node_modules/**', 'drizzle/**', '.data/**', 'playwright-report/**', 'test-results/**', 'next-env.d.ts', 'public/sw.js', '.claude/**'] },
   {
     // Rule from TODO 4.2: locale lists live only in the language registry.
     files: ['src/**/*.{ts,tsx}'],

@@ -29,6 +29,8 @@ export type CallOptions = {
   /** Perspective slots record refusals as abstentions instead of switching model. */
   refusalIsAbstention?: boolean;
   searches?: { web: number; x: number; scrape: number };
+  /** Private Venice model tried last (config.roles.backup); supporting steps only, never a perspective slot. */
+  backupModel?: string;
 };
 
 export type CallResult = Omit<ChatResponse, 'provider' | 'costUsd'> & { provider: 'venice' | 'gateway' | 'demo'; usedFallback: boolean; costUsd: number };
@@ -98,6 +100,7 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
     model: opts.model,
     gatewayModel: opts.fallbackModel,
     rawUserText: opts.rawUserText,
+    backupModel: opts.slot ? undefined : opts.backupModel,
     keys: { venice: Boolean(providerKey('venice')), gateway: Boolean(providerKey('gateway')) },
     gatewayIds: providerKey('gateway') && !opts.rawUserText ? await getGatewayModelIds() : null,
   });
@@ -140,6 +143,8 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
         }
         recordFailure(step.model, bs);
         if (err.errorClass === 'auth' || err.errorClass === 'payment') break;
+        // A model that timed out once is likely to again: move on to the next route instead of waiting twice.
+        if (err.errorClass === 'timeout' && step !== plan[plan.length - 1]) break;
         if (tries === 0) {
           const wait = err.errorClass === 'rate_limit' ? Math.min(err.retryAfterMs ?? 1000, 2000) : 250;
           await sleep(wait + Math.random() * 250);

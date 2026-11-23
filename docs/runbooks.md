@@ -20,11 +20,13 @@ error analysis.failed analysis=9f3c2a stage=investigate ms=41234 err="AiError(ti
 | `request.failed` | error | Unhandled error in a page, API route or server action. `route`, `digest`, `at` (file and line) |
 | `analysis.done` | info | One per finished check: `status` (published, review, needs_input), `ms`, `reused` |
 | `analysis.failed` | error | A check failed: `stage` tells where. Look at the `model.*` / `search.*` lines just before it with the same `analysis=` |
+| `analysis.stuck` | error | A check made no progress for 15 minutes (its function was cut off) and was marked failed by the health cron. `stage` tells where it stopped |
 | `analysis.crashed` | error | The pipeline threw before it could record the failure (usually the database) |
 | `slot.failed`, `shadow.failed` | warn | One perspective (or its shadow model) failed and abstained; the analysis went on |
 | `model.call_failed` | warn | One try on one vendor failed: `err` has the class (timeout, rate_limit, auth, payment, server…) |
-| `model.fallback_used` | warn | The backup vendor answered. See *Venice outage* below |
+| `model.fallback_used` | warn | The backup vendor, or the Private backup model (Models › Supporting roles › Backup), answered. See *Venice outage* below |
 | `model.circuit_open` | warn | A model failed too often and is being skipped for a while |
+| `harness.checked` / `harness.sample_failed` | info / warn | Admin › Models "Test": the result for a slot and model / one of its 5 sample investigations failed |
 | `model.all_routes_failed` | error | No vendor could answer: check keys (`auth`), credit (`payment`) or the vendor status page |
 | `search.engine_failed` / `search.all_engines_failed` | warn / error | A search engine failed (the next one was used) / none worked. See *Search engine outage* |
 | `research.plan_failed` | warn | The research planner failed; only the claim itself was searched |

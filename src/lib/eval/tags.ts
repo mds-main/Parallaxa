@@ -12,7 +12,7 @@ export async function evalTags(config: AppConfig): Promise<{ n: number; country:
   let topicOk = 0;
   const prompt = loadPrompt('tag', 'en', { topics: TOPICS.map((t) => t.id).join(', ') });
   for (const g of gold) {
-    const res = await callModel({ step: 'tag', model: config.roles.tag, config, request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<claim>${g.claim}</claim>` }], responseSchema: TAG_SCHEMA, temperature: 0 } });
+    const res = await callModel({ step: 'tag', model: config.roles.tag, config, request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<claim>${g.claim}</claim>` }], responseSchema: TAG_SCHEMA, temperature: 0, thinking: false } });
     const out = parseJson<{ places: { id: string }[]; topics: { id: string }[] }>(res.content);
     const countries = new Set(out.places.map((p) => p.id.toUpperCase().split('-')[0]));
     if (g.places!.every((p) => countries.has(p))) countryOk++;

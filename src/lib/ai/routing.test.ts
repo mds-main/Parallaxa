@@ -27,6 +27,13 @@ describe('vendor routing', () => {
     expect(route('venice', true, { rawUserText: true, keys: { venice: false, gateway: true } })).toEqual([]);
   });
 
+  it('tries the Private backup model last, also for the user\'s own words, and never twice', () => {
+    expect(route('venice', true, { rawUserText: true, backupModel: 'z-ai-glm-5-3-flash' })).toEqual(['venice:grok-4-7', 'venice:z-ai-glm-5-3-flash (backup)']);
+    expect(route('venice', true, { backupModel: 'z-ai-glm-5-3-flash' }).at(-1)).toBe('venice:z-ai-glm-5-3-flash (backup)');
+    expect(route('venice', false, { backupModel: 'grok-4-7' })).toEqual(['venice:grok-4-7']);
+    expect(route('venice', true, { rawUserText: true, backupModel: 'z-ai-glm-5-3-flash', keys: { venice: false, gateway: true } })).toEqual([]);
+  });
+
   it("prefers the slot's own Gateway model over the vendor equivalent", () => {
     expect(route('gateway', false, { gatewayModel: 'spacexai/grok-4.5' })).toEqual(['gateway:spacexai/grok-4.5']);
     expect(gatewayModelFor('deepseek-v4-pro')).toBe('deepseek/deepseek-v4-pro');

@@ -9,6 +9,7 @@ import { gte, sql } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import { errorReports } from '../db/schema';
 import { log } from '../log';
+import { failStuckAnalyses } from '../pipeline/stuck';
 
 export async function runHealthChecks() {
   const { config } = await getActiveConfig();
@@ -45,5 +46,6 @@ export async function runHealthChecks() {
   const hot = bursts.filter((b) => b.n >= 5);
   if (total >= 30 || hot.length) await raiseAlert('error_rate', `Possible coordinated error reports in the last hour: ${total} reports; ${hot.map((h) => `${h.analysisId} (${h.n})`).join(', ') || 'spread across analyses'}. Review before acting on them.`);
   await checkLateEditions();
-  return { pings, attention: o.attention };
+  const stuck = await failStuckAnalyses();
+  return { pings, attention: o.attention, stuck };
 }

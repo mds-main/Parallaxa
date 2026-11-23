@@ -62,10 +62,12 @@ export async function planQueries(claim: AtomicClaim, config: AppConfig, analysi
   try {
     const res = await callModel({
       step: 'research-plan',
+      backupModel: config.roles.backup,
       model: config.roles.reader,
       config,
       analysisId,
       request: {
+        thinking: false,
         messages: [
           { role: 'system', content: loadPrompt('research-plan', 'en', { count }).text },
           {

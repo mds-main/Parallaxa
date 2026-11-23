@@ -36,6 +36,8 @@ export type ChatRequest = {
   responseSchema?: { name: string; schema: Record<string, unknown> };
   temperature?: number;
   reasoningEffort?: string;
+  /** false: answer without reasoning (short structured steps: faster, cheaper, and nothing to time out on). Venice only. */
+  thinking?: false;
   maxCompletionTokens?: number;
   veniceParameters?: VeniceParameters;
   timeoutMs?: number;
@@ -107,6 +109,8 @@ export async function chat(provider: Provider, req: ChatRequest): Promise<ChatRe
   }
   if (req.temperature !== undefined) body.temperature = req.temperature;
   if (req.reasoningEffort) body.reasoning_effort = req.reasoningEffort;
+  // Venice's switch degrades gracefully on models that must reason; the Gateway has no common equivalent.
+  if (req.thinking === false && provider === 'venice') body.reasoning = { enabled: false };
   if (req.maxCompletionTokens) body.max_completion_tokens = req.maxCompletionTokens;
   if (provider === 'venice') {
     // Only Parallaxa's published prompts apply (PRD 9.4).

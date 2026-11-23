@@ -144,7 +144,8 @@
       "pushBack": "Push back dialogue",
       "embedding": "Embeddings (similar-claim cache)",
       "vision": "Screenshot text reader",
-      "writer": "Analysis writer"
+      "writer": "Analysis writer",
+      "backup": "Backup for supporting steps (Private)"
     },
     "rotate": "Rotate among slots",
     "history": "Change history",

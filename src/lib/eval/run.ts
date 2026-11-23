@@ -14,6 +14,7 @@ import type { AppConfig, SlotConfig } from '../config/schema';
 import { getModel } from '../ai/catalog';
 import { isDemoMode } from '../ai/client';
 import { demoGradeFor } from '../ai/demo';
+import { log } from '../log';
 
 export type GoldItem = { id: string; lang: string; claim: string; expected: Grade; topic: string; places?: string[]; mirrorOf?: string; variantOf?: string };
 
@@ -110,11 +111,16 @@ export async function harnessCheck(config: AppConfig, slotId: string, model: str
   if (!slot) throw new Error(`Unknown slot ${slotId}`);
   const catalogModel = await getModel(model);
   const gold = loadGoldSet().filter((g) => !g.variantOf).slice(0, 5);
-  const samples: HarnessCheckResult['samples'] = [];
-  for (const g of gold) {
-    const v = await investigate({ slot, claim: { id: 'c1', canonical: g.claim, type: 'fact', checkable: true }, pool: [], config, modelOverride: model, skipVerification: isDemoMode() }).catch(() => null);
-    samples.push({ claim: g.claim, expected: g.expected, got: v?.grade ?? null, toolCalls: v?.toolCalls ?? 0, webSearches: v?.searches.web ?? 0, xSearches: v?.searches.x ?? 0, sources: v?.sources.length ?? 0 });
-  }
+  // The five investigations run side by side, so the check takes as long as the slowest one, not the sum.
+  const samples: HarnessCheckResult['samples'] = await Promise.all(
+    gold.map(async (g) => {
+      const v = await investigate({ slot, claim: { id: 'c1', canonical: g.claim, type: 'fact', checkable: true }, pool: [], config, modelOverride: model, skipVerification: isDemoMode() }).catch((e) => {
+        log.warn('harness.sample_failed', { slot: slotId, model, error: e });
+        return null;
+      });
+      return { claim: g.claim, expected: g.expected, got: v?.grade ?? null, toolCalls: v?.toolCalls ?? 0, webSearches: v?.searches.web ?? 0, xSearches: v?.searches.x ?? 0, sources: v?.sources.length ?? 0 };
+    }),
+  );
   const demo = isDemoMode();
   const verdicts = samples.filter((s) => s.got !== null).length;
   const close = samples.filter((s) => s.got && steps(s.expected, s.got) <= 1).length;
@@ -126,6 +132,7 @@ export async function harnessCheck(config: AppConfig, slotId: string, model: str
   ];
   if (catalogModel?.capabilities.xSearch && slot.harness.xSearch) checks.push({ label: 'Uses X search', ok: demo || samples.some((s) => s.xSearches > 0), detail: `${samples.reduce((a, s) => a + s.xSearches, 0)} searches` });
   const ok = checks.every((c) => c.ok);
+  log.info('harness.checked', { slot: slotId, model, ok, verdicts, close });
   const db = await getDb();
   await db.insert(evalRuns).values({ kind: 'harness_check', status: ok ? 'passed' : 'failed', metrics: { slotId, model, checks, samples } as unknown as Record<string, unknown> });
   return { ok, model, checks, samples, demo };

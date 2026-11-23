@@ -268,7 +268,7 @@ export function ModelsManager({ catalog, gatewayIds, stats, matrix, breakers, ve
                 <select className="field mt-1" value={draft.roles[k]} onChange={(e) => update(`roles.${k}`, e.target.value)}>
                   {!byId.has(draft.roles[k]) && <option value={draft.roles[k]}>{draft.roles[k]}</option>}
                   {catalog
-                    .filter((m) => (k === 'pushBack' || k === 'canonicalize' || k === 'vision' ? m.privacy === 'private' : true))
+                    .filter((m) => (k === 'pushBack' || k === 'canonicalize' || k === 'vision' || k === 'backup' ? m.privacy === 'private' : true))
                     .map((m) => <option key={m.id} value={m.id}>{m.name} ({m.privacy})</option>)}
                 </select>
               )}

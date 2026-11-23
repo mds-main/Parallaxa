@@ -58,6 +58,11 @@ export const rolesSchema = z.object({
   vision: z.string().default('qwen-3-8-27b'),
   /** 'rotate' cycles the writer among enabled perspective slots. */
   writer: z.string().default('rotate'),
+  /**
+   * Private Venice model that takes over a supporting step (splitting claims, tagging, planning research,
+   * checking translations, push back) when the step's own model fails or times out.
+   */
+  backup: z.string().default('z-ai-glm-5-3-flash'),
 });
 export type RolesConfig = z.infer<typeof rolesSchema>;
 
@@ -228,6 +233,7 @@ export function defaultConfig(): AppConfig {
       embedding: 'text-embedding-bge-m3',
       vision: 'qwen-3-8-27b',
       writer: 'rotate',
+      backup: 'z-ai-glm-5-3-flash',
     },
     routing: {},
     search: {},

@@ -54,10 +54,12 @@ export async function renderAnalysis(structured: StructuredAnalysis, claimText: 
     const body = { ...parseJson<Omit<RenderedAnalysis, 'lang'>>(res.content), lang };
     const check = await callModel({
       step: 'consistency',
+      backupModel: config.roles.backup,
       model: config.roles.checker,
       config,
       analysisId,
       request: {
+        thinking: false,
         messages: [
           { role: 'system', content: loadPrompt('consistency').text },
           { role: 'user', content: `<source>${input}</source>\n<rewrite>${JSON.stringify(body)}</rewrite>` },

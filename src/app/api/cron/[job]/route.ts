@@ -33,7 +33,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ job: str
 
 /** Frequent jobs whose result says they did nothing worth a line. */
 const IDLE: Record<string, (r: Record<string, unknown>) => boolean> = {
-  health: (r) => Object.values((r.pings ?? {}) as Record<string, string>).every((v) => v === 'ok'),
+  health: (r) => !r.stuck && Object.values((r.pings ?? {}) as Record<string, string>).every((v) => v === 'ok'),
   catalog: (r) => !(r.changed as unknown[] | undefined)?.length,
   push: (r) => !r.sent,
   briefing: (r) => !(r.due as unknown[] | undefined)?.length,

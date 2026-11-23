@@ -10,7 +10,8 @@ import { recordUsage } from '@/lib/metrics/usage';
 import { getUserSession } from '@/lib/accounts/session';
 import { log } from '@/lib/log';
 
-export const maxDuration = 300;
+/** The analysis runs after the response (`after`), within this limit; stuck ones are failed by the retention cron. */
+export const maxDuration = 800;
 
 const body = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('text'), text: z.string().trim().min(8).max(8000), lang: z.string().optional(), rerunOf: z.string().uuid().optional() }),

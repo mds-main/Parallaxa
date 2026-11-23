@@ -8,7 +8,8 @@ import { rateLimit } from '@/lib/security/rate-limit';
 import { clientIp, hashIp } from '@/lib/security/ip';
 import { log } from '@/lib/log';
 
-export const maxDuration = 300;
+/** The analysis runs after the response (`after`), within this limit; stuck ones are failed by the retention cron. */
+export const maxDuration = 800;
 
 const body = z.object({ place: z.string().regex(/^(GLOBAL|[A-Z]{2}(-[A-Z0-9]{1,3})?)$/) });
 

@@ -80,14 +80,24 @@ export type RouteInput = {
   /** The request carries the user's own words: Private (Venice) models only, whatever the routing says. */
   rawUserText?: boolean;
   keys: { venice: boolean; gateway: boolean };
+  /** Private Venice model tried last when every other route fails (supporting steps only). */
+  backupModel?: string;
 };
 
 /**
  * The ordered list of attempts for one call. Never empty when Venice has a key.
  * - Raw user text stays on Venice (PRD privacy rule: it only reaches Private models).
  * - A provider without a key, or a Venice model with no Gateway equivalent, is skipped.
+ * - A backup model (Private, on Venice, so raw user text may use it too) comes last.
  */
 export function planRoute(input: RouteInput): RouteStep[] {
+  const steps = vendorRoute(input);
+  const backup = input.backupModel?.trim();
+  if (backup && input.keys.venice && !steps.some((s) => s.provider === 'venice' && s.model === backup)) steps.push({ provider: 'venice', model: backup, isFallback: true });
+  return steps;
+}
+
+function vendorRoute(input: RouteInput): RouteStep[] {
   const venice = input.keys.venice ? { provider: 'venice' as const, model: input.model } : null;
   if (input.rawUserText) return venice ? [{ ...venice, isFallback: false }] : [];
   const gwModel = gatewayModelFor(input.model, input.gatewayModel, input.gatewayIds);

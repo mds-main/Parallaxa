@@ -144,7 +144,8 @@
       "pushBack": "Diálogo Rebatir",
       "embedding": "Vectores (caché de afirmaciones parecidas)",
       "vision": "Lector de texto en capturas",
-      "writer": "Redactor del análisis"
+      "writer": "Redactor del análisis",
+      "backup": "Respaldo de los pasos de apoyo (privado)"
     },
     "rotate": "Rotar entre perspectivas",
     "history": "Historial de cambios",

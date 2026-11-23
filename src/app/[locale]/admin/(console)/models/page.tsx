@@ -9,6 +9,9 @@ import { ModelsManager } from '@/components/admin/ModelsManager';
 import { ProviderRouting } from '@/components/admin/ProviderRouting';
 import { getGatewayModelIds } from '@/lib/ai/gateway-catalog';
 
+/** Server actions posted from this page (model tests run real investigations) get the longest limit. */
+export const maxDuration = 800;
+
 export default async function ModelsPage() {
   const locale = await getLocale();
   await requireAdmin(locale);

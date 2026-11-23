@@ -29,6 +29,7 @@ export async function pushBackReply(opts: { analysisId: string; structured: Stru
   };
   const res = await callModel({
     step: `pushback:${replyLang}`,
+    backupModel: config.roles.backup,
     model: config.roles.pushBack,
     config,
     analysisId: opts.analysisId,

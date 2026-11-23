@@ -67,11 +67,12 @@ async function canonicalize(text: string, config: AppConfig, analysisId: string,
   const prompt = loadPrompt('canonicalize', 'en', { maxClaims: config.pipeline.maxClaimsPerCheck });
   const res = await callModel({
     step: 'canonicalize',
+    backupModel: config.roles.backup,
     model: config.roles.canonicalize,
     rawUserText,
     config,
     analysisId,
-    request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<user_input>${text}</user_input>` }], responseSchema: CANONICALIZE_SCHEMA, temperature: 0 },
+    request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<user_input>${text}</user_input>` }], responseSchema: CANONICALIZE_SCHEMA, temperature: 0, thinking: false },
   });
   return toAtomicClaims(parseJson<{ claims: RawClaim[] }>(res.content).claims, config.pipeline.maxClaimsPerCheck);
 }
@@ -103,10 +104,11 @@ async function tag(claim: string, config: AppConfig, analysisId: string) {
   const prompt = loadPrompt('tag', 'en', { topics: [...topicIds].join(', ') });
   const res = await callModel({
     step: 'tag',
+    backupModel: config.roles.backup,
     model: config.roles.tag,
     config,
     analysisId,
-    request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<claim>${claim}</claim>` }], responseSchema: TAG_SCHEMA, temperature: 0 },
+    request: { messages: [{ role: 'system', content: prompt.text }, { role: 'user', content: `<claim>${claim}</claim>` }], responseSchema: TAG_SCHEMA, temperature: 0, thinking: false },
   });
   const out = parseJson<{ places: { id: string; confidence: number }[]; topics: { id: string; confidence: number }[]; placeNeeded?: boolean }>(res.content);
   const places = out.places
