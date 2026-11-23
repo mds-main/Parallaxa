@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ job: str
       const r = await syncCatalog();
       const { config } = await getActiveConfig();
       const affected = r.changed.filter((id) => config.slots.some((s) => s.model === id) || Object.values(config.roles).includes(id));
-      if (affected.length) await raiseAlert('catalog', `Venice catalog changed for active models: ${affected.join(', ')} (offline, deprecated or price change).`, config.alerts.emails);
+      if (affected.length) await raiseAlert('catalog', `Venice catalog changed for active models: ${affected.join(', ')} (offline, deprecated or price change).`);
       return NextResponse.json(r);
     }
     case 'health':
@@ -38,7 +38,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ job: str
     case 'eval': {
       const { id, config } = await getActiveConfig();
       const m = await runEval({ config, configVersionId: id, kind: 'nightly', limit: 50 });
-      if (!m.demo && m.accuracy < 0.89 && config.alerts.onEvalRegression) await raiseAlert('eval_regression', `Nightly eval accuracy ${(m.accuracy * 100).toFixed(1)}%.`, config.alerts.emails);
+      if (!m.demo && m.accuracy < 0.89 && config.alerts.onEvalRegression) await raiseAlert('eval_regression', `Nightly eval accuracy ${(m.accuracy * 100).toFixed(1)}%.`);
       return NextResponse.json({ accuracy: m.accuracy, parity: m.parity, languageParity: m.languageParity, n: m.n });
     }
     default:

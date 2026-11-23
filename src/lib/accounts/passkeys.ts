@@ -1,10 +1,11 @@
-/** Passkeys (TODO 9.3) with SimpleWebAuthn: discoverable credentials, user verification preferred. */
+/** Passkeys (TODO 9.3) with SimpleWebAuthn: the only way to create and sign in to an account. Discoverable credentials, user verification preferred. */
+import { randomUUID } from 'node:crypto';
 import { generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } from '@simplewebauthn/server';
 import type { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/server';
 import { eq } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import { passkeys } from '../db/schema';
-import { setChallenge, takeChallenge } from './session';
+import { createPasskeyUser, setChallenge, takeChallenge } from './session';
 import { siteUrl } from '@/lib/site';
 
 export function rp(origin: string) {
@@ -31,16 +32,33 @@ export async function registrationOptions(userId: string, origin: string) {
   return options;
 }
 
-export async function verifyRegistration(response: RegistrationResponseJSON, origin: string): Promise<boolean> {
+/** Options to create a new account with its first passkey. The account row is only created once the passkey verifies. */
+export async function signupOptions(origin: string, locale: string) {
+  const userId = randomUUID();
+  const options = await generateRegistrationOptions({
+    rpName: rp(origin).rpName,
+    rpID: rp(origin).rpID,
+    userName: `parallaxa-${userId.slice(0, 8)}`,
+    userDisplayName: 'Parallaxa',
+    attestationType: 'none',
+    authenticatorSelection: { residentKey: 'required', userVerification: 'preferred' },
+  });
+  await setChallenge(options.challenge, userId, { locale });
+  return options;
+}
+
+/** Verifies a new passkey; for a sign-up, also creates the account. Returns the account id, or null. */
+export async function verifyRegistration(response: RegistrationResponseJSON, origin: string): Promise<string | null> {
   const c = await takeChallenge();
-  if (!c?.userId) return false;
+  if (!c?.userId) return null;
   const { rpID, origin: expectedOrigin } = rp(origin);
   const v = await verifyRegistrationResponse({ response, expectedChallenge: c.challenge, expectedOrigin, expectedRPID: rpID });
-  if (!v.verified) return false;
+  if (!v.verified) return null;
+  if (c.signupLocale) await createPasskeyUser(c.userId, c.signupLocale);
   const cred = v.registrationInfo.credential;
   const db = await getDb();
   await db.insert(passkeys).values({ id: cred.id, userId: c.userId, publicKey: b64(cred.publicKey), counter: cred.counter, transports: cred.transports ?? [] }).onConflictDoNothing();
-  return true;
+  return c.userId;
 }
 
 export async function authenticationOptions(origin: string) {

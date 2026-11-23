@@ -67,7 +67,7 @@ export const subscriptions = pgTable('subscriptions', {
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   targetType: text('target_type').$type<'topic' | 'place' | 'actor' | 'analysis'>().notNull(),
   targetId: text('target_id').notNull(),
-  channel: text('channel').$type<'push' | 'email' | 'in_app'>().notNull(),
+  channel: text('channel').$type<'push' | 'in_app'>().notNull(),
   pushEndpointCiphertext: text('push_endpoint_ciphertext'),
   lang: text('lang').notNull(),
   /** Delivery settings for push: local time (HH:MM), IANA time zone, weekdays only. */
@@ -537,7 +537,7 @@ export const userSessions = pgTable('user_sessions', {
   revokedAt: ts('revoked_at'),
 });
 
-/** Single-use sign-in links. Only a hash of the token and of the email are stored. */
+/** Former email sign-in links: no longer written (accounts are passkey-only). Kept so no migration drops a table. */
 export const magicLinks = pgTable('magic_links', {
   tokenHash: text('token_hash').primaryKey(),
   emailHash: text('email_hash').notNull(),

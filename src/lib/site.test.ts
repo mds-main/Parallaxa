@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { siteUrl } from './site';
+import { canonicalRedirect, siteUrl } from './site';
 
 const KEYS = ['NEXT_PUBLIC_SITE_URL', 'VERCEL_ENV', 'VERCEL_PROJECT_PRODUCTION_URL', 'VERCEL_URL'] as const;
 const saved = Object.fromEntries(KEYS.map((k) => [k, process.env[k]]));
@@ -28,5 +28,19 @@ describe('siteUrl', () => {
   it('falls back to localhost', () => {
     set({});
     expect(siteUrl()).toBe('http://localhost:3000');
+  });
+});
+
+describe('canonicalRedirect', () => {
+  it('sends production requests on other hosts to the production domain', () => {
+    set({ VERCEL_ENV: 'production', VERCEL_PROJECT_PRODUCTION_URL: 'parallaxa1.vercel.app' });
+    expect(canonicalRedirect('parallaxa-abc-team.vercel.app')).toBe('https://parallaxa1.vercel.app');
+    expect(canonicalRedirect('Parallaxa1.vercel.app')).toBeNull();
+  });
+  it('never redirects previews or local runs', () => {
+    set({ VERCEL_ENV: 'preview', VERCEL_PROJECT_PRODUCTION_URL: 'parallaxa1.vercel.app' });
+    expect(canonicalRedirect('parallaxa-git-x.vercel.app')).toBeNull();
+    set({});
+    expect(canonicalRedirect('localhost:3000')).toBeNull();
   });
 });

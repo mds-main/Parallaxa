@@ -33,16 +33,14 @@ Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type f
 | `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | all | yes | Injected by the Neon integration (migrations use the unpooled one). Give previews their own Neon branch |
 | `VENICE_API_KEY` | production, preview | yes | Without it the site runs in demo mode. A separate, lower-limit key for previews is safer |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | production, preview | yes | Password ≥ 20 random characters, secret ≥ 32; different values per environment. The secret also salts the daily IP hashes used for rate limits |
-| `USER_SESSION_SECRET` | production, preview | yes | ≥ 32 characters. Enables the optional reader accounts; without it accounts are switched off |
-| `EMAIL_HASH_SECRET` | production, preview | recommended | Hashes reader emails; falls back to `USER_SESSION_SECRET` if unset |
+| `USER_SESSION_SECRET` | production, preview | yes | ≥ 32 characters. Enables the optional reader accounts (passkeys only, no email); without it accounts are switched off |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | production | yes for alerts | Admin alerts go to Telegram, never email. Bot from BotFather; get the chat id with `TELEGRAM_BOT_TOKEN=… pnpm telegram --find-chats`, test with `--test` or Admin › Alerts. Several chats: comma-separated |
 | `DATA_ENCRYPTION_KEY` | production, preview | yes | `openssl rand -base64 32`; encrypts push subscriptions and account data |
 | `CRON_SECRET` | production | yes | Vercel sends it to the cron routes (`vercel.json`) |
-| `NEXT_PUBLIC_SITE_URL` | production | optional | Public URL for feeds, share links and sign-in emails. Unset, production uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` (shortest custom domain, else `*.vercel.app`) and previews use their own address |
+| `NEXT_PUBLIC_SITE_URL` | production | optional | Public URL for feeds, share links and passkeys. Unset, production uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` (shortest custom domain, else `*.vercel.app`) and previews use their own address |
 | `AI_GATEWAY_API_KEY` | production, preview | recommended | Backup AI vendor, or the primary if chosen in Admin › Models › AI vendors |
 | `EXA_API_KEY` | production, preview | recommended | Default primary search engine (full page text). Order and backups: Admin › Investigation › Search engines |
 | `BRAVE_SEARCH_API_KEY` | production, preview | optional | Default first backup search engine. Without Exa or Brave keys, searches use Exa or Brave through Venice (zero data retention) |
-| `RESEND_API_KEY`, `AUTH_EMAIL_FROM` | production, preview | yes for accounts | Sends sign-in links (Resend, EU region); `AUTH_EMAIL_FROM` like `Parallaxa <signin@your-domain>` on a verified domain |
-| `ALERT_EMAIL_TO`, `ALERT_EMAIL_FROM` | production | for alerts | Admin alerts (spend, errors, late briefing, backup vendor in use) |
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | production | for push | `npx web-push generate-vapid-keys`; subject is a `mailto:` address |
 | `ADMIN_IP_ALLOWLIST` | production | optional | Comma-separated IPs allowed into `/admin` |
 | `EDGE_CONFIG`, `EDGE_CONFIG_ID`, `VERCEL_API_TOKEN` | production | optional | Fast config reads; token scoped to that Edge Config only |
@@ -50,7 +48,7 @@ Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type f
 | `MIGRATIONS`, `MIGRATION_LOCK_TIMEOUT`, `MIGRATION_STATEMENT_TIMEOUT` | any | optional | Migration overrides (see **Database migrations**) |
 | `BRIEFING_AUTO_PUBLISH` | preview only | optional | `1` publishes editions without human review. Never in production |
 
-Never set in production: `AUTH_DEV_LINKS` (shows sign-in links on screen), `PARALLAXA_DB` (local and test database), `VENICE_CATALOG_LIVE` (local development). Vercel sets `VERCEL_ENV` and `NODE_ENV` itself.
+Never set in production: `PARALLAXA_DB` (local and test database), `VENICE_CATALOG_LIVE` (local development). Vercel sets `VERCEL_ENV` and `NODE_ENV` itself.
 
 ## 3. Cron jobs (vercel.json)
 

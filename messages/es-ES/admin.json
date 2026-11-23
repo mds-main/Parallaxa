@@ -363,10 +363,19 @@
   },
   "alerts": {
     "title": "Avisos",
-    "intro": "Quién recibe aviso cuando algo necesita atención.",
+    "intro": "Los avisos aparecen aquí y se publican en el chat de Telegram de los administradores. No se envía nada por correo.",
     "recent": "Avisos recientes",
     "none": "No hay avisos.",
-    "acknowledge": "Marcar como visto"
+    "acknowledge": "Marcar como visto",
+    "telegram": {
+      "title": "Telegram",
+      "on": "{count, plural, one {Conectado: publica en # chat} other {Conectado: publica en # chats}}",
+      "off": "Sin conectar: configura TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID. Los avisos siguen apareciendo abajo.",
+      "help": "Crea un bot con BotFather, escríbele (o añádelo a un grupo) y ejecuta pnpm telegram --find-chats para obtener el id del chat.",
+      "test": "Enviar un mensaje de prueba",
+      "testOk": "Enviado. Revisa el chat.",
+      "testFailed": "Telegram no lo ha aceptado. Revisa el token y el id del chat."
+    }
   },
   "audit": {
     "title": "Registro de cambios",

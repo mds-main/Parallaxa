@@ -226,11 +226,6 @@ export const FIELDS: FieldDescriptor[] = [
   },
   // ── Alerts ──
   {
-    path: 'alerts.emails', section: 'alerts', type: 'text',
-    label: L('Alert emails', 'Correos de aviso'),
-    help: L('Comma-separated addresses that receive alerts.', 'Direcciones separadas por comas que reciben los avisos.'), affects: ['admin'],
-  },
-  {
     path: 'alerts.sloP95Seconds', section: 'alerts', type: 'number', min: 5, max: 120, step: 1, unit: 's',
     label: L('Alert if p95 time to result exceeds', 'Avisar si el p95 del tiempo de resultado supera'),
     help: L('PRD target: 20 s.', 'Objetivo del PRD: 20 s.'), affects: ['admin'],

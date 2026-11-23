@@ -21,17 +21,16 @@ export async function runHealthChecks() {
     }
   }
   const o = await getOverview();
-  const recipients = config.alerts.emails;
   if (o.spendToday >= (config.limits.dailySpendCeilingUsd * config.limits.spendAlertPercent) / 100) {
-    await raiseAlert('spend', `AI spend today is $${o.spendToday.toFixed(2)} of the $${config.limits.dailySpendCeilingUsd} ceiling.`, recipients);
+    await raiseAlert('spend', `AI spend today is $${o.spendToday.toFixed(2)} of the $${config.limits.dailySpendCeilingUsd} ceiling.`);
   }
   if (o.fallbackActive && config.alerts.onFallback) {
     const primary = PROVIDER_NAMES[config.routing.primary];
     const backup = PROVIDER_NAMES[config.routing.primary === 'venice' ? 'gateway' : 'venice'];
-    await raiseAlert('fallback', `${backup} (backup) is serving requests: ${primary} (primary) may be degraded.`, recipients);
+    await raiseAlert('fallback', `${backup} (backup) is serving requests: ${primary} (primary) may be degraded.`);
   }
-  if (o.errorRate > config.alerts.errorRatePercent / 100) await raiseAlert('error_rate', `Failed checks in the last 24 h: ${(o.errorRate * 100).toFixed(1)}%.`, recipients);
-  if (o.p95Seconds !== null && o.p95Seconds > config.alerts.sloP95Seconds) await raiseAlert('slo', `p95 time to result is ${o.p95Seconds}s (target ${config.alerts.sloP95Seconds}s).`, recipients);
+  if (o.errorRate > config.alerts.errorRatePercent / 100) await raiseAlert('error_rate', `Failed checks in the last 24 h: ${(o.errorRate * 100).toFixed(1)}%.`);
+  if (o.p95Seconds !== null && o.p95Seconds > config.alerts.sloP95Seconds) await raiseAlert('slo', `p95 time to result is ${o.p95Seconds}s (target ${config.alerts.sloP95Seconds}s).`);
   // Coordinated-report detection (TODO 24.2): a burst of reports overall or against one analysis.
   const db = await getDb();
   const hourAgo = new Date(Date.now() - 3600_000);
@@ -42,7 +41,7 @@ export async function runHealthChecks() {
     .groupBy(errorReports.analysisId);
   const total = bursts.reduce((a, b) => a + b.n, 0);
   const hot = bursts.filter((b) => b.n >= 5);
-  if (total >= 30 || hot.length) await raiseAlert('error_rate', `Possible coordinated error reports in the last hour: ${total} reports; ${hot.map((h) => `${h.analysisId} (${h.n})`).join(', ') || 'spread across analyses'}. Review before acting on them.`, recipients);
+  if (total >= 30 || hot.length) await raiseAlert('error_rate', `Possible coordinated error reports in the last hour: ${total} reports; ${hot.map((h) => `${h.analysisId} (${h.n})`).join(', ') || 'spread across analyses'}. Review before acting on them.`);
   await checkLateEditions();
   return { pings, attention: o.attention };
 }

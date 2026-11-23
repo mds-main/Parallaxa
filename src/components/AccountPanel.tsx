@@ -10,14 +10,12 @@ const PLACEMENTS = ['left', 'centre_left', 'centre', 'centre_right', 'right', 'n
 
 const post = (url: string, body?: unknown) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body ?? {}) });
 
-/** Optional account: magic link or passkey sign-in, encrypted sync, export, delete, self-placement (TODO 9.2–9.6). */
+/** Optional account: passkey sign-up and sign-in (no email), encrypted sync, export, delete, self-placement (TODO 9.2–9.6). */
 export function AccountPanel() {
   const t = useTranslations('settings.account');
   const locale = useLocale();
   const [status, setStatus] = useState<Status | null>(null);
-  const [email, setEmail] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
-  const [devLink, setDevLink] = useState<string | null>(null);
   const [placement, setPlacement] = useState<(typeof PLACEMENTS)[number]>('none');
   const [consent, setConsent] = useState(false);
   const [confirm, setConfirm] = useState('');
@@ -41,40 +39,46 @@ export function AccountPanel() {
   if (!status.enabled) return <p className="card p-5 text-sm">{t('disabled')}</p>;
 
   if (!status.signedIn) {
+    // No email, no password: a passkey made on this device creates the account and signs in to it.
+    const passkeyError = (e: unknown) => setMsg((e as Error)?.name === 'NotAllowedError' ? null : t('passkeyFailed'));
     return (
       <section className="card space-y-4 p-5">
-        <form
-          className="space-y-2"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const res = await post('/api/auth/email', { email, lang: locale });
-            const j = (await res.json()) as { ok?: boolean; devLink?: string };
-            setMsg(j.ok ? t('sent') : null);
-            setDevLink(j.devLink ?? null);
-          }}
-        >
-          <label className="block">
-            <span className="label">{t('email')}</span>
-            <input type="email" required autoComplete="email" className="field mt-1" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </label>
-          <button className="btn">{t('send')}</button>
-        </form>
+        <p className="text-sm muted">{t('passkeyIntro')}</p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            className="btn"
+            onClick={async () => {
+              setMsg(null);
+              try {
+                const options = await (await post('/api/auth/passkey-signup-options', { lang: locale })).json();
+                const response = await startRegistration({ optionsJSON: options });
+                if ((await post('/api/auth/passkey-signup-verify', response)).ok) await refresh();
+                else setMsg(t('passkeyFailed'));
+              } catch (e) {
+                passkeyError(e);
+              }
+            }}
+          >
+            {t('create')}
+          </button>
+          <button
+            className="btn btn-ghost"
+            onClick={async () => {
+              setMsg(null);
+              try {
+                const options = await (await post('/api/auth/passkey-login-options')).json();
+                const response = await startAuthentication({ optionsJSON: options });
+                if ((await post('/api/auth/passkey-login-verify', response)).ok) await refresh();
+                else setMsg(t('passkeyFailed'));
+              } catch (e) {
+                passkeyError(e);
+              }
+            }}
+          >
+            {t('passkey')}
+          </button>
+        </div>
         {msg && <p role="status" className="text-sm">{msg}</p>}
-        {devLink && <a className="text-sm" href={devLink}>{t('devLink')}</a>}
-        <button
-          className="btn btn-ghost"
-          onClick={async () => {
-            try {
-              const options = await (await post('/api/auth/passkey-login-options')).json();
-              const response = await startAuthentication({ optionsJSON: options });
-              if ((await post('/api/auth/passkey-login-verify', response)).ok) await refresh();
-            } catch {
-              /* cancelled */
-            }
-          }}
-        >
-          {t('passkey')}
-        </button>
       </section>
     );
   }

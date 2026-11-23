@@ -58,13 +58,9 @@
   "saved": "Guardado en este dispositivo.",
   "account": {
     "title": "Cuenta (opcional)",
-    "intro": "No necesitas cuenta. Créala solo si quieres sincronizar tus lugares, temas y seguimientos entre dispositivos. No guardamos tu correo, solo un resumen cifrado con clave.",
+    "intro": "No necesitas una cuenta. Créala solo para sincronizar tus lugares, temas y seguimientos entre dispositivos. Sin correo ni contraseña: solo una llave de acceso en tu dispositivo (huella, cara o PIN).",
     "disabled": "Las cuentas no están activadas en este servidor.",
-    "email": "Correo electrónico",
-    "send": "Enviarme un enlace de acceso",
-    "sent": "Revisa tu bandeja de entrada: te hemos enviado un enlace de acceso (válido 15 minutos).",
-    "devLink": "Modo desarrollo: abrir el enlace de acceso",
-    "passkey": "Entrar con una llave de acceso",
+    "passkey": "Entrar con llave de acceso",
     "addPasskey": "Añadir una llave de acceso a esta cuenta",
     "passkeyAdded": "Llave de acceso añadida.",
     "passkeys": "{count, plural, =0 {Aún no hay llaves de acceso} one {# llave de acceso} other {# llaves de acceso}}",
@@ -91,10 +87,8 @@
       "right": "Derecha",
       "none": "Prefiero no decirlo"
     },
-    "verifyTitle": "Termina de iniciar sesión",
-    "verifyButton": "Entrar",
-    "verifyFailed": "Este enlace no es válido o ha caducado. Pide uno nuevo.",
-    "emailSubject": "Tu enlace de acceso a Parallaxa",
-    "emailBody": "Abre este enlace para entrar en Parallaxa (válido 15 minutos): {link}\n\nSi no lo has pedido tú, ignora este correo."
+    "passkeyIntro": "Tu llave de acceso se queda en tu dispositivo y se sincroniza con el gestor de contraseñas de tu móvil u ordenador. Nunca sabemos quién eres.",
+    "create": "Crear una cuenta con llave de acceso",
+    "passkeyFailed": "No ha funcionado. Inténtalo de nuevo o usa un dispositivo compatible con llaves de acceso."
   }
 }

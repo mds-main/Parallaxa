@@ -62,8 +62,8 @@ A calm, open, cross-partisan "reality check" web app (installable PWA). It check
 | Admin | `/admin` route group in the same app; env-var login (`ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`); forms generated from a Zod settings schema; *decide:* chart library |
 | Untrusted fetching | Vercel Sandbox with egress allow-list |
 | Security edge | Vercel Firewall/WAF, BotID |
-| Auth | *decide:* Auth.js vs Neon Auth. Must support passkeys + email magic links, with optional Google/Apple OAuth |
-| Email | Resend (EU region): magic links, digests, reply and appeal notices |
+| Auth | First-party passkeys (SimpleWebAuthn); no email, no passwords |
+| Notifications | No email anywhere. Readers: Web Push (browser and installed PWA). Admins: Telegram bot |
 | i18n | next-intl, ICU messages; *decide:* translation management (git-based JSON with PR review, or Tolgee/Crowdin/Lokalise) |
 | UI | *decide:* Tailwind CSS + accessible headless primitives (e.g., Radix) or a custom CSS-variables system |
 | PWA | Serwist (or equivalent) service worker, Web Push (VAPID) |
@@ -136,7 +136,7 @@ Resolution order: URL prefix → saved choice (account setting or `NEXT_LOCALE` 
 - [ ] 2.2 [P0] Write and publish the funding policy: no donor > 10% of the annual budget; no party, government or platform-company money; donors > €1,000 published; no model vendor > 50% of adjudication volume.
 - [ ] 2.3 [P0] Name clearance: registrar checks for parallaxa.app/.eu/.es/.com/.org (fallbacks getparallaxa.app, parallaxa.eu); EUIPO, OEPM and USPTO knockout searches in Classes 9, 38, 41 and 42; counsel clearance opinion; register the chosen domains and file the trademark.
 - [ ] 2.4 [P0] DPIA covering profiling of public figures, Art. 9 data (political self-placement, topic/place preferences), AI processing and EU residency; legitimate-interest assessment for the Ledger.
-- [ ] 2.5 [P0] DPAs with Vercel, Neon, Venice, AI Gateway upstream providers, Resend, the search API provider and the KV provider; record of processing activities.
+- [ ] 2.5 [P0] DPAs with Vercel, Neon, Venice, AI Gateway upstream providers, Telegram, the search API providers and the KV provider; record of processing activities.
 - [ ] 2.6 [P0] Legal opinion on GDPR Art. 85 journalistic exemption, Spanish LO 1/1982 (honour) and LO 2/1984 (rectification), criminal defamation exposure, and the equivalent regimes in the UK and Mexico [P2] and in each country whose edition is added later [P3].
 - [ ] 2.7 [P0] EU AI Act Art. 50 compliance plan: AI-interaction disclosure and machine-readable marking of AI-generated content.
 - [ ] 2.8 [P1] DSA readiness review (point of contact, terms) and check for small-enterprise exemptions; full notice-and-action when user content is hosted [P2] (needs: 27).
@@ -185,7 +185,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 4.13 [P1] Per-language enable flag in Edge Config for a staged rollout (staff → beta → everyone) without a redeploy. It can only be switched on when the catalogs are complete and the parity evals pass.
 - [x] 4.14 [P1] SEO generated from the registry: locale-prefixed public URLs, `hreflang` for every enabled language plus `x-default`→`/en`, localized `<title>`, meta description and Open Graph, localized sitemaps.
 - [x] 4.15 [P1] Localized PWA manifests per language (`lang`, `description`, shortcuts, `start_url` with prefix); serve the one matching the active locale (needs: 20.1).
-- [x] 4.16 [P1] Localized emails (Resend templates) and push payloads in the recipient's saved language.
+- [x] 4.16 [P1] Push payloads in the recipient's saved language (no email is sent).
 - [x] 4.17 [P1] Localized share cards (OG images) in the sharer's language.
 - [x] 4.18 [P1] es-ES lexicon linter for UI catalogs and sampled model output, flagging Latin American-only terms and forms ("ustedes" as informal plural, "computadora", "celular", "carro", "manejar" for driving, etc.); runs in `pnpm check:all` and in the nightly eval.
 - [ ] 4.19 [P1] Translation workflow: export new and changed keys → professional translation → native review → import via PR; *decide* git-only vs a translation management system; glossary enforcement.
@@ -259,7 +259,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 ## 9. Accounts, auth and privacy center
 - [x] 9.1 [P0] *Decide* Auth.js vs Neon Auth (verify passkeys, magic links, EU data, RLS integration).
 - [x] 9.2 [P1] Anonymous-first: every core feature works without an account; local history and preferences in IndexedDB.
-- [x] 9.3 [P1] Sign-in with passkeys + email magic links (Resend, localized); optional Google/Apple OAuth, never required.
+- [x] 9.3 [P1] Passkey-only accounts (Nov 2026: email sign-in removed): create an account and sign in with a passkey; no email, no password, nothing identifying stored.
 - [x] 9.4 [P1] Account sync of preferences, follows and history (encrypted, 7.3); merge local → account on first sign-in.
 - [x] 9.5 [P1] Privacy center: export (JSON), delete account (hard delete with confirmation), withdraw consents, view what is stored.
 - [x] 9.6 [P1] Optional political self-placement: explicit Art. 9 consent screen, separate encrypted table, aggregate use only (k ≥ 50), deletable at any time; never joined with preferences or behaviour.
@@ -509,7 +509,7 @@ Launch languages: `en` and `es-ES` (Spain Spanish only). Everything is built so 
 - [x] 22.15 [P1] **Content:** language flags from the registry, places and editions with coverage levels, briefing timing, notification limits, "outside your filters" default, quiz on/off per country.
 - [x] 22.16 [P1] **Metrics** with date range and CSV export: truth, even-handedness, models (agreement matrix, per-slot grade distribution, refusals, conflict-of-interest exclusions, latency, cost), operations, usage (aggregate, k ≥ 50), wellbeing and relevance, guardrails, costs. *Decide* the chart library.
 - [ ] 22.17 [P1] `metrics_daily` aggregation jobs feeding the metrics pages. No per-user data is stored for the console.
-- [x] 22.18 [P1] **Alerts:** thresholds and email recipients (spend, SLO breach, fallback active, eval regression, late briefing, login lockouts), sent through Resend.
+- [x] 22.18 [P1] **Alerts:** thresholds (spend, SLO breach, fallback active, eval regression, late briefing, login lockouts, catalog changes), posted to the admins’ Telegram chat (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID); test button in Admin › Alerts and `pnpm telegram`. Never emailed.
 - [ ] 22.19 [P1] Usability test with a first-time operator: swap the CN model, lower the spend ceiling and find yesterday's p95, all without help. Fix what they stumble on.
 - [ ] 22.20 [P2] Named admin accounts with passkeys and roles, replacing the shared env-var login.
 

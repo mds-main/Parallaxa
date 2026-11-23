@@ -7,9 +7,9 @@ Parallaxa's profile for every application: open source (AGPL), non-profit, ad-fr
 ## The short version
 
 - **No program pays for production AI inference at scale.** The realistic mix is: a legal identity, open-source infrastructure sponsorships, a few AI and tool credits, a fellowship, and EU consortium grants for real money.
-- **A legal identity unlocks most of it.** Nearly every nonprofit offer, Spanish grant and EU call needs a registered entity: a Spanish *asociación* or *fundación*, or a fiscal host such as Open Source Europe ASBL. Nonprofit discounts (Microsoft, Google, Anthropic, OpenAI, Resend, GitHub) are validated through **Goodstack** or a government register.
+- **A legal identity unlocks most of it.** Nearly every nonprofit offer, Spanish grant and EU call needs a registered entity: a Spanish *asociación* or *fundación*, or a fiscal host such as Open Source Europe ASBL. Nonprofit discounts (Microsoft, Google, Anthropic, OpenAI, GitHub) are validated through **Goodstack** or a government register.
 - **Startup programs usually exclude nonprofits** (Google for Startups, Microsoft for Startups, Cloudflare for Startups). The search-API startup programs below are the exception worth trying: some accept bootstrapped teams.
-- **Stay non-partisan in every application.** Microsoft, GitHub and Resend exclude political organisations, and Open Source Europe forbids political campaigning. Parallaxa is non-partisan by design; say so explicitly.
+- **Stay non-partisan in every application.** Microsoft and GitHub exclude political organisations, and Open Source Europe forbids political campaigning. Parallaxa is non-partisan by design; say so explicitly.
 
 ## Priority list (next 90 days)
 
@@ -24,7 +24,7 @@ Parallaxa's profile for every application: open source (AGPL), non-profit, ad-fr
 | 7 | Start a consortium for **Creative Europe** (media literacy / journalism partnerships) | €100k–2M at 70–80% co-funding | **20 Jan 2027** and **4 Feb 2027** |
 | 8 | Agent-tool credits: Exa, Linkup and Parallel startup programs; Wikimedia Enterprise "exceptional access"; ask Brave sales for nonprofit terms | Search and data credits | Now |
 | 9 | Ask Venice directly about public-good support | API credits (no public program found) | Now |
-| 10 | Once registered: Resend 50% off, Microsoft $2k/year Azure, Google/Anthropic/OpenAI nonprofit seats | Discounts | After step 1 |
+| 10 | Once registered: Microsoft $2k/year Azure, Google/Anthropic/OpenAI nonprofit seats | Discounts | After step 1 |
 
 **Watch list:** Vercel Open Source Program reopening (quarterly cohorts), Google.org *Strengthening Democracy in Europe* repeat, Digital Europe RSF-10 sub-grants (results Feb 2027), Horizon Europe Cluster 2 2027 calls (from March 2027), FECYT (Jul–Sep 2027), Fast Forward (Aug–Sep 2027), IFCN signatory status for the Global Fact Check Fund.
 
@@ -56,7 +56,6 @@ Not available now: OpenAI People-First AI Fund (closed 15 Jul 2026, US 501(c)(3)
 |---|---|---|---|---|---|
 | **Neon Open Source Program** | Monthly GitHub Sponsors payment (amount per project; Neon commits ≥ $200k/year overall; 6-month terms) + up to $5k Neon credits + up to $5k Neon AI Gateway credits | Public repo, OSI licence (AGPL OK), active development, GitHub Sponsors profile, "Sponsored by Neon" logo; no nonprofit or country rule | Open, rolling | **High** | [program](https://neon.com/programs/open-source) |
 | **GitHub Sponsors** | Donations, 0% fee from personal accounts (up to 6% from orgs) | Spain supported; organisations can be sponsored | Open | **High** (required by Neon) | [docs](https://docs.github.com/en/sponsors) |
-| **Resend for Nonprofits** | 50% off any paid plan | Registered nonprofit/charity/public-benefit body (no political or trade associations) | Open | **High** after registration | [details](https://resend.com/nonprofits) |
 | **Vercel Open Source Program** | $3,600 platform credits + partner starter pack | Open-source projects; nonprofits qualify if fully open source | **Closed now**; quarterly cohorts (last closed 13 Sep 2026) | **High**: apply when it reopens | [program](https://vercel.com/open-source-program) |
 | **Vercel AI Gateway free tier** | $5 credits every 30 days (some models; ends when you buy credits); no markup on paid usage | Anyone | Available | Medium | [pricing](https://vercel.com/docs/ai-gateway/pricing) |
 | **Cloudflare Project Galileo** | Free Business-level protection (DDoS, WAF, CDN, Zero Trust, AI-crawler controls) | At-risk journalism, civil-society and democracy organisations; fact-checkers protected before | Open, no deadline | Medium (Vercel already covers most; strong if attacked) | [Galileo](https://www.cloudflare.com/galileo/) |

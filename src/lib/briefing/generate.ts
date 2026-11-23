@@ -172,7 +172,7 @@ export async function checkLateEditions(now = new Date()) {
     const [e] = await db.select().from(s.briefingEditions).where(and(eq(s.briefingEditions.placeId, pid), eq(s.briefingEditions.date, todayIn(p.timezone, now))));
     if (!e || e.status !== 'published') {
       if (e && e.status !== 'late') await db.update(s.briefingEditions).set({ status: 'late' }).where(eq(s.briefingEditions.id, e.id));
-      if (config.alerts.onLateBriefing) await raiseAlert('late_briefing', `Briefing edition for ${pid} is not published by 06:45 local time (status: ${e?.status ?? 'missing'}).`, config.alerts.emails);
+      if (config.alerts.onLateBriefing) await raiseAlert('late_briefing', `Briefing edition for ${pid} is not published by 06:45 local time (status: ${e?.status ?? 'missing'}).`);
     }
   }
 }

@@ -5,6 +5,7 @@ import { LANGUAGES, localeFromPrefix, prefixFor } from './i18n/languages';
 import { resolveLocale } from './i18n/negotiate';
 import { buildCsp, createNonce } from './lib/security/csp';
 import { clientIp, ipAllowed } from './lib/security/ip';
+import { canonicalRedirect } from './lib/site';
 
 const intl = createMiddleware(routing);
 const PREFIXES = new Set<string>(LANGUAGES.map((l) => l.prefix));
@@ -17,6 +18,9 @@ function withCsp(res: NextResponse, csp: string) {
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  // Production answers on one address only (passkeys are bound to it).
+  const canonical = canonicalRedirect(request.headers.get('host'));
+  if (canonical) return NextResponse.redirect(`${canonical}${pathname}${search}`, 308);
   const nonce = createNonce();
   const csp = buildCsp(nonce, process.env.NODE_ENV === 'development');
 

@@ -137,7 +137,6 @@ export const contentSchema = z.object({
 });
 
 export const alertsSchema = z.object({
-  emails: z.string().default(''),
   sloP95Seconds: z.number().int().min(5).max(120).default(20),
   errorRatePercent: z.number().min(1).max(50).default(5),
   onFallback: z.boolean().default(true),

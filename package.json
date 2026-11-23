@@ -27,7 +27,8 @@
     "icons": "tsx scripts/generate-icons.ts",
     "db:check": "tsx scripts/db-migrate.ts --check",
     "verify": "pnpm check:all && pnpm e2e && pnpm check:secrets",
-    "audit:deps": "pnpm audit --prod --audit-level high"
+    "audit:deps": "pnpm audit --prod --audit-level high",
+    "telegram": "tsx scripts/telegram.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.17",

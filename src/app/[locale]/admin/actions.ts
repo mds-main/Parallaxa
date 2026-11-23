@@ -14,7 +14,8 @@ import { harnessCheck, runEval, type HarnessCheckResult } from '@/lib/eval/run';
 import { syncCatalog } from '@/lib/ai/catalog';
 import { forceBreaker } from '@/lib/ai/breaker';
 import { audit } from '@/lib/admin/audit';
-import { acknowledgeAlert, raiseAlert } from '@/lib/admin/alerts';
+import { acknowledgeAlert, raiseAlert, sendTestAlert } from '@/lib/admin/alerts';
+import { telegramConfigured } from '@/lib/admin/telegram';
 import { getDb } from '@/lib/db/client';
 import { analyses, quizItems, reviewTasks } from '@/lib/db/schema';
 import { prefixFor, type Locale } from '@/i18n/languages';
@@ -56,7 +57,7 @@ export async function applyConfigAction(next: AppConfig, reason: string): Promis
       const prev = before.config;
       void prev;
       if (!m.demo && m.accuracy < 0.89 && parsed.data.alerts.onEvalRegression) {
-        await raiseAlert('eval_regression', `Post-swap eval for config v${res.id}: accuracy ${(m.accuracy * 100).toFixed(1)}%. Consider rolling back.`, parsed.data.alerts.emails);
+        await raiseAlert('eval_regression', `Post-swap eval for config v${res.id}: accuracy ${(m.accuracy * 100).toFixed(1)}%. Consider rolling back.`);
       }
     });
   }
@@ -145,6 +146,12 @@ export async function toggleQuizItemAction(id: string, active: boolean) {
   await db.update(quizItems).set({ active }).where(eq(quizItems.id, id));
   await audit({ action: active ? 'quiz.enable' : 'quiz.disable', target: id, ipHash: s.ipHash });
   revalidatePath('/', 'layout');
+}
+
+/** Posts a test message to the admins' Telegram chat(s). */
+export async function sendTestAlertAction(): Promise<{ delivered: number; configured: boolean }> {
+  await session();
+  return { delivered: await sendTestAlert(), configured: telegramConfigured() };
 }
 
 export async function acknowledgeAlertAction(id: number) {

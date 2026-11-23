@@ -58,12 +58,8 @@
   "saved": "Saved on this device.",
   "account": {
     "title": "Account (optional)",
-    "intro": "You don't need an account. Create one only to keep your places, topics and follows in sync across devices. We store no email address, only a keyed hash of it.",
+    "intro": "You don't need an account. Create one only to keep your places, topics and follows in sync across devices. No email or password: just a passkey on your device (fingerprint, face or PIN).",
     "disabled": "Accounts are not enabled on this server.",
-    "email": "Email address",
-    "send": "Email me a sign-in link",
-    "sent": "Check your inbox for a sign-in link (valid for 15 minutes).",
-    "devLink": "Development mode: open the sign-in link",
     "passkey": "Sign in with a passkey",
     "addPasskey": "Add a passkey to this account",
     "passkeyAdded": "Passkey added.",
@@ -91,10 +87,8 @@
       "right": "Right",
       "none": "I prefer not to say"
     },
-    "verifyTitle": "Finish signing in",
-    "verifyButton": "Sign in",
-    "verifyFailed": "This link is invalid or has expired. Request a new one.",
-    "emailSubject": "Your Parallaxa sign-in link",
-    "emailBody": "Open this link to sign in to Parallaxa (valid for 15 minutes): {link}\n\nIf you didn't ask for it, ignore this email."
+    "passkeyIntro": "Your passkey stays on your device and syncs through your phone or computer’s password manager. We never learn who you are.",
+    "create": "Create an account with a passkey",
+    "passkeyFailed": "That didn’t work. Try again, or use a device that supports passkeys."
   }
 }

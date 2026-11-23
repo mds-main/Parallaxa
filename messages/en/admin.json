@@ -363,10 +363,19 @@
   },
   "alerts": {
     "title": "Alerts",
-    "intro": "Who gets told when something needs attention.",
+    "intro": "Alerts are listed here and posted to the admins’ Telegram chat. Nothing is emailed.",
     "recent": "Recent alerts",
     "none": "No alerts.",
-    "acknowledge": "Acknowledge"
+    "acknowledge": "Acknowledge",
+    "telegram": {
+      "title": "Telegram",
+      "on": "{count, plural, one {Connected: posting to # chat} other {Connected: posting to # chats}}",
+      "off": "Not connected: set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID. Alerts still appear below.",
+      "help": "Create a bot with BotFather, message it (or add it to a group), then run pnpm telegram --find-chats to get the chat id.",
+      "test": "Send a test message",
+      "testOk": "Sent. Check the chat.",
+      "testFailed": "Telegram did not accept it. Check the token and chat id."
+    }
   },
   "audit": {
     "title": "Audit log",

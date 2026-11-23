@@ -3,7 +3,7 @@
 Every action below can be taken from the admin console without a deploy, and every change is audit-logged with a reason.
 
 ## Venice outage or degradation
-1. **Overview** shows "Backup provider: In use" and an alert is emailed.
+1. **Overview** shows "Backup provider: In use" and an alert is posted to the admins’ Telegram chat.
 2. Check **Models**: circuit state per slot. If one model is failing, swap that slot (Test → Activate) or pause it with the circuit button.
 3. If Venice is fully down, the AI Gateway backup keeps the Briefing and link checks running (disclosed on every analysis). Typed-text and screenshot checks, and Push back, carry the user's own words, so they only run on Venice's private models and pause until it recovers.
 4. For a long or planned outage, switch vendors proactively: **Models → AI vendors → "AI Gateway, with Venice as backup"**, give a reason, type CONFIRM, apply. Live within about 10 seconds; switch back the same way.

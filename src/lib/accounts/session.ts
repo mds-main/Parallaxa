@@ -1,9 +1,8 @@
 /**
- * Optional user accounts (PRD 9.3, TODO 9.1–9.6). Decision for TODO 9.1: a small first-party
- * implementation (magic links via Resend + passkeys via SimpleWebAuthn) instead of Auth.js/Neon Auth,
- * so that no email address is stored (only an HMAC) and the data model stays minimal.
+ * Optional user accounts (PRD 9.3, TODO 9.1–9.6): passkeys only (SimpleWebAuthn), no email and no password.
+ * An account is just an id, its passkeys and the reader's own encrypted data; nothing identifies the person.
  */
-import { createHmac, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -21,18 +20,10 @@ function secret() {
   return new TextEncoder().encode(process.env.USER_SESSION_SECRET!);
 }
 
-/** HMAC of the normalized email: lets us find an account without storing the address. */
-export function emailHash(email: string): string {
-  const key = process.env.EMAIL_HASH_SECRET ?? process.env.USER_SESSION_SECRET ?? '';
-  return createHmac('sha256', key).update(email.trim().toLowerCase()).digest('hex');
-}
-
-export async function findOrCreateUserByEmailHash(hash: string, locale: string): Promise<string> {
+/** A new, anonymous account created by a reader's first passkey. */
+export async function createPasskeyUser(id: string, locale: string): Promise<void> {
   const db = await getDb();
-  const [existing] = await db.select().from(users).where(and(eq(users.emailHash, hash), isNull(users.deletedAt)));
-  if (existing) return existing.id;
-  const [created] = await db.insert(users).values({ emailHash: hash, locale, authProvider: 'email' }).returning({ id: users.id });
-  return created!.id;
+  await db.insert(users).values({ id, locale, authProvider: 'passkey' }).onConflictDoNothing();
 }
 
 export async function createUserSession(userId: string) {
@@ -69,19 +60,19 @@ export async function signOut() {
 }
 
 /** Short-lived signed cookie holding a WebAuthn challenge (no server-side table needed). */
-export async function setChallenge(challenge: string, userId?: string) {
-  const token = await new SignJWT({ challenge, userId: userId ?? null }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('5m').sign(secret());
+export async function setChallenge(challenge: string, userId?: string, signup?: { locale: string }) {
+  const token = await new SignJWT({ challenge, userId: userId ?? null, signupLocale: signup?.locale ?? null }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('5m').sign(secret());
   (await cookies()).set('plx_webauthn', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/api/auth', maxAge: 300 });
 }
 
-export async function takeChallenge(): Promise<{ challenge: string; userId: string | null } | null> {
+export async function takeChallenge(): Promise<{ challenge: string; userId: string | null; signupLocale: string | null } | null> {
   const jar = await cookies();
   const token = jar.get('plx_webauthn')?.value;
   jar.delete('plx_webauthn');
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, secret(), { algorithms: ['HS256'] });
-    return { challenge: String(payload.challenge), userId: (payload.userId as string | null) ?? null };
+    return { challenge: String(payload.challenge), userId: (payload.userId as string | null) ?? null, signupLocale: (payload.signupLocale as string | null) ?? null };
   } catch {
     return null;
   }
