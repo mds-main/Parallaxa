@@ -21,7 +21,9 @@ describe('log', () => {
     expect(line).toContain('text=[redacted]');
     expect(line).toContain('userQuery=[redacted]');
     expect(line).toContain('model=grok-4-7');
-    expect(scrub('fetch https://api.telegram.org/bot123456789:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/send')).not.toMatch(/AAHdq/);
+    // Built at runtime: a literal token-shaped string would trip secret scanners.
+    const fakeBotToken = `${'1'.repeat(9)}:${'x'.repeat(35)}`;
+    expect(scrub(`fetch https://api.telegram.org/bot${fakeBotToken}/send`)).not.toContain(fakeBotToken);
     expect(scrub('postgres://u:pw@ep-x.neon.tech/db failed')).toBe('postgres://[redacted] failed');
     expect(scrub('Authorization: Bearer abc.def')).toBe('Authorization: Bearer [redacted]');
     expect(scrub('from ana@example.org')).toBe('from [email]');
