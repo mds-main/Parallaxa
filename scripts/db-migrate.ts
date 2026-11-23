@@ -3,7 +3,7 @@
  *
  * 1. Drift: fails if src/lib/db/schema.ts has changes no migration covers (someone forgot `pnpm db:generate`).
  * 2. Lint: every migration must be safe for the version that is live while it runs (see src/lib/db/migrate-safe.ts).
- * 3. Database (DATABASE_URL, or the local PGlite database when unset):
+ * 3. Database (DATABASE_URL, or the local PGlite database when unset; skipped on Vercel when unset):
  *    - db:check reports pending migrations and verifies the schema, changing nothing.
  *    - db:migrate applies pending migrations in one locked, verified transaction, or changes nothing and fails.
  *
@@ -143,8 +143,9 @@ async function main() {
   log(`${local.length} migrations pass the safety rules.`);
 
   const hasDatabase = Boolean(process.env.DATABASE_URL || process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL_NON_POOLING);
-  if (checkOnly && !hasDatabase) {
-    log('No DATABASE_URL: skipped the database status.');
+  if (!hasDatabase && (checkOnly || process.env.VERCEL)) {
+    // On Vercel without a database (a demo preview) the build's local PGlite would be thrown away: nothing to migrate.
+    log('No DATABASE_URL: skipped the database step (the app runs on its embedded demo database).');
     return;
   }
 

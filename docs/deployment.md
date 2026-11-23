@@ -7,7 +7,7 @@ vercel link                       # creates the project (choose the team); keep 
 vercel integration add neon       # Neon Postgres via the Marketplace, EU region (AWS Frankfurt)
 ```
 
-Functions are pinned to `fra1` in `vercel.json`. The build runs `pnpm db:migrate && pnpm build`, so the database is checked, and migrated if needed, on every deploy (see **Database migrations** below).
+Functions are pinned to `fra1` in `vercel.json`. The build runs `pnpm db:migrate && pnpm build`, so the database is checked, and migrated if needed, on every deploy (see **Database migrations** below). Only pushes to `main` deploy automatically (`git.deploymentEnabled` in `vercel.json`); other branches don't build. Run `vercel deploy` for a one-off preview. A preview without `DATABASE_URL` skips the database step and runs on the embedded demo database.
 
 ## Database migrations
 

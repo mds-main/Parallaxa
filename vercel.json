@@ -1,14 +1,40 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "buildCommand": "pnpm db:migrate && pnpm build",
   "crons": [
-    { "path": "/api/cron/catalog", "schedule": "*/15 * * * *" },
-    { "path": "/api/cron/health", "schedule": "*/5 * * * *" },
-    { "path": "/api/cron/briefing", "schedule": "*/15 * * * *" },
-    { "path": "/api/cron/push", "schedule": "*/15 * * * *" },
-    { "path": "/api/cron/retention", "schedule": "30 3 * * *" },
-    { "path": "/api/cron/eval", "schedule": "0 2 * * *" }
-  ]
+    {
+      "path": "/api/cron/catalog",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/health",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/briefing",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/push",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/retention",
+      "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/cron/eval",
+      "schedule": "0 2 * * *"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "main": true
+    }
+  }
 }
