@@ -1,5 +1,6 @@
 import { getCorrections } from '@/lib/queries';
 import { isLocale, prefixFor, DEFAULT_LOCALE } from '@/i18n/languages';
+import { siteUrl } from '@/lib/site';
 
 const esc = (s: string) => s.replace(/[<>&'"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]!);
 
@@ -8,7 +9,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const raw = url.searchParams.get('lang') ?? DEFAULT_LOCALE;
   const lang = isLocale(raw) ? raw : DEFAULT_LOCALE;
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? url.origin;
+  const site = siteUrl(url.origin);
   const items = (await getCorrections())
     .map((c) => {
       const link = `${site}/${prefixFor(lang)}/a/${c.analysisId}`;

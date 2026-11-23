@@ -3,8 +3,9 @@ import { desc, eq } from 'drizzle-orm';
 import { ENABLED_LANGUAGES } from '@/i18n/languages';
 import { getDb } from '@/lib/db/client';
 import { analyses } from '@/lib/db/schema';
+import { siteUrl } from '@/lib/site';
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const SITE = siteUrl();
 const STATIC = ['', '/today', '/ledger', '/quiz', '/trust', '/trust/models', '/trust/methodology', '/trust/corrections', '/trust/audits', '/trust/funding', '/trust/privacy'];
 
 /** Localized sitemap with hreflang alternates for every enabled language (TODO 4.14). */

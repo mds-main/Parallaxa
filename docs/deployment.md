@@ -37,7 +37,7 @@ Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type f
 | `EMAIL_HASH_SECRET` | production, preview | recommended | Hashes reader emails; falls back to `USER_SESSION_SECRET` if unset |
 | `DATA_ENCRYPTION_KEY` | production, preview | yes | `openssl rand -base64 32`; encrypts push subscriptions and account data |
 | `CRON_SECRET` | production | yes | Vercel sends it to the cron routes (`vercel.json`) |
-| `NEXT_PUBLIC_SITE_URL` | production, preview | yes | Public URL used in feeds, share links and sign-in emails |
+| `NEXT_PUBLIC_SITE_URL` | production | optional | Public URL for feeds, share links and sign-in emails. Unset, production uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` (shortest custom domain, else `*.vercel.app`) and previews use their own address |
 | `AI_GATEWAY_API_KEY` | production, preview | recommended | Backup AI vendor, or the primary if chosen in Admin › Models › AI vendors |
 | `EXA_API_KEY` | production, preview | recommended | Default primary search engine (full page text). Order and backups: Admin › Investigation › Search engines |
 | `BRAVE_SEARCH_API_KEY` | production, preview | optional | Default first backup search engine. Without Exa or Brave keys, searches use Exa or Brave through Venice (zero data retention) |

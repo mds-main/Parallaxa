@@ -5,8 +5,9 @@ import { requestMagicLink, verifyMagicLink } from '@/lib/accounts/magic';
 import { authenticationOptions, registrationOptions, verifyAuthentication, verifyRegistration } from '@/lib/accounts/passkeys';
 import { rateLimit } from '@/lib/security/rate-limit';
 import { clientIp, hashIp } from '@/lib/security/ip';
+import { siteUrl } from '@/lib/site';
 
-const origin = (req: Request) => process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
+const origin = (req: Request) => siteUrl(new URL(req.url).origin);
 
 export async function POST(req: Request, { params }: { params: Promise<{ action: string }> }) {
   if (!accountsEnabled()) return NextResponse.json({ error: 'disabled' }, { status: 503 });

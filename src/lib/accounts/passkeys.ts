@@ -5,9 +5,10 @@ import { eq } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import { passkeys } from '../db/schema';
 import { setChallenge, takeChallenge } from './session';
+import { siteUrl } from '@/lib/site';
 
 export function rp(origin: string) {
-  const url = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? origin);
+  const url = new URL(siteUrl(origin));
   return { rpID: url.hostname, origin: url.origin, rpName: 'Parallaxa' };
 }
 

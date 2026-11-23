@@ -6,8 +6,9 @@ import { routing } from '@/i18n/routing';
 import { ENABLED_LANGUAGES, getLanguage, prefixFor, type Locale } from '@/i18n/languages';
 import { ServiceWorker } from '@/components/ServiceWorker';
 import '../globals.css';
+import { siteUrl } from '@/lib/site';
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const SITE = siteUrl();
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
