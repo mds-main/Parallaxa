@@ -42,11 +42,33 @@
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* Ultra-wide breakpoint (1920px). Tailwind's sm–2xl cover phone to desktop. */
+@theme {
+  --breakpoint-3xl: 120rem;
+}
+
+/* Page container used by every layout: fluid gutters, a wide cap so ultra-wide screens are used
+   rather than left empty. Pages build multi-column grids inside it; long-form text keeps a reading measure. */
+@utility shell {
+  width: 100%;
+  max-width: 120rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 0.5rem + 2vw, 3rem);
+}
+
 html {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-text-size-adjust: 100%;
+}
+/* Text grows a little on very large screens so reading distance and density stay comfortable.
+   Percentages keep the reader's own font-size setting; media-query rems are unaffected. */
+@media (min-width: 120rem) {
+  html { font-size: 106.25%; }
+}
+@media (min-width: 160rem) {
+  html { font-size: 112.5%; }
 }
 body {
   min-height: 100dvh;

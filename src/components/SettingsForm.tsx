@@ -83,7 +83,7 @@ export function PlacePicker({ places, value, onChange }: { places: PlaceOption[]
   );
 }
 
-export function TopicPicker({ topics, value, onChange }: { topics: TopicOption[]; value: Record<string, TopicState>; onChange: (v: Record<string, TopicState>) => void }) {
+export function TopicPicker({ topics, value, onChange, columns = false }: { topics: TopicOption[]; value: Record<string, TopicState>; onChange: (v: Record<string, TopicState>) => void; columns?: boolean }) {
   const t = useTranslations('settings.topics');
   const locale = useLocale();
   const roots = topics.filter((x) => !x.parentId);
@@ -107,10 +107,18 @@ export function TopicPicker({ topics, value, onChange }: { topics: TopicOption[]
       </span>
     </li>
   );
+  // Each top-level topic and its subtopics stay together, so with `columns` the groups flow into two
+  // columns whenever the list itself is wide enough (container query), whatever the screen size.
   return (
-    <ul className="divide-y divide-line">
-      {roots.map((r) => [row(r), ...topics.filter((c) => c.parentId === r.id).map((c) => row(c, true))])}
-    </ul>
+    <div className={columns ? '@container' : undefined}>
+      <div className={columns ? 'gap-x-10 @3xl:columns-2' : undefined}>
+        {roots.map((r) => (
+          <ul key={r.id} className="break-inside-avoid divide-y divide-line border-b border-line last:border-b-0">
+            {[row(r), ...topics.filter((c) => c.parentId === r.id).map((c) => row(c, true))]}
+          </ul>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -132,114 +140,120 @@ export function SettingsForm({ places, topics, editions = [] }: { places: PlaceO
   const locale = document.documentElement.lang;
   const parents = Object.fromEntries(places.map((p) => [p.id, p.parentId]));
   const preview = editions.length ? assembleBriefing(editions, prefs, (id) => parents[id] ?? null).stories : [];
+  // Phones and tablets: one column in reading order. From xl, topics (the longest list) gets its own column;
+  // `contents` keeps the mobile order while the wrappers only exist as columns on wide screens.
   return (
-    <div className="space-y-8">
-      {preview.length > 0 && (
-        <section className="card p-5" aria-live="polite">
-          <h2 className="font-semibold">{t('preview')}</h2>
-          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">
-            {preview.map((s) => <li key={s.analysisId}>{s.headline[locale] ?? s.headline.en}{s.claim ? ` — “${s.claim.slice(0, 90)}”` : ''}</li>)}
-          </ol>
-        </section>
-      )}
+    <div className="flex flex-col gap-6 xl:grid xl:grid-cols-2 xl:items-start xl:gap-8 3xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
       <p role="status" aria-live="polite" className="sr-only">{status}</p>
-      <section className="card space-y-3 p-5">
-        <h2 className="text-xl font-semibold">{t('places.title')}</h2>
-        <p className="text-sm muted">{t('places.help')}</p>
-        <PlacePicker places={places} value={prefs.places} onChange={(v) => update({ ...prefs, places: v })} />
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={prefs.global} onChange={(e) => update({ ...prefs, global: e.target.checked })} />
-          {t('places.global')}
-        </label>
-      </section>
-      <section className="card space-y-3 p-5">
-        <h2 className="text-xl font-semibold">{t('topics.title')}</h2>
-        <p className="text-sm muted">{t('topics.help')}</p>
-        <TopicPicker topics={topics} value={prefs.topics} onChange={(v) => update({ ...prefs, topics: v })} />
-      </section>
-      <section className="card grid gap-4 p-5 md:grid-cols-2">
-        <h2 className="text-xl font-semibold md:col-span-2">{t('briefing.title')}</h2>
-        <label className="block">
-          <span className="label">{t('briefing.length')}</span>
-          <select className="field mt-1" value={b.stories} onChange={(e) => update({ ...prefs, briefing: { ...b, stories: Number(e.target.value) as 3 | 5 } })}>
-            <option value={3}>3</option>
-            <option value={5}>5</option>
-          </select>
-        </label>
-        <label className="block">
-          <span className="label">{t('briefing.time')}</span>
-          <input className="field mt-1" type="time" value={b.time} onChange={(e) => update({ ...prefs, briefing: { ...b, time: e.target.value } })} />
-        </label>
-        <label className="block">
-          <span className="label">{t('briefing.days')}</span>
-          <select className="field mt-1" value={b.days} onChange={(e) => update({ ...prefs, briefing: { ...b, days: e.target.value as 'everyday' | 'weekdays' } })}>
-            <option value="everyday">{t('briefing.everyday')}</option>
-            <option value="weekdays">{t('briefing.weekdays')}</option>
-          </select>
-        </label>
-        <label className="block">
-          <span className="label">{t('briefing.depth')}</span>
-          <select className="field mt-1" value={b.depth} onChange={(e) => update({ ...prefs, briefing: { ...b, depth: e.target.value as 'quick' | 'standard' } })}>
-            <option value="quick">{t('briefing.quick')}</option>
-            <option value="standard">{t('briefing.standard')}</option>
-          </select>
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={b.plain} onChange={(e) => update({ ...prefs, briefing: { ...b, plain: e.target.checked } })} />
-          {t('briefing.plain')}
-        </label>
-        <div>
-          <label className="flex items-center gap-2">
-            <input type="checkbox" checked={b.outsideFilters} onChange={(e) => update({ ...prefs, briefing: { ...b, outsideFilters: e.target.checked, outsideOffSince: e.target.checked ? undefined : new Date().toISOString() } })} />
-            {t('briefing.outside')}
-          </label>
-          <p className="mt-1 text-sm muted">{t('briefing.outsideHelp')}</p>
-        </div>
-      </section>
-      <section className="card space-y-3 p-5">
-        <h2 className="text-xl font-semibold">{t('notifications.title')}</h2>
-        <p className="text-sm muted">{t('notifications.help')}</p>
-        {pushState === 'unsupported' && <p className="text-sm">{t('notifications.unsupported')}</p>}
-        {pushState === 'off' && (
-          <button className="btn" onClick={async () => setPushState((await enablePush(prefs)) ? 'on' : 'off')}>
-            {t('notifications.enable')}
-          </button>
+      <div className="contents xl:flex xl:min-w-0 xl:flex-col xl:gap-6">
+        {preview.length > 0 && (
+          <section className="card order-1 p-5" aria-live="polite">
+            <h2 className="font-semibold">{t('preview')}</h2>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">
+              {preview.map((s) => <li key={s.analysisId}>{s.headline[locale] ?? s.headline.en}{s.claim ? ` — “${s.claim.slice(0, 90)}”` : ''}</li>)}
+            </ol>
+          </section>
         )}
-        {pushState === 'on' && <p className="text-sm">✓ {t('notifications.enabled')}</p>}
-      </section>
-      <section className="card space-y-3 p-5">
-        <h2 className="text-xl font-semibold">{t('language.title')}</h2>
-        <LanguageSwitcher />
-      </section>
-      <section className="card space-y-3 p-5">
-        <h2 className="text-xl font-semibold">{t('privacy.title')}</h2>
-        <p className="text-sm muted">{t('privacy.help')}</p>
-        <p className="text-sm"><Link href="/account">{t('account.title')}</Link></p>
-        <div className="flex flex-wrap gap-2">
-          <button
-            className="btn btn-ghost"
-            onClick={() => {
-              const blob = new Blob([exportLocalData()], { type: 'application/json' });
-              const a = document.createElement('a');
-              a.href = URL.createObjectURL(blob);
-              a.download = 'parallaxa-data.json';
-              a.click();
-            }}
-          >
-            {t('privacy.export')}
-          </button>
-          <button
-            className="btn btn-ghost"
-            onClick={() => {
-              clearAllLocalData();
-              setStatus(t('privacy.deleted'));
-            }}
-          >
-            {t('privacy.delete')}
-          </button>
-        </div>
-        {status === t('privacy.deleted') && <p role="status">{status}</p>}
-      </section>
+        <section className="card order-2 space-y-3 p-5">
+          <h2 className="text-xl font-semibold">{t('places.title')}</h2>
+          <p className="text-sm muted">{t('places.help')}</p>
+          <PlacePicker places={places} value={prefs.places} onChange={(v) => update({ ...prefs, places: v })} />
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={prefs.global} onChange={(e) => update({ ...prefs, global: e.target.checked })} />
+            {t('places.global')}
+          </label>
+        </section>
+        <section className="card order-4 grid gap-4 p-5 md:grid-cols-2">
+          <h2 className="text-xl font-semibold md:col-span-2">{t('briefing.title')}</h2>
+          <label className="block">
+            <span className="label">{t('briefing.length')}</span>
+            <select className="field mt-1" value={b.stories} onChange={(e) => update({ ...prefs, briefing: { ...b, stories: Number(e.target.value) as 3 | 5 } })}>
+              <option value={3}>3</option>
+              <option value={5}>5</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="label">{t('briefing.time')}</span>
+            <input className="field mt-1" type="time" value={b.time} onChange={(e) => update({ ...prefs, briefing: { ...b, time: e.target.value } })} />
+          </label>
+          <label className="block">
+            <span className="label">{t('briefing.days')}</span>
+            <select className="field mt-1" value={b.days} onChange={(e) => update({ ...prefs, briefing: { ...b, days: e.target.value as 'everyday' | 'weekdays' } })}>
+              <option value="everyday">{t('briefing.everyday')}</option>
+              <option value="weekdays">{t('briefing.weekdays')}</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="label">{t('briefing.depth')}</span>
+            <select className="field mt-1" value={b.depth} onChange={(e) => update({ ...prefs, briefing: { ...b, depth: e.target.value as 'quick' | 'standard' } })}>
+              <option value="quick">{t('briefing.quick')}</option>
+              <option value="standard">{t('briefing.standard')}</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={b.plain} onChange={(e) => update({ ...prefs, briefing: { ...b, plain: e.target.checked } })} />
+            {t('briefing.plain')}
+          </label>
+          <div>
+            <label className="flex items-center gap-2">
+              <input type="checkbox" checked={b.outsideFilters} onChange={(e) => update({ ...prefs, briefing: { ...b, outsideFilters: e.target.checked, outsideOffSince: e.target.checked ? undefined : new Date().toISOString() } })} />
+              {t('briefing.outside')}
+            </label>
+            <p className="mt-1 text-sm muted">{t('briefing.outsideHelp')}</p>
+          </div>
+        </section>
+        <section className="card order-5 space-y-3 p-5">
+          <h2 className="text-xl font-semibold">{t('notifications.title')}</h2>
+          <p className="text-sm muted">{t('notifications.help')}</p>
+          {pushState === 'unsupported' && <p className="text-sm">{t('notifications.unsupported')}</p>}
+          {pushState === 'off' && (
+            <button className="btn" onClick={async () => setPushState((await enablePush(prefs)) ? 'on' : 'off')}>
+              {t('notifications.enable')}
+            </button>
+          )}
+          {pushState === 'on' && <p className="text-sm">✓ {t('notifications.enabled')}</p>}
+        </section>
+        <section className="card order-6 space-y-3 p-5">
+          <h2 className="text-xl font-semibold">{t('language.title')}</h2>
+          <LanguageSwitcher />
+        </section>
+        <section className="card order-7 space-y-3 p-5">
+          <h2 className="text-xl font-semibold">{t('privacy.title')}</h2>
+          <p className="text-sm muted">{t('privacy.help')}</p>
+          <p className="text-sm"><Link href="/account">{t('account.title')}</Link></p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                const blob = new Blob([exportLocalData()], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'parallaxa-data.json';
+                a.click();
+              }}
+            >
+              {t('privacy.export')}
+            </button>
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                clearAllLocalData();
+                setStatus(t('privacy.deleted'));
+              }}
+            >
+              {t('privacy.delete')}
+            </button>
+          </div>
+          {status === t('privacy.deleted') && <p role="status">{status}</p>}
+        </section>
+      </div>
+      <div className="contents xl:block xl:min-w-0">
+        <section className="card order-3 space-y-3 p-5">
+          <h2 className="text-xl font-semibold">{t('topics.title')}</h2>
+          <p className="text-sm muted">{t('topics.help')}</p>
+          <TopicPicker topics={topics} value={prefs.topics} onChange={(v) => update({ ...prefs, topics: v })} columns />
+        </section>
+      </div>
     </div>
   );
 }

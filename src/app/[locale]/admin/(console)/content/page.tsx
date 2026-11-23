@@ -17,9 +17,9 @@ export default async function ContentPage() {
   const items = await db.select().from(quizItems);
   const topics = await getTopics();
   return (
-    <div className="max-w-4xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <QuizManager items={items} topics={topics.filter((x) => !x.parentId)} />
       <ConfigEditor initial={config}>
         <div className="space-y-6">

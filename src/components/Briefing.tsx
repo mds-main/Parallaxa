@@ -53,14 +53,41 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
   }, [index, total]);
   const name = (id: string) => placeNames[id]?.[locale] ?? id;
   if (!total) return <p className="card p-6">{t('empty')}</p>;
+  // Wide screens: the finite list of today's stories sits beside the one in focus.
+  const overview = (
+    <nav aria-label={t('overview')} className="hidden lg:block">
+      <h2 className="text-sm font-semibold muted">{t('overview')}</h2>
+      <ol className="mt-3 space-y-2">
+        {stories.map((x, i) => (
+          <li key={x.analysisId}>
+            <button
+              type="button"
+              aria-current={i === index ? 'step' : undefined}
+              onClick={() => setIndex(i)}
+              className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-sm ${i === index ? 'border-ink bg-card font-medium' : 'border-line hover:bg-paper-2'}`}
+            >
+              <span className="mt-0.5 shrink-0 tabular-nums muted" aria-hidden="true">{i + 1}</span>
+              <span className="min-w-0 flex-1">{x.headline[locale] ?? x.headline.en}</span>
+              <GradeIcon grade={x.grade as Grade} size={16} />
+              <span className="sr-only">{gradeLabels[x.grade]}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+  const layout = 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:gap-8 2xl:grid-cols-[minmax(0,1fr)_24rem] 3xl:grid-cols-[minmax(0,1fr)_28rem]';
   if (index >= total) {
     return (
-      <div className="card p-10 text-center">
-        <p className="font-serif text-2xl">{t('upToDate')}</p>
-        <div className="mx-auto mt-6 max-w-md text-left">
-          <MicroSurvey questions={['relevant', 'calmer']} />
+      <div className={layout}>
+        <div className="card p-10 text-center">
+          <p className="font-serif text-2xl">{t('upToDate')}</p>
+          <div className="mx-auto mt-6 max-w-md text-left">
+            <MicroSurvey questions={['relevant', 'calmer']} />
+          </div>
+          <button className="btn btn-ghost mt-6" onClick={() => setIndex(0)}>{t('previous')}</button>
         </div>
-        <button className="btn btn-ghost mt-6" onClick={() => setIndex(0)}>{t('previous')}</button>
+        {overview}
       </div>
     );
   }
@@ -77,51 +104,54 @@ export function Briefing({ editions, parents, placeNames, topicNames, gradeLabel
   // eslint-disable-next-line react-hooks/purity -- a once-per-render date comparison is intended here
   const remind = !prefs.briefing.outsideFilters && offSince !== null && Date.now() - offSince > 90 * 24 * 3600_000;
   return (
-    <div>
-      {remind && (
-        <p className="mb-3 rounded-lg border border-line p-3 text-sm">
-          {t('outsideReminder')}{' '}
-          <button className="underline" onClick={() => savePreferences({ ...prefs, briefing: { ...prefs.briefing, outsideFilters: true, outsideOffSince: undefined } })}>{t('outsideTurnOn')}</button>
-        </p>
-      )}
-      {result.fallbackPlace && <p className="mb-3 rounded-lg bg-paper-2 p-3 text-sm">{t('fallback', { place: name(result.fallbackPlace) })}</p>}
-      <article
-        className="card p-6 md:p-8"
-        aria-roledescription="slide"
-        aria-label={t('storyOf', { n: index + 1, total })}
-        onTouchStart={(e) => ((e.currentTarget as HTMLElement).dataset.x = String(e.touches[0]!.clientX))}
-        onTouchEnd={(e) => {
-          const start = Number((e.currentTarget as HTMLElement).dataset.x);
-          const dx = e.changedTouches[0]!.clientX - start;
-          if (dx < -50) setIndex((i) => i + 1);
-          if (dx > 50) setIndex((i) => Math.max(0, i - 1));
-        }}
-      >
-        <p className="text-sm muted">{t('storyOf', { n: index + 1, total })}</p>
-        {s.reason.kind === 'outside' && <p className="chip mt-2">{t('outsideLabel')}</p>}
-        <h2 className="mt-3 text-2xl font-semibold">{s.headline[locale] ?? s.headline.en}</h2>
-        {s.claim && <blockquote className="mt-2 font-serif text-lg text-ink-2">“{s.claim}”</blockquote>}
-        <p className="mt-3 flex items-center gap-2 text-sm">
-          <GradeIcon grade={s.grade as Grade} /> {gradeLabels[s.grade]}
-        </p>
-        <p className="mt-2 text-sm muted">
-          {name(s.editionPlaceId)} · {topicNames[s.topicId]?.[locale] ?? s.topicId}
-        </p>
-        {s.perceptionFact?.[locale] && (
-          <p className="mt-4 rounded-lg bg-paper-2 p-3 text-sm">
-            <strong>{t('perceptionFact')}:</strong> {s.perceptionFact[locale]}
+    <div className={layout}>
+      <div className="min-w-0">
+        {remind && (
+          <p className="mb-3 rounded-lg border border-line p-3 text-sm">
+            {t('outsideReminder')}{' '}
+            <button className="underline" onClick={() => savePreferences({ ...prefs, briefing: { ...prefs.briefing, outsideFilters: true, outsideOffSince: undefined } })}>{t('outsideTurnOn')}</button>
           </p>
         )}
-        <details className="mt-4 text-sm">
-          <summary className="cursor-pointer underline">{t('why')}</summary>
-          <p className="mt-1">{reason}</p>
-        </details>
-        <Link href={`/a/${s.analysisId}`} className="btn mt-6 no-underline">{t('readAnalysis')}</Link>
-      </article>
-      <div className="mt-4 flex items-center justify-between">
-        <button className="btn btn-ghost" disabled={index === 0} onClick={() => setIndex(index - 1)}>← {t('previous')}</button>
-        <button className="btn" onClick={() => setIndex(index + 1)}>{t('next')} →</button>
+        {result.fallbackPlace && <p className="mb-3 rounded-lg bg-paper-2 p-3 text-sm">{t('fallback', { place: name(result.fallbackPlace) })}</p>}
+        <article
+          className="card p-6 md:p-8 xl:p-10"
+          aria-roledescription="slide"
+          aria-label={t('storyOf', { n: index + 1, total })}
+          onTouchStart={(e) => ((e.currentTarget as HTMLElement).dataset.x = String(e.touches[0]!.clientX))}
+          onTouchEnd={(e) => {
+            const start = Number((e.currentTarget as HTMLElement).dataset.x);
+            const dx = e.changedTouches[0]!.clientX - start;
+            if (dx < -50) setIndex((i) => i + 1);
+            if (dx > 50) setIndex((i) => Math.max(0, i - 1));
+          }}
+        >
+          <p className="text-sm muted">{t('storyOf', { n: index + 1, total })}</p>
+          {s.reason.kind === 'outside' && <p className="chip mt-2">{t('outsideLabel')}</p>}
+          <h2 className="mt-3 max-w-[40ch] text-2xl font-semibold xl:text-3xl 3xl:text-4xl">{s.headline[locale] ?? s.headline.en}</h2>
+          {s.claim && <blockquote className="mt-2 max-w-[65ch] font-serif text-lg text-ink-2 xl:text-xl">“{s.claim}”</blockquote>}
+          <p className="mt-3 flex items-center gap-2 text-sm">
+            <GradeIcon grade={s.grade as Grade} /> {gradeLabels[s.grade]}
+          </p>
+          <p className="mt-2 text-sm muted">
+            {name(s.editionPlaceId)} · {topicNames[s.topicId]?.[locale] ?? s.topicId}
+          </p>
+          {s.perceptionFact?.[locale] && (
+            <p className="mt-4 max-w-[75ch] rounded-lg bg-paper-2 p-3 text-sm">
+              <strong>{t('perceptionFact')}:</strong> {s.perceptionFact[locale]}
+            </p>
+          )}
+          <details className="mt-4 text-sm">
+            <summary className="cursor-pointer underline">{t('why')}</summary>
+            <p className="mt-1">{reason}</p>
+          </details>
+          <Link href={`/a/${s.analysisId}`} className="btn mt-6 no-underline">{t('readAnalysis')}</Link>
+        </article>
+        <div className="mt-4 flex items-center justify-between">
+          <button className="btn btn-ghost" disabled={index === 0} onClick={() => setIndex(index - 1)}>← {t('previous')}</button>
+          <button className="btn" onClick={() => setIndex(index + 1)}>{t('next')} →</button>
+        </div>
       </div>
+      {overview}
     </div>
   );
 }

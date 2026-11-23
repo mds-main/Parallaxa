@@ -17,9 +17,9 @@ export default async function LedgerAdminPage() {
     .groupBy(actors.id)
     .orderBy(actors.name);
   return (
-    <div className="max-w-4xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <LedgerManager actors={rows.map((r) => ({ id: r.a.id, slug: r.a.slug, name: r.a.name, type: r.a.type, country: r.a.country, published: r.a.published, claims: r.claims, publicRole: r.a.publicRole }))} />
     </div>
   );

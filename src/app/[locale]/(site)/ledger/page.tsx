@@ -50,7 +50,7 @@ export default async function LedgerPage({ params, searchParams }: { params: Pro
       {list.length === 0 ? (
         <p className="card p-6">{t('empty')}</p>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5">
           {list.map((a) => {
             const sc = scores.find((s) => s.actorId === a.id);
             return (

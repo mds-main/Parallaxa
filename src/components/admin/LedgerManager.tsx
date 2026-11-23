@@ -95,7 +95,7 @@ export function LedgerManager({ actors }: { actors: Actor[] }) {
           <button className="btn md:col-span-2">{t('save')}</button>
         </form>
       </details>
-      {actors.length === 0 ? <p className="card p-6">{t('empty')}</p> : <ul className="space-y-4">{actors.map((a) => <ActorRow key={a.id} a={a} />)}</ul>}
+      {actors.length === 0 ? <p className="card p-6">{t('empty')}</p> : <ul className="grid items-start gap-4 2xl:grid-cols-2">{actors.map((a) => <ActorRow key={a.id} a={a} />)}</ul>}
     </div>
   );
 }

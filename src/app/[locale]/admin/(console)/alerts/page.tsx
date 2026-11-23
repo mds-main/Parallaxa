@@ -16,9 +16,9 @@ export default async function AlertsPage() {
   const { config } = await getActiveConfig();
   const alerts = await listAlerts();
   return (
-    <div className="max-w-3xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <section className={`card space-y-2 p-4 ${telegramConfigured() ? '' : 'border-2 border-ink'}`} aria-labelledby="telegram-title">
         <h2 id="telegram-title" className="font-semibold">{t('telegram.title')}</h2>
         <p className="text-sm">{telegramConfigured() ? `✓ ${t('telegram.on', { count: telegramChats().length })}` : `✗ ${t('telegram.off')}`}</p>

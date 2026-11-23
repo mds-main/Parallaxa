@@ -22,9 +22,9 @@ export default async function QuizPage({ params }: { params: Promise<{ locale: s
     : [];
   const places = await getPlaces();
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <Quiz items={items} countryNames={Object.fromEntries(places.map((p) => [p.id, p.names[locale] ?? p.id]))} />
     </div>
   );

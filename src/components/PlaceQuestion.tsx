@@ -42,7 +42,7 @@ export function PlaceQuestion({ id, suggestions, places, onAnswered }: { id: str
   }
 
   return (
-    <section className="card space-y-4 p-6" aria-labelledby="place-question">
+    <section className="card mx-auto max-w-3xl space-y-4 p-6 md:p-8" aria-labelledby="place-question">
       <div>
         <h1 id="place-question" className="text-2xl font-semibold">{t('title')}</h1>
         <p className="mt-1 muted">{t('intro')}</p>

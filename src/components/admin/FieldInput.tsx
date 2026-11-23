@@ -61,8 +61,10 @@ export function FieldInput({ field }: { field: FieldDescriptor }) {
 
 export function SectionFields({ section }: { section: FieldDescriptor['section'] }) {
   return (
-    <div className="space-y-3">
-      {FIELDS.filter((f) => f.section === section).map((f) => <FieldInput key={f.path} field={f} />)}
+    <div className="@container">
+      <div className="grid gap-3 @5xl:grid-cols-2">
+        {FIELDS.filter((f) => f.section === section).map((f) => <FieldInput key={f.path} field={f} />)}
+      </div>
     </div>
   );
 }

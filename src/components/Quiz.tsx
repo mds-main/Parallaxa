@@ -32,24 +32,33 @@ export function Quiz({ items, countryNames }: { items: QuizItemView[]; countryNa
       {!item ? (
         <p className="card p-6">{list.length ? t('done') : t('empty')}</p>
       ) : (
-        <div className="card space-y-4 p-6">
-          <h2 className="text-xl font-semibold">{item.question[locale] ?? item.question.en}</h2>
-          <label className="block">
-            <span className="label">{t('guess', { value: guess })}</span>
-            <input type="range" min={0} max={100} value={guess} disabled={revealed} onChange={(e) => setGuess(Number(e.target.value))} className="mt-2 w-full accent-[var(--accent)]" />
-          </label>
-          {!revealed ? (
-            <button
-              className="btn"
-              onClick={() => {
-                setRevealed(true);
-                fetch('/api/quiz', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quizItemId: item.id, guess }) }).catch(() => undefined);
-              }}
-            >
-              {t('reveal')}
-            </button>
-          ) : (
-            <div className="space-y-3" aria-live="polite">
+        <div className="card grid gap-x-12 gap-y-6 p-6 md:p-8 lg:grid-cols-2 xl:p-10">
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold lg:text-2xl">{item.question[locale] ?? item.question.en}</h2>
+            <label className="block">
+              <span className="label">{t('guess', { value: guess })}</span>
+              <input type="range" min={0} max={100} value={guess} disabled={revealed} onChange={(e) => setGuess(Number(e.target.value))} className="mt-2 w-full accent-[var(--accent)]" />
+            </label>
+            {!revealed && (
+              <button
+                className="btn"
+                onClick={() => {
+                  setRevealed(true);
+                  fetch('/api/quiz', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quizItemId: item.id, guess }) }).catch(() => undefined);
+                }}
+              >
+                {t('reveal')}
+              </button>
+            )}
+          </div>
+          {!revealed && (
+            // Wide screens: a large readout of the current guess fills the space the answer will take.
+            <p aria-hidden="true" className="hidden self-center text-center font-serif text-8xl font-semibold tabular-nums text-ink-3 lg:block 3xl:text-9xl">
+              {guess}%
+            </p>
+          )}
+          {revealed && (
+            <div className="space-y-3 lg:border-l lg:border-line lg:pl-12" aria-live="polite">
               <div className="relative h-8 rounded-full bg-paper-2" aria-hidden="true">
                 <span className="absolute top-0 h-8 w-1 bg-ink" style={{ left: `${guess}%` }} />
                 <span className="absolute top-0 h-8 w-1 bg-accent" style={{ left: `${item.trueValue}%` }} />

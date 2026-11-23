@@ -15,7 +15,7 @@ export async function SiteHeader() {
   const placeNames = Object.fromEntries(places.map((p) => [p.id, p.names]));
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5 whitespace-nowrap hyphens-none">
+      <div className="shell flex items-center gap-3 py-2.5 whitespace-nowrap hyphens-none">
         <Link href="/" className="flex items-center gap-2 no-underline">
           <BrandMark height={28} id="plx-header" />
           <span className="font-serif text-xl font-semibold tracking-tight">

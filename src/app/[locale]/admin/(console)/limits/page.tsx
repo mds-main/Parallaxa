@@ -11,9 +11,9 @@ export default async function LimitsPage() {
   const t = await getTranslations('admin.limits');
   const { config } = await getActiveConfig();
   return (
-    <div className="max-w-4xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <ConfigEditor initial={config}>
         <div className="space-y-6">
           <LimitsExtras />

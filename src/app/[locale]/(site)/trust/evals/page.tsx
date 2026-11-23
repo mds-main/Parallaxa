@@ -13,9 +13,9 @@ export default async function EvalsPage({ params }: { params: Promise<{ locale: 
   const runs = await db.select().from(evalRuns).where(ne(evalRuns.kind, 'harness_check')).orderBy(desc(evalRuns.createdAt)).limit(30);
   const pct = (v: unknown) => (typeof v === 'number' ? format.number(v, { style: 'percent', maximumFractionDigits: 1 }) : '—');
   return (
-    <div className="mx-auto max-w-4xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       {runs.length === 0 ? (
         <p className="card p-6">{t('empty')}</p>
       ) : (

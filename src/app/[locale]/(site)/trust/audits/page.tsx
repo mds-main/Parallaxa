@@ -37,19 +37,25 @@ export default async function AuditsPage({ params }: { params: Promise<{ locale:
   const topicName = (id: string) => topics.find((x) => x.id === id)?.names[locale] ?? id;
   const editionIds = [...new Set(perEdition.map((r) => r.placeId))];
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="space-y-6">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
-      <section className="card p-5">
-        <h2 className="font-semibold">{t('byGrade')}</h2>
-        <ul className="mt-2 space-y-1">
-          {GRADES.map((g) => <li key={g} className="flex justify-between"><span>{tc(`grades.${g}`)}</span><span>{byGrade.find((x) => x.grade === g)?.n ?? 0}</span></li>)}
-        </ul>
-      </section>
-      <section className="card grid gap-2 p-5 sm:grid-cols-2">
-        <p>{t('disagreement')}: <strong>{dis?.n ?? 0}</strong></p>
-        <p>{t('mirror')}: <strong>{mirrors?.n ?? 0}</strong></p>
-      </section>
+      <p className="max-w-3xl muted">{t('intro')}</p>
+      <div className="grid items-start gap-6 lg:grid-cols-2 2xl:grid-cols-3">
+        <section className="card p-5">
+          <h2 className="font-semibold">{t('byGrade')}</h2>
+          <ul className="mt-2 space-y-1">
+            {GRADES.map((g) => <li key={g} className="flex justify-between"><span>{tc(`grades.${g}`)}</span><span>{byGrade.find((x) => x.grade === g)?.n ?? 0}</span></li>)}
+          </ul>
+        </section>
+        <section className="card grid gap-2 p-5 sm:grid-cols-2 lg:grid-cols-1">
+          <p>{t('disagreement')}: <strong>{dis?.n ?? 0}</strong></p>
+          <p>{t('mirror')}: <strong>{mirrors?.n ?? 0}</strong></p>
+        </section>
+        <section className="card p-5">
+          <h2 className="font-semibold">{t('refusals')}</h2>
+          <ul className="mt-2 space-y-1">{refusals.map((r) => <li key={r.slot} className="flex justify-between"><span>{r.slot}</span><span>{r.abstained} / {r.total}</span></li>)}</ul>
+        </section>
+      </div>
       {editionIds.length > 0 && (
         <section className="card overflow-x-auto p-5">
           <h2 className="font-semibold">{t('editions.title')}</h2>
@@ -70,10 +76,6 @@ export default async function AuditsPage({ params }: { params: Promise<{ locale:
           </table>
         </section>
       )}
-      <section className="card p-5">
-        <h2 className="font-semibold">{t('refusals')}</h2>
-        <ul className="mt-2 space-y-1">{refusals.map((r) => <li key={r.slot} className="flex justify-between"><span>{r.slot}</span><span>{r.abstained} / {r.total}</span></li>)}</ul>
-      </section>
     </div>
   );
 }

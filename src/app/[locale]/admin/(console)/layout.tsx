@@ -14,7 +14,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   await requireAdmin(locale);
   const t = await getTranslations('admin');
   return (
-    <div className="min-h-dvh md:grid md:grid-cols-[14rem_1fr]">
+    <div className="min-h-dvh md:grid md:grid-cols-[14rem_minmax(0,1fr)] 2xl:grid-cols-[16rem_minmax(0,1fr)]">
       <aside className="border-b border-line bg-paper-2 md:min-h-dvh md:border-r md:border-b-0">
         <div className="flex items-center justify-between p-4 md:block">
           <p className="font-serif text-lg font-semibold">{t('title')}</p>
@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </form>
         </nav>
       </aside>
-      <main id="main" className="px-4 py-6 md:px-8">
+      <main id="main" className="w-full max-w-[120rem] px-4 py-6 md:px-8 2xl:px-12">
         {isDemoMode() && <p role="note" className="mb-4 rounded-lg bg-accent/20 p-3 text-sm">{t('common.demoMode')}</p>}
         {children}
       </main>

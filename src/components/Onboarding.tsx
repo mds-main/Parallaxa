@@ -34,12 +34,12 @@ export function Onboarding({ places, topics }: { places: PlaceOption[]; topics: 
   };
   const panels = ['step1', 'step2', 'step3'] as const;
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="mx-auto max-w-xl lg:max-w-3xl 2xl:max-w-4xl">
       <div className="mb-4 flex items-center justify-between">
         <LanguageSwitcher />
         <button className="text-sm underline" onClick={skip}>{t('skip')}</button>
       </div>
-      <div className="card p-6 md:p-8">
+      <div className="card p-6 md:p-8 xl:p-10">
         {step < 3 && (
           <>
             <h1 className="text-2xl font-semibold">{t(`${panels[step]!}.title`)}</h1>
@@ -60,7 +60,7 @@ export function Onboarding({ places, topics }: { places: PlaceOption[]; topics: 
             <h1 className="text-2xl font-semibold">{t('topics.title')}</h1>
             <p className="mt-2 muted">{t('topics.text')}</p>
             <div className="mt-4 max-h-[50vh] overflow-y-auto">
-              <TopicPicker topics={topics.filter((x) => !x.parentId)} value={prefs.topics} onChange={(v) => setPrefs({ ...prefs, topics: v })} />
+              <TopicPicker topics={topics.filter((x) => !x.parentId)} value={prefs.topics} onChange={(v) => setPrefs({ ...prefs, topics: v })} columns />
             </div>
           </>
         )}

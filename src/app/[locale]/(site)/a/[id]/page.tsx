@@ -89,11 +89,11 @@ export default async function AnalysisPage({ params }: Props) {
   const shown = mainClaim?.localized && claim?.lang?.split('-')[0] === readerLang ? { text: mainClaim.localized, lang: readerLang } : { text: claim?.canonicalText, lang: 'en' };
 
   return (
-    <article className="grid gap-8 lg:grid-cols-[1fr_20rem]">
-      <div className="space-y-6">
+    <article className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] 2xl:grid-cols-[minmax(0,1fr)_24rem] 2xl:gap-12 3xl:grid-cols-[minmax(0,1fr)_28rem]">
+      <div className="min-w-0 space-y-6">
         <header className="space-y-3">
           <p className="text-sm muted">{t('claim')}</p>
-          <blockquote className="font-serif text-xl leading-snug md:text-2xl" lang={shown.lang}>
+          <blockquote className="max-w-[60ch] font-serif text-xl leading-snug md:text-2xl 2xl:text-3xl" lang={shown.lang}>
             “{shown.text}”
           </blockquote>
           <div className="flex flex-wrap items-center gap-3">
@@ -117,7 +117,7 @@ export default async function AnalysisPage({ params }: Props) {
         {r && (
           <section>
             <h2 className="text-lg font-semibold">{t('summary')}</h2>
-            <p className="mt-2 text-lg leading-relaxed">{r.summary}</p>
+            <p className="mt-2 max-w-[75ch] text-lg leading-relaxed">{r.summary}</p>
           </section>
         )}
 
@@ -125,7 +125,7 @@ export default async function AnalysisPage({ params }: Props) {
           <section className="card p-5">
             <h2 className="text-lg font-semibold">{t('valuesTitle')}</h2>
             <p className="mt-1 text-sm muted">{t('valuesIntro')}</p>
-            <ul className="mt-3 space-y-3">
+            <ul className="mt-3 grid gap-x-8 gap-y-3 xl:grid-cols-2">
               {r.valuesPositions.map((p, i) => (
                 <li key={i}>
                   <strong>{p.label}</strong>
@@ -183,7 +183,7 @@ export default async function AnalysisPage({ params }: Props) {
         {s.sources.length > 0 && (
           <section>
             <h2 className="text-lg font-semibold">{t('sources')}</h2>
-            <ol className="mt-2 space-y-3">
+            <ol className="mt-2 grid gap-3 xl:grid-cols-2 3xl:grid-cols-3">
               {s.sources.map((src: VerdictSource, i) => (
                 <li key={src.url + i} className="card p-3">
                   <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -205,7 +205,7 @@ export default async function AnalysisPage({ params }: Props) {
         {r && r.reasoning.length > 0 && (
           <details className="card p-4">
             <summary className="cursor-pointer font-semibold">{t('reasoning')}</summary>
-            <ol className="mt-3 list-decimal space-y-1.5 pl-5">
+            <ol className="mt-3 max-w-[80ch] list-decimal space-y-1.5 pl-5">
               {r.reasoning.map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
@@ -219,13 +219,13 @@ export default async function AnalysisPage({ params }: Props) {
         <ResultActions analysisId={a.id} version={a.version} pushBackEnabled={config.killSwitches.pushBack} maxTurns={config.limits.dialogueMaxTurns} />
       </div>
 
-      <aside className="space-y-6">
+      <aside className="grid content-start gap-6 md:grid-cols-2 lg:grid-cols-1">
         {s.verdicts.length > 0 && (
-          <section className="card p-4" aria-labelledby="models-title">
+          <section className="card p-4 md:col-span-2 lg:col-span-1" aria-labelledby="models-title">
             <h2 id="models-title" className="font-semibold">{t('models.title')}</h2>
             <p className="mt-1 text-sm muted">{t('models.intro')}</p>
             <p className="mt-2 text-sm font-medium">{s.aggregate.disagreement ? t('models.disagree') : t('models.agree')}</p>
-            <ul className="mt-3 space-y-3">
+            <ul className="mt-3 grid gap-3 md:grid-cols-3 lg:grid-cols-1">
               {s.verdicts.map((v) => (
                 <li key={v.slot} className="rounded-xl border border-line p-3">
                   <p className="text-xs muted">{slotLabel(v.slot)}</p>

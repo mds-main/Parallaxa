@@ -25,7 +25,7 @@ export default async function TrustPage({ params }: { params: Promise<{ locale: 
     <div className="space-y-6">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
       <p className="max-w-3xl text-lg">{t('intro')}</p>
-      <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {SECTIONS.map(([key, href]) => (
           <li key={key}>
             {href.startsWith('http') ? (

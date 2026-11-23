@@ -26,7 +26,7 @@ export function ReviewQueue({ tasks }: { tasks: Task[] }) {
         <span className="label">{t('reviewer')}</span>
         <input className="field mt-1" value={reviewer} onChange={(e) => setReviewer(e.target.value)} />
       </label>
-      <ul className="space-y-3">
+      <ul className="grid items-start gap-3 3xl:grid-cols-2">
         {tasks.map((task) => {
           const analysisId = task.kind === 'error_report' ? task.notes?.split('\n')[0] : task.refId.split(':')[0];
           return (

@@ -42,7 +42,7 @@ export function AccountPanel() {
     // No email, no password: a passkey made on this device creates the account and signs in to it.
     const passkeyError = (e: unknown) => setMsg((e as Error)?.name === 'NotAllowedError' ? null : t('passkeyFailed'));
     return (
-      <section className="card space-y-4 p-5">
+      <section className="card max-w-3xl space-y-4 p-5">
         <p className="text-sm muted">{t('passkeyIntro')}</p>
         <div className="flex flex-wrap gap-2">
           <button
@@ -84,7 +84,7 @@ export function AccountPanel() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="grid items-start gap-4 lg:grid-cols-2 2xl:grid-cols-3">
       <section className="card space-y-3 p-5">
         <p className="font-medium">{t('signedIn')}</p>
         <p className="text-sm muted">{t('passkeys', { count: status.passkeys ?? 0 })}</p>
@@ -187,7 +187,7 @@ export function AccountPanel() {
           {t('delete')}
         </button>
       </section>
-      {msg && <p role="status" className="text-sm">{msg}</p>}
+      {msg && <p role="status" className="text-sm lg:col-span-full">{msg}</p>}
     </div>
   );
 }

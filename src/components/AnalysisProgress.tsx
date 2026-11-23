@@ -60,10 +60,10 @@ export function AnalysisProgress({ id, places = [] }: { id: string; places?: Pla
   const done = new Set(s?.progress?.done ?? []);
   const current = s?.progress?.stage;
   return (
-    <div className="card p-6" aria-live="polite" aria-busy="true">
+    <div className="card mx-auto max-w-5xl p-6 md:p-8" aria-live="polite" aria-busy="true">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
       <p className="mt-1 muted">{t('intro')}</p>
-      <ol className="mt-5 space-y-2">
+      <ol className="mt-5 space-y-2 md:columns-2 md:gap-10 [&>li]:break-inside-avoid">
         {PIPELINE_STAGES.map((stage) => {
           const state = done.has(stage) ? 'done' : stage === current ? 'current' : 'todo';
           return (

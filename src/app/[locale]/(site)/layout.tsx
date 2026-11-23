@@ -30,7 +30,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         </div>
       )}
       <SiteHeader />
-      <main id="main" className="mx-auto w-full max-w-6xl px-4 pt-6">
+      <main id="main" className="shell pt-6 lg:pt-8">
         {children}
       </main>
       <SiteFooter />

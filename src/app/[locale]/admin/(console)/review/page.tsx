@@ -18,9 +18,9 @@ export default async function ReviewPage() {
     ? await db.select({ id: analyses.id, text: claims.canonicalText, grade: analyses.grade, structured: analyses.structured }).from(analyses).leftJoin(claims, eq(claims.id, analyses.claimId)).where(inArray(analyses.id, analysisIds))
     : [];
   return (
-    <div className="max-w-4xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <ReviewQueue
         tasks={tasks.map((task) => {
           const aid = task.kind === 'error_report' ? task.notes?.split('\n')[0] : task.refId.split(':')[0];

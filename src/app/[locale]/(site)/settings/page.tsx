@@ -13,9 +13,9 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
   const t = await getTranslations('settings');
   const [places, topics, editions] = await Promise.all([getPlaces(), getTopics(), getPublishedEditions()]);
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <SettingsForm places={places} topics={topics} editions={editions} />
     </div>
   );

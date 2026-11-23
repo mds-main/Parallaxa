@@ -120,7 +120,7 @@ function SaveBar({ onReset, costEstimate }: { onReset: () => void; costEstimate?
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink bg-card shadow-lg" role="region" aria-label={t('pending', { count: changed.length })}>
-      <div className="mx-auto grid max-w-6xl gap-3 px-4 py-3 md:grid-cols-[1fr_auto]">
+      <div className="shell grid gap-3 py-3 md:grid-cols-[1fr_auto]">
         <div className="space-y-2">
           {changed.length > 0 && (
             <>

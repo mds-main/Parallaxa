@@ -36,7 +36,7 @@ export default async function ActorPage({ params }: { params: Promise<{ locale: 
         <p className="muted">{t(`types.${actor.type}`)} · {actor.publicRole?.[locale] ?? ''}</p>
         <p className="mt-2 max-w-3xl text-sm">{t('conductNote')}</p>
       </header>
-      <section className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {DIMENSIONS.map((d) => {
           const sc = scores.find((s) => s.dimension === d);
           return (
@@ -59,7 +59,7 @@ export default async function ActorPage({ params }: { params: Promise<{ locale: 
       </section>
       <section>
         <h2 className="text-xl font-semibold">{t('analyzedClaims')}</h2>
-        <ul className="mt-3 space-y-2">
+        <ul className="mt-3 grid gap-2 xl:grid-cols-2 3xl:grid-cols-3">
           {claimRows.map((c) => (
             <li key={c.id} className="card flex items-start gap-3 p-3">
               {c.grade && <GradeIcon grade={c.grade as Grade} />}
@@ -71,12 +71,12 @@ export default async function ActorPage({ params }: { params: Promise<{ locale: 
           ))}
         </ul>
       </section>
-      <section className="card p-5">
+      <section className="card max-w-5xl p-5">
         {replies.length ? (
           replies.map((r) => (
             <div key={r.id} className="mb-3">
               <h2 className="font-semibold">{t('reply', { name: actor.name })}</h2>
-              <p className="mt-1 whitespace-pre-line">{r.body}</p>
+              <p className="mt-1 max-w-[75ch] whitespace-pre-line">{r.body}</p>
             </div>
           ))
         ) : (

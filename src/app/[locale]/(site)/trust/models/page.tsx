@@ -63,7 +63,7 @@ export default async function ModelsPage({ params }: { params: Promise<{ locale:
       </div>
       <section>
         <h2 className="text-xl font-semibold">{t('roles')}</h2>
-        <ul className="mt-2 grid gap-1 text-sm md:grid-cols-2">
+        <ul className="mt-2 grid gap-1 text-sm md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">
           {Object.entries(config.roles).map(([k, v]) => <li key={k}><span className="muted">{k}:</span> {v}</li>)}
         </ul>
       </section>
@@ -72,7 +72,7 @@ export default async function ModelsPage({ params }: { params: Promise<{ locale:
         {history.length === 0 ? (
           <p className="mt-2 text-sm muted">{t('noHistory')}</p>
         ) : (
-          <ol className="mt-2 space-y-2">
+          <ol className="mt-2 grid items-start gap-2 lg:grid-cols-2 3xl:grid-cols-3">
             {history.map(({ v, changes }) => (
               <li key={v.id} className="card p-3 text-sm">
                 <p className="font-medium">{format.dateTime(v.activatedAt ?? v.createdAt, { dateStyle: 'medium', timeStyle: 'short' })} · v{v.id}</p>

@@ -8,9 +8,9 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations('settings.account');
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro')}</p>
+      <p className="max-w-3xl muted">{t('intro')}</p>
       <AccountPanel />
     </div>
   );

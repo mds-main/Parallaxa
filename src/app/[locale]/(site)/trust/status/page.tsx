@@ -22,7 +22,7 @@ export default async function StatusPage({ params }: { params: Promise<{ locale:
   const t = await getTranslations('trust.status');
   const { state, checkedAt } = await readStatus();
   return (
-    <div className="mx-auto max-w-xl space-y-4">
+    <div className="max-w-3xl space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
       <p className="card p-6 text-xl font-semibold" role="status">{t(state)}</p>
       <p className="text-sm muted">{t('lastChecked', { date: checkedAt })}</p>

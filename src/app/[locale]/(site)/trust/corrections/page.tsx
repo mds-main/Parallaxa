@@ -9,15 +9,15 @@ export default async function CorrectionsPage({ params }: { params: Promise<{ lo
   const format = await getFormatter();
   const list = await getCorrections();
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-semibold">{t('title')}</h1>
         <a href={`/rss/corrections?lang=${locale}`} className="text-sm">{t('rss')}</a>
       </div>
       {list.length === 0 ? (
         <p className="card p-6">{t('empty')}</p>
       ) : (
-        <ol className="space-y-3">
+        <ol className="grid gap-3 lg:grid-cols-2 3xl:grid-cols-3">
           {list.map((c) => (
             <li key={c.id} className="card p-4">
               <p className="text-sm muted">{format.dateTime(c.createdAt, { dateStyle: 'medium' })} · {t('changed', { from: c.fromVersion, to: c.toVersion })}</p>

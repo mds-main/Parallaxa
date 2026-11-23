@@ -20,9 +20,9 @@ export default async function TodayPage({ params }: { params: Promise<{ locale: 
   if (!config.killSwitches.briefing) return <p className="card p-6">{t('empty')}</p>;
   const [editions, places, topics] = await Promise.all([getPublishedEditions(), getPlaces(), getTopics()]);
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('title')}</h1>
-      <p className="muted">{t('intro', { count: config.content.briefingStories })}</p>
+      <p className="max-w-3xl muted">{t('intro', { count: config.content.briefingStories })}</p>
       <Briefing
         editions={editions}
         parents={Object.fromEntries(places.map((p) => [p.id, p.parentId]))}
@@ -30,7 +30,7 @@ export default async function TodayPage({ params }: { params: Promise<{ locale: 
         topicNames={Object.fromEntries(topics.map((x) => [x.id, x.names]))}
         gradeLabels={Object.fromEntries(GRADES.map((g) => [g, tc(`grades.${g}`)]))}
       />
-      <p className="text-center text-sm">
+      <p className="text-sm">
         <Link href="/settings">{t('settings')}</Link>
       </p>
     </div>

@@ -9,15 +9,15 @@ export default async function MethodologyIndex({ params }: { params: Promise<{ l
   setRequestLocale(locale);
   const t = await getTranslations('trust');
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="space-y-4">
       <h1 className="text-3xl font-semibold">{t('sections.methodology.title')}</h1>
-      <ul className="space-y-2">
+      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {DOCS.map((d) => {
           const md = loadDoc('methodology', d, locale) ?? '';
           const title = md.match(/^#\s+(.*)$/m)?.[1] ?? d;
           return (
             <li key={d}>
-              <Link href={`/trust/methodology/${d}`} className="card block p-4 font-medium no-underline">{title}</Link>
+              <Link href={`/trust/methodology/${d}`} className="card block h-full p-5 font-medium no-underline">{title}</Link>
             </li>
           );
         })}
