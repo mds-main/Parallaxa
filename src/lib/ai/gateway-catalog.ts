@@ -2,6 +2,7 @@
  * The AI Gateway's public model list (no key needed, no user data sent), cached in memory.
  * Lets routing send only model ids that exist and match each Venice model to its Gateway twin.
  */
+import { log } from '../log';
 const MODELS_URL = 'https://ai-gateway.vercel.sh/v1/models';
 let cache: { at: number; ids: string[] | null } | null = null;
 
@@ -15,7 +16,8 @@ export async function getGatewayModelIds(): Promise<string[] | null> {
     const json = (await res.json()) as { data?: { id?: string; type?: string }[] };
     const ids = (json.data ?? []).filter((m) => typeof m.id === 'string' && (m.type ?? 'language') === 'language').map((m) => m.id!);
     cache = { at: Date.now(), ids: ids.length ? ids : (cache?.ids ?? null) };
-  } catch {
+  } catch (e) {
+    log.warn('gateway.catalog_fetch_failed', { error: e, kept: cache?.ids ? 'last list' : 'none' });
     // Keep the last good list; without one, routing falls back to the per-vendor defaults.
     cache = { at: Date.now(), ids: cache?.ids ?? null };
   }

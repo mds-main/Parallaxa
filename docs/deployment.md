@@ -35,6 +35,7 @@ Set these with `vercel env add <NAME> <environment>` (use the *sensitive* type f
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | production, preview | yes | Password ≥ 20 random characters, secret ≥ 32; different values per environment. The secret also salts the daily IP hashes used for rate limits |
 | `USER_SESSION_SECRET` | production, preview | yes | ≥ 32 characters. Enables the optional reader accounts (passkeys only, no email); without it accounts are switched off |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | production | yes for alerts | Admin alerts go to Telegram, never email. Bot from BotFather; get the chat id with `TELEGRAM_BOT_TOKEN=… pnpm telegram --find-chats`, test with `--test` or Admin › Alerts. Several chats: comma-separated |
+| `LOG_LEVEL` | any | no | `debug`, `info` (default), `warn` or `error`. `debug` adds routine cron runs, unreadable pages and scrape fallbacks; see **Reading the logs** in `docs/runbooks.md` |
 | `DATA_ENCRYPTION_KEY` | production, preview | yes | `openssl rand -base64 32`; encrypts push subscriptions and account data |
 | `CRON_SECRET` | production | yes | Vercel sends it to the cron routes (`vercel.json`) |
 | `NEXT_PUBLIC_SITE_URL` | production | optional | Public URL for feeds, share links and passkeys. Unset, production uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` (shortest custom domain, else `*.vercel.app`) and previews use their own address |

@@ -10,6 +10,15 @@ import { getDb } from '../db/client';
 import { analyses, claims } from '../db/schema';
 import { VERDICT_PARAMETERS } from './json';
 import { saveSnapshot } from './snapshots';
+import { log } from '../log';
+
+const hostOf = (url: string) => {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return '?';
+  }
+};
 import { mergeHits, webSearch } from './search';
 import type { SearchConfig } from '../config/schema';
 
@@ -118,7 +127,8 @@ export async function fetchPage(cache: PageCache, url: string) {
         cache.set(url, { ...page, hash });
         return page;
       }
-    } catch {
+    } catch (e) {
+      log.debug('page.scrape_failed', { host: hostOf(url), error: e });
       /* fall back to our own fetcher */
     }
   }
@@ -226,6 +236,7 @@ export async function executeTool(name: string, rawArgs: string, ctx: ToolContex
         return wrap({ error: `Unknown tool ${name}` });
     }
   } catch (e) {
+    log.warn('tool.failed', { tool: name, error: e, dedupe: name });
     return wrap({ error: (e as Error).message.slice(0, 200) });
   }
 }

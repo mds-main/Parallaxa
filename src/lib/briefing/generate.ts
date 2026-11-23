@@ -15,6 +15,7 @@ import { ensureRendering } from '../pipeline/render';
 import { todayIn } from '../queries';
 import { ENABLED_LANGUAGES } from '../../i18n/languages';
 import { raiseAlert } from '../admin/alerts';
+import { log } from '../log';
 
 type Candidate = { claim: string; outletsLeft: number; outletsRight: number; viral: number; upcomingDecision: boolean };
 
@@ -115,7 +116,7 @@ export async function generateEdition(placeId: string, opts: { force?: boolean }
     if (!a?.structured || a.grade === 'not_checkable') continue;
     const headline: Record<string, string> = {};
     for (const l of ENABLED_LANGUAGES) {
-      const r = await ensureRendering(analysisId, l.tag).catch(() => null);
+      const r = await ensureRendering(analysisId, l.tag).catch((e) => (log.warn('render.failed', { analysis: analysisId, lang: l.tag, error: e }), null));
       if (r) headline[l.tag] = r.headline;
     }
     const q = quiz[rank % Math.max(1, quiz.length)];

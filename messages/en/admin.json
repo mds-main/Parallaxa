@@ -197,7 +197,8 @@
     },
     "fallbackAuto": "Automatic: {model}",
     "fallbackMissing": "Not on AI Gateway, so {model} is used instead.",
-    "fallbackNone": "No AI Gateway equivalent: this slot always uses Venice."
+    "fallbackNone": "No AI Gateway equivalent: this slot always uses Venice.",
+    "untested": "Run “{button}” on each changed model before applying: {models}."
   },
   "investigation": {
     "title": "Investigation settings",

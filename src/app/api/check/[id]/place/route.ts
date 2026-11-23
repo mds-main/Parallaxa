@@ -6,6 +6,7 @@ import * as s from '@/lib/db/schema';
 import { resumeWithPlace } from '@/lib/pipeline/run';
 import { rateLimit } from '@/lib/security/rate-limit';
 import { clientIp, hashIp } from '@/lib/security/ip';
+import { log } from '@/lib/log';
 
 export const maxDuration = 300;
 
@@ -31,7 +32,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     .returning({ id: s.analyses.id });
   if (!claimed) return NextResponse.json({ error: 'not_waiting' }, { status: 409 });
   after(async () => {
-    await resumeWithPlace(id, place.id);
+    await resumeWithPlace(id, place.id).catch((e) => log.error('analysis.crashed', { analysis: id, resumed: true, error: e }));
   });
   return NextResponse.json({ id }, { status: 202 });
 }

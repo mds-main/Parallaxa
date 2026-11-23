@@ -12,6 +12,7 @@ import { RerunButton } from '@/components/RerunButton';
 import { MicroSurvey } from '@/components/MicroSurvey';
 import { recordUsage } from '@/lib/metrics/usage';
 import type { Grade, RenderedAnalysis, VerdictSource } from '@/lib/domain/types';
+import { log } from '@/lib/log';
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, id } = await params;
   const found = await getAnalysis(id);
   if (!found || found.analysis.status !== 'published') return { robots: { index: false } };
-  const r = await ensureRendering(id, locale).catch(() => null);
+  const r = await ensureRendering(id, locale).catch((e) => (log.warn('render.failed', { analysis: id, lang: locale, error: e }), null));
   return { title: r?.headline ?? found.claim?.canonicalText.slice(0, 80), description: r?.summary };
 }
 
@@ -72,7 +73,7 @@ export default async function AnalysisPage({ params }: Props) {
   }
 
   const s = a.structured;
-  const rendered: RenderedAnalysis | null = await ensureRendering(id, locale).catch(() => null);
+  const rendered: RenderedAnalysis | null = await ensureRendering(id, locale).catch((e) => (log.warn('render.failed', { analysis: id, lang: locale, error: e }), null));
   const { config, id: activeConfigId } = await getActiveConfig();
   const [places, topics, history] = await Promise.all([getPlaces(), getTopics(), getCorrections(id)]);
   const placeName = (pid: string) => places.find((p) => p.id === pid)?.names[locale] ?? pid;

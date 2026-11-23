@@ -22,6 +22,7 @@ import { renderAnalysis } from './render';
 import { domainOf } from '../ai/sources';
 import { trace } from '@opentelemetry/api';
 import { withSpan } from '../telemetry';
+import { log } from '../log';
 import {
   CLAIM_TYPES,
   type AnalysisProgress,
@@ -144,8 +145,17 @@ function pickWriter(config: AppConfig, analysisId: string): SlotConfig {
   return enabled[hash(analysisId) % enabled.length]!;
 }
 
-export function runAnalysis(analysisId: string, input: CheckInput, lang: string, opts: RunOptions = {}): Promise<RunResult> {
-  return withSpan('pipeline.run', { 'plx.input_kind': input.kind, 'plx.lang': lang }, () => runAnalysisInner(analysisId, input, lang, opts), (r) => ({ 'plx.status': r.status, 'plx.reused': Boolean(r.reusedFrom) }));
+export async function runAnalysis(analysisId: string, input: CheckInput, lang: string, opts: RunOptions = {}): Promise<RunResult> {
+  const started = Date.now();
+  const r = await withSpan('pipeline.run', { 'plx.input_kind': input.kind, 'plx.lang': lang }, () => runAnalysisInner(analysisId, input, lang, opts), (r) => ({ 'plx.status': r.status, 'plx.reused': Boolean(r.reusedFrom) }));
+  logOutcome(r, started, { kind: input.kind, lang });
+  return r;
+}
+
+/** One line per analysis (failures are logged with their cause by `fail`). */
+function logOutcome(r: RunResult, started: number, fields: Record<string, unknown>) {
+  if (r.status === 'failed' && !r.reusedFrom) return;
+  log.info('analysis.done', { analysis: r.analysisId, status: r.status, reused: r.reusedFrom, ms: Date.now() - started, ...fields });
 }
 
 type PipelineCtx = Awaited<ReturnType<typeof pipelineContext>>;
@@ -166,6 +176,8 @@ const isValuesClaim = (c: AtomicClaim) => c.type === 'value' || c.type === 'pred
 
 async function fail(analysisId: string, e: unknown): Promise<RunResult> {
   const db = await getDb();
+  const [row] = await db.select({ progress: s.analyses.progress, createdAt: s.analyses.createdAt }).from(s.analyses).where(eq(s.analyses.id, analysisId)).catch(() => []);
+  log.error('analysis.failed', { analysis: analysisId, stage: row?.progress?.stage, ms: row?.createdAt ? Date.now() - new Date(row.createdAt).getTime() : undefined, error: e });
   await db.update(s.analyses).set({ status: 'failed', error: (e as Error).message.slice(0, 500), pending: null }).where(eq(s.analyses.id, analysisId));
   return { analysisId, status: 'failed' };
 }
@@ -248,7 +260,8 @@ export async function resumeWithPlace(analysisId: string, placeId: string): Prom
   const db = await getDb();
   const [row] = await db.select({ pending: s.analyses.pending, progress: s.analyses.progress }).from(s.analyses).where(eq(s.analyses.id, analysisId));
   if (!row?.pending) return { analysisId, status: 'failed' };
-  return withSpan('pipeline.resume', { 'plx.place': placeId }, async () => {
+  const started = Date.now();
+  const result = await withSpan('pipeline.resume', { 'plx.place': placeId }, async () => {
     const ctx = await pipelineContext(analysisId, row.progress?.done ?? ['ingest', 'decompose', 'tag']);
     try {
       const pending = await applyPlace(row.pending!, placeId);
@@ -258,6 +271,8 @@ export async function resumeWithPlace(analysisId: string, placeId: string): Prom
       return fail(analysisId, e);
     }
   });
+  logOutcome(result, started, { resumed: true, place: placeId });
+  return result;
 }
 
 /** Everything after tagging: similar-claim cache, research, investigation, aggregation, writing and publishing. */
@@ -295,15 +310,18 @@ async function finishAnalysis(analysisId: string, prepared: PendingCheck, ctx: P
     if (!isValues) {
       const runs = enabled.map((slot) =>
         investigate({ slot, claim: main, pool, pages, config, analysisId }).catch(
-          (e): SlotVerdict & { techniques: string[]; confidenceReason: string } => ({
+          (e): SlotVerdict & { techniques: string[]; confidenceReason: string } => {
+            log.warn('slot.failed', { analysis: analysisId, slot: slot.id, model: slot.model, error: e });
+            return {
             slot: slot.id, model: slot.model, provider: 'venice', grade: null, confidence: null, abstained: true, coiExcluded: false,
             reasoning: `Investigation failed: ${(e as Error).message.slice(0, 200)}`, sources: [], toolCalls: 0, searches: { web: 0, x: 0, scrape: 0 }, costUsd: 0, latencyMs: 0, techniques: [], confidenceReason: '',
-          }),
+            };
+          },
         ),
       );
       const shadowRuns = [];
       for (const slot of enabled) {
-        if (await shadowQuota(slot, activatedAt)) shadowRuns.push(investigate({ slot, claim: main, pool, pages, config, analysisId, modelOverride: slot.shadowModel }).catch(() => null));
+        if (await shadowQuota(slot, activatedAt)) shadowRuns.push(investigate({ slot, claim: main, pool, pages, config, analysisId, modelOverride: slot.shadowModel }).catch((e) => (log.warn('shadow.failed', { analysis: analysisId, slot: slot.id, model: slot.shadowModel, error: e }), null)));
       }
       verdicts = await Promise.all(runs);
       for (const sv of await Promise.all(shadowRuns)) if (sv) shadows.push(sv);

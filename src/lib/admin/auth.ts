@@ -12,6 +12,7 @@ import { getDb } from '../db/client';
 import { adminLoginAttempts, adminSessions } from '../db/schema';
 import { clientIp, hashIp, ipAllowed } from '../security/ip';
 import { raiseAlert } from './alerts';
+import { log } from '../log';
 
 export const ADMIN_COOKIE = 'plx_admin';
 const SESSION_HOURS = 8;
@@ -94,7 +95,8 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     const h = await headers();
     if (!ipAllowed(clientIp(h), process.env.ADMIN_IP_ALLOWLIST)) return null;
     return { sid, ipHash: row.ipHash };
-  } catch {
+  } catch (e) {
+    log.warn('admin.session_check_failed', { error: e });
     return null;
   }
 }

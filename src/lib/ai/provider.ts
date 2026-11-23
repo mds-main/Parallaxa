@@ -13,6 +13,7 @@ import type { AppConfig } from '../config/schema';
 import { planRoute, type RouteStep } from './routing';
 import { getGatewayModelIds } from './gateway-catalog';
 import { withSpan } from '../telemetry';
+import { log as logLine } from '../log';
 
 export type CallOptions = {
   step: string;
@@ -70,7 +71,7 @@ async function log(opts: CallOptions, provider: string, model: string, res: Part
       fallback,
     });
   } catch (e) {
-    console.error('llm_calls log failed', e);
+    logLine.error('db.llm_calls_insert_failed', { step: opts.step, error: e });
   }
 }
 
@@ -110,6 +111,7 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
     recordSuccess(step.model, res.latencyMs);
     const costUsd = step.provider === 'venice' ? await estimateCost(step.model, res, opts.searches) : (res.costUsd ?? 0);
     await log(opts, step.provider, step.model, { ...res, costUsd }, undefined, step.isFallback);
+    if (step.isFallback) logLine.warn('model.fallback_used', { step: opts.step, slot: opts.slot, provider: step.provider, model: step.model, analysis: opts.analysisId, dedupe: `${step.provider}:${step.model}` });
     return { ...res, provider: step.provider, usedFallback: step.isFallback, costUsd };
   };
 
@@ -117,6 +119,7 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
   for (const step of plan) {
     if (!breakerAllows(step.model, bs)) {
       lastError = new AiError(`Circuit open for ${step.model}`, 'server');
+      logLine.warn('model.circuit_open', { provider: step.provider, model: step.model, step: opts.step, dedupe: step.model });
       continue;
     }
     for (let tries = 0; tries < 2; tries++) {
@@ -126,6 +129,8 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
         const err = e instanceof AiError ? e : new AiError(String(e), 'unknown');
         lastError = err;
         await log(opts, step.provider, step.model, {}, err.errorClass, step.isFallback);
+        // Refusals are expected answers (a slot abstains), not faults.
+        (err.errorClass === 'refusal' ? logLine.info : logLine.warn)('model.call_failed', { step: opts.step, slot: opts.slot, provider: step.provider, model: step.model, try: tries + 1, analysis: opts.analysisId, error: err });
         // A malformed request would fail on any vendor; an unknown or blocked model is vendor-specific.
         if (err.errorClass === 'schema') throw err;
         if (err.errorClass === 'not_found' || err.errorClass === 'forbidden') break;
@@ -142,5 +147,6 @@ async function callModelInner(opts: CallOptions): Promise<CallResult> {
       }
     }
   }
+  logLine.error('model.all_routes_failed', { step: opts.step, slot: opts.slot, model: opts.model, routes: plan.map((p) => `${p.provider}:${p.model}`).join(','), analysis: opts.analysisId, error: lastError });
   throw lastError ?? new AiError('Model call failed', 'unknown');
 }

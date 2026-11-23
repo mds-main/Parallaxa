@@ -9,6 +9,7 @@ import { configVersions } from '../db/schema';
 import { appConfigSchema, defaultConfig, type AppConfig } from './schema';
 import { checkLineup } from './models';
 import { audit } from '../admin/audit';
+import { log } from '../log';
 
 export type ActiveConfig = { id: number; config: AppConfig; activatedAt: Date | null };
 
@@ -85,7 +86,8 @@ async function readEdgeConfig(): Promise<ActiveConfig | null> {
     const raw = (await get(EDGE_KEY)) as { id: number; config: unknown; activatedAt: string } | undefined;
     if (!raw) return null;
     return { id: raw.id, config: appConfigSchema.parse(raw.config), activatedAt: new Date(raw.activatedAt) };
-  } catch {
+  } catch (e) {
+    log.warn('config.edge_read_failed', { error: e, fallback: 'database' });
     return null;
   }
 }
@@ -99,5 +101,5 @@ async function publishEdgeConfig(value: ActiveConfig) {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ items: [{ operation: 'upsert', key: EDGE_KEY, value: { ...value, activatedAt: value.activatedAt?.toISOString() } }] }),
   });
-  if (!res.ok) console.error('Edge Config publish failed', res.status);
+  if (!res.ok) log.error('config.edge_publish_failed', { status: res.status });
 }

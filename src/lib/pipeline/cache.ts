@@ -4,6 +4,7 @@ import { getDb } from '../db/client';
 import { analyses, claims } from '../db/schema';
 import { embed, isDemoMode } from '../ai/client';
 import { hash } from '../ai/demo';
+import { log } from '../log';
 
 const DIM = 256;
 
@@ -32,7 +33,8 @@ export async function embedText(text: string, model: string): Promise<number[]> 
   if (isDemoMode()) return demoEmbedding(text);
   try {
     return await embed(model, text);
-  } catch {
+  } catch (e) {
+    log.warn('embedding.failed', { model, error: e, fallback: 'local hash embedding' });
     return demoEmbedding(text);
   }
 }

@@ -24,6 +24,7 @@ import { fetchPage, type PageCache } from '../ai/tools';
 import { saveSnapshot } from '../ai/snapshots';
 import { PRIMARY_SOURCES } from '../data/outlets';
 import { EU_MEMBERS } from '../data/places';
+import { log } from '../log';
 
 export type PlannedQuery = { query: string; purpose: string };
 
@@ -91,7 +92,8 @@ export async function planQueries(claim: AtomicClaim, config: AppConfig, analysi
     // The claim itself is always searched too, so a weak plan never loses the obvious results.
     const withClaim = planned.some((q) => q.query.toLowerCase() === claim.canonical.toLowerCase()) ? planned : [{ query: claim.canonical, purpose: 'figure' }, ...planned];
     return withClaim.slice(0, count + 1);
-  } catch {
+  } catch (e) {
+    log.warn('research.plan_failed', { error: e, fallback: 'claim-only plan' });
     return fallbackPlan(claim);
   }
 }
@@ -190,7 +192,8 @@ export async function buildEvidencePool(claim: AtomicClaim, config: AppConfig, a
           hash = pages.get(c.url)?.hash ?? null;
         }
         if (text.trim()) read.set(c.url, { excerpt: bestPassage(text, claimTexts), hash });
-      } catch {
+      } catch (e) {
+        log.debug('research.page_unreadable', { url: c.url, error: e });
         /* unreadable page: it stays in the pool with its search snippet */
       }
     }),

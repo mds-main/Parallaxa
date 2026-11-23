@@ -11,6 +11,7 @@
  * to a supergroup is followed, and HTML Telegram cannot parse is resent as plain text. Nothing here throws, and
  * the token (part of every request URL) never reaches a log line.
  */
+import { log } from '../log';
 
 const API = 'https://api.telegram.org';
 
@@ -88,7 +89,7 @@ async function sendToChat(token: string, chat: string, message: TelegramMessage)
       const migrated = reply.parameters?.migrate_to_chat_id;
       if (migrated !== undefined) {
         // The group became a supergroup with a new id: post there (TELEGRAM_CHAT_ID should be updated).
-        console.warn('telegram: chat migrated to a supergroup; update TELEGRAM_CHAT_ID');
+        log.warn('telegram.chat_migrated', { action: 'update TELEGRAM_CHAT_ID to the new supergroup id' });
         payload = { ...payload, chat_id: migrated };
         continue;
       }
@@ -105,7 +106,7 @@ async function sendToChat(token: string, chat: string, message: TelegramMessage)
         wait = 1000 * attempt;
       } else {
         // Wrong token or chat, or the bot was blocked or removed: retrying won't help.
-        console.error(`telegram: rejected (HTTP ${res.status})`);
+        log.error('telegram.rejected', { status: res.status, reason: reply.description });
         return false;
       }
     } catch {
@@ -114,7 +115,7 @@ async function sendToChat(token: string, chat: string, message: TelegramMessage)
     }
     if (attempt < MAX_ATTEMPTS) await sleep(wait);
   }
-  console.error('telegram: gave up after retries');
+  log.error('telegram.gave_up', { attempts: MAX_ATTEMPTS });
   return false;
 }
 

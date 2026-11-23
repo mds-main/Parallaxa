@@ -2,6 +2,44 @@
 
 Every action below can be taken from the admin console without a deploy, and every change is audit-logged with a reason.
 
+## Reading the logs
+
+Every server log line is one event in logfmt: level, event name, then fields. Search for any of them in the Vercel dashboard (Logs) or from a terminal with `vercel logs parallaxa1.vercel.app`.
+
+```
+error analysis.failed analysis=9f3c2a stage=investigate ms=41234 err="AiError(timeout): Request timed out" at=src/lib/ai/client.ts:212
+```
+
+- **Start from what you have.** A reader's "Error reference" is the `digest=` of a `request.failed` line. An analysis link `/a/<id>` gives `analysis=<id>`: that shows its run (`analysis.done` or `analysis.failed`), its model calls and its slots. An admin alert names the event to look for.
+- **The same failure is written once a minute per instance.** The next line says how many were held back (`repeated=12`), so one line can stand for a burst.
+- **Nothing personal is logged:** no reader text, claims, queries, emails or IP addresses. Fields with such names show `[redacted]`, and tokens, keys and database URLs are scrubbed from error messages. Use the admin console (Review, Metrics, Models) for content.
+- **`LOG_LEVEL=debug`** (Vercel env var, then redeploy) adds routine cron runs, unreadable source pages and scrape fallbacks. Set it back to `info` afterwards.
+
+| Event | Level | Meaning and first step |
+|---|---|---|
+| `request.failed` | error | Unhandled error in a page, API route or server action. `route`, `digest`, `at` (file and line) |
+| `analysis.done` | info | One per finished check: `status` (published, review, needs_input), `ms`, `reused` |
+| `analysis.failed` | error | A check failed: `stage` tells where. Look at the `model.*` / `search.*` lines just before it with the same `analysis=` |
+| `analysis.crashed` | error | The pipeline threw before it could record the failure (usually the database) |
+| `slot.failed`, `shadow.failed` | warn | One perspective (or its shadow model) failed and abstained; the analysis went on |
+| `model.call_failed` | warn | One try on one vendor failed: `err` has the class (timeout, rate_limit, auth, payment, server…) |
+| `model.fallback_used` | warn | The backup vendor answered. See *Venice outage* below |
+| `model.circuit_open` | warn | A model failed too often and is being skipped for a while |
+| `model.all_routes_failed` | error | No vendor could answer: check keys (`auth`), credit (`payment`) or the vendor status page |
+| `search.engine_failed` / `search.all_engines_failed` | warn / error | A search engine failed (the next one was used) / none worked. See *Search engine outage* |
+| `research.plan_failed` | warn | The research planner failed; only the claim itself was searched |
+| `embedding.failed` | warn | Similar-claim matching used the local fallback |
+| `catalog.sync_failed`, `gateway.catalog_fetch_failed` | warn / error | Could not refresh the Venice or AI Gateway model list; the last one is kept |
+| `health.slot_down` | warn | The 5-minute health ping failed for a perspective model |
+| `cron.done` / `cron.failed` | info / error | One per job run with its counts (routine runs with nothing to do are `debug`) |
+| `alert.raised` | warn | An admin alert, and whether Telegram took it |
+| `telegram.rejected`, `telegram.gave_up` | error | Alerts are not reaching Telegram: check the token, the chat id and that the bot is in the chat |
+| `auth.passkey_failed` / `auth.passkey_rejected` | warn / info | A passkey sign-up or sign-in failed. If `host` differs from `expected`, the reader is on another address than the production domain |
+| `dialogue.failed` | error | "Push back" could not answer |
+| `render.failed` | warn | An analysis could not be rendered in a language; the page showed the fallback |
+| `config.edge_read_failed`, `config.edge_publish_failed` | warn / error | Edge Config unavailable; the configuration was read from the database |
+| `db.*_insert_failed` | warn / error | A log or metrics row was not saved; the request itself went on |
+
 ## Venice outage or degradation
 1. **Overview** shows "Backup provider: In use" and an alert is posted to the admins’ Telegram chat.
 2. Check **Models**: circuit state per slot. If one model is failing, swap that slot (Test → Activate) or pause it with the circuit button.

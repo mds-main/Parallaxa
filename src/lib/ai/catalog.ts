@@ -4,6 +4,7 @@ import { modelCatalog } from '../db/schema';
 import type { CatalogModel } from '../config/models';
 import { DEMO_CATALOG } from './demo-catalog';
 import { isDemoMode } from './client';
+import { log } from '../log';
 
 type VeniceModel = {
   id: string;
@@ -93,12 +94,13 @@ export async function getCatalog(): Promise<CatalogModel[]> {
   if (rows.length) {
     memory = { models: rows.map((r) => r.data as unknown as CatalogModel), at: Date.now() };
     const stale = rows.every((r) => Date.now() - r.fetchedAt.getTime() > TTL);
-    if (stale) syncCatalog().catch(() => undefined);
+    if (stale) syncCatalog().catch((e) => log.warn('catalog.sync_failed', { error: e, kept: 'stored catalog' }));
     return memory.models;
   }
   try {
     await syncCatalog();
-  } catch {
+  } catch (e) {
+    log.error('catalog.sync_failed', { error: e, fallback: 'demo catalog' });
     memory = { models: DEMO_CATALOG, at: Date.now() };
   }
   return memory!.models;

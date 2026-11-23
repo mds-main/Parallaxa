@@ -8,6 +8,7 @@ import { underSpendCeiling } from '@/lib/ai/spend';
 import { isLocale, DEFAULT_LOCALE } from '@/i18n/languages';
 import { recordUsage } from '@/lib/metrics/usage';
 import { getUserSession } from '@/lib/accounts/session';
+import { log } from '@/lib/log';
 
 export const maxDuration = 300;
 
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
   // "Re-run with current models" skips the similar-claim cache so today's lineup investigates again.
   const skipCache = parsed.data.kind === 'text' && Boolean(parsed.data.rerunOf);
   after(async () => {
-    await runAnalysis(id, input, lang, { skipCache });
+    await runAnalysis(id, input, lang, { skipCache }).catch((e) => log.error('analysis.crashed', { analysis: id, error: e }));
   });
   return NextResponse.json({ id }, { status: 202 });
 }

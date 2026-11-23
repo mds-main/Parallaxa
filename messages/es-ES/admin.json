@@ -197,7 +197,8 @@
     },
     "fallbackAuto": "Automático: {model}",
     "fallbackMissing": "No está en AI Gateway, así que se usa {model}.",
-    "fallbackNone": "Sin equivalente en AI Gateway: esta posición siempre usa Venice."
+    "fallbackNone": "Sin equivalente en AI Gateway: esta posición siempre usa Venice.",
+    "untested": "Pulsa «{button}» en cada modelo cambiado antes de aplicar: {models}."
   },
   "investigation": {
     "title": "Ajustes de investigación",

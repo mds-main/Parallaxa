@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { getDb } from '../db/client';
 import { sourceSnapshots } from '../db/schema';
+import { log } from '../log';
 
 const MAX = 200_000;
 
@@ -12,7 +13,8 @@ export async function saveSnapshot(url: string, title: string, text: string): Pr
     const db = await getDb();
     await db.insert(sourceSnapshots).values({ hash, url, title: title.slice(0, 300), text: body }).onConflictDoNothing();
     return hash;
-  } catch {
+  } catch (e) {
+    log.warn('db.snapshot_insert_failed', { error: e });
     return null;
   }
 }

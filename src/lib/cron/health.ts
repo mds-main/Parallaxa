@@ -8,6 +8,7 @@ import { checkLateEditions } from '../briefing/generate';
 import { gte, sql } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import { errorReports } from '../db/schema';
+import { log } from '../log';
 
 export async function runHealthChecks() {
   const { config } = await getActiveConfig();
@@ -18,6 +19,7 @@ export async function runHealthChecks() {
       pings[slot.id] = 'ok';
     } catch (e) {
       pings[slot.id] = (e as Error).message.slice(0, 120);
+      log.warn('health.slot_down', { slot: slot.id, model: slot.model, error: e, dedupe: slot.id });
     }
   }
   const o = await getOverview();

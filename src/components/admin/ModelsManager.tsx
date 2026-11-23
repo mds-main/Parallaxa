@@ -94,7 +94,7 @@ export function ModelsManager({ catalog, gatewayIds, stats, matrix, breakers, ve
       const c = checks[`${s.id}:${s.model}`];
       return !c || c === 'running' || !c.ok;
     });
-    setBlocker('harness', missing.length ? `${t('test')}: ${missing.map((s) => `${s.id} → ${s.model}`).join(', ')}` : null);
+    setBlocker('harness', missing.length ? t('untested', { button: t('test'), models: missing.map((s) => `${s.id} → ${s.model}`).join(', ') }) : null);
     setBlocker('lineup', lineup.ok ? null : lineup.problems.join(' '));
   }, [draft, initial, checks, lineup.ok, lineup.problems, setBlocker, t]);
 

@@ -7,6 +7,7 @@
  */
 import type { SearchConfig, SearchEngineId } from '../config/schema';
 import { ENGINES, planEngines, type EngineKey, type KeyStatus } from './search-engines';
+import { log } from '../log';
 
 export type SearchHit = {
   title: string;
@@ -138,6 +139,7 @@ export async function webSearch(query: string, cfg: SearchConfig, o: SearchOptio
   let rest = order;
   if (cfg.combine && order.length >= 2) {
     const settled = await Promise.allSettled(order.slice(0, 2).map((e) => runEngine(e, query, o)));
+    settled.forEach((s, i) => s.status === 'rejected' && log.warn('search.engine_failed', { engine: order[i], dedupe: order[i], error: s.reason }));
     const ok = settled.filter((s): s is PromiseFulfilledResult<SearchHit[]> => s.status === 'fulfilled').map((s) => s.value);
     const merged = mergeHits(ok, limit);
     if (merged.length) return merged;
@@ -152,8 +154,10 @@ export async function webSearch(query: string, cfg: SearchConfig, o: SearchOptio
       if (hits.length) return hits.slice(0, limit);
     } catch (e) {
       lastError = e;
+      log.warn('search.engine_failed', { engine, dedupe: engine, error: e });
     }
   }
+  if (!anyWorked && lastError) log.error('search.all_engines_failed', { engines: order.join(','), error: lastError });
   if (!anyWorked && lastError) throw lastError instanceof Error ? lastError : new Error(String(lastError));
   return [];
 }

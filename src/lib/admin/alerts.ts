@@ -7,6 +7,7 @@ import { getDb } from '../db/client';
 import { alertsLog } from '../db/schema';
 import { escapeHtml, sendTelegram, telegramConfigured } from './telegram';
 import { siteUrl } from '../site';
+import { log } from '../log';
 
 export type AlertKind = 'spend' | 'slo' | 'error_rate' | 'fallback' | 'eval_regression' | 'late_briefing' | 'login_lockout' | 'catalog';
 
@@ -44,7 +45,7 @@ export async function raiseAlert(kind: AlertKind, message: string): Promise<void
   if (recent) return;
   await db.insert(alertsLog).values({ kind, message });
   const delivered = await sendTelegram({ html: formatAlert(kind, message), silent: ALERT_SPECS[kind].silent });
-  if (delivered === 0 && telegramConfigured()) console.warn(`alert ${kind}: Telegram did not accept it (still listed in Admin › Alerts)`);
+  log.warn('alert.raised', { kind, telegram: telegramConfigured() ? (delivered ? `sent to ${delivered}` : 'not delivered') : 'not configured' });
 }
 
 /** Posts a test message so an admin can confirm the bot and chats work. Returns how many chats accepted it. */

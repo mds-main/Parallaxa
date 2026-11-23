@@ -8,6 +8,7 @@ import { clientIp, hashIp } from '@/lib/security/ip';
 import { underSpendCeiling } from '@/lib/ai/spend';
 import { recordUsage } from '@/lib/metrics/usage';
 import { isLocale, DEFAULT_LOCALE } from '@/i18n/languages';
+import { log, requestId } from '@/lib/log';
 
 export const maxDuration = 60;
 
@@ -40,7 +41,8 @@ export async function POST(req: Request) {
     });
     await recordUsage('pushback_message', { lang: parsed.data.lang });
     return NextResponse.json({ reply });
-  } catch {
+  } catch (e) {
+    log.error('dialogue.failed', { analysis: found.analysis.id, turns, req: requestId(req.headers), error: e });
     return NextResponse.json({ error: 'unavailable' }, { status: 503 });
   }
 }
