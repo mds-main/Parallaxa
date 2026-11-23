@@ -32,6 +32,8 @@ The admin console is at `/en/admin`. Set `ADMIN_USERNAME`, `ADMIN_PASSWORD` (at 
 | `pnpm i18n:check` | Every registry language has every key; placeholders match; no Latin American terms in es-ES |
 | `pnpm db:generate` / `pnpm db:migrate` | Create / safely apply Drizzle migrations (Neon when `DATABASE_URL` is set, otherwise PGlite); `db:migrate` runs on every build |
 | `pnpm db:check` | Schema drift and migration safety rules; with `DATABASE_URL`, also pending migrations and schema verification (changes nothing) |
+| `pnpm verify` | Everything before a push: `check:all`, end-to-end and accessibility tests, and the client-secret scan (there is no hosted CI) |
+| `pnpm eval` | Release gate: gold-set accuracy, symmetry and language parity against `evals/baseline.json` (needs `VENICE_API_KEY`) |
 | `pnpm eval` | Gold-set release gate (accuracy, mirror parity, language parity) |
 
 ## How it is built

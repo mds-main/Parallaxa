@@ -1,6 +1,6 @@
 /**
  * Language registry: the single source of truth for every supported language (PRD F7, TODO 4.1).
- * Routing, detection, the switcher, hreflang, manifests, emails, CI checks, prompt loading and evals
+ * Routing, detection, the switcher, hreflang, manifests, emails, automated checks, prompt loading and evals
  * all read from here. To add a language, follow docs/adding-a-language.md: add an entry with
  * `enabled: false`, add its folders under messages/, prompts/ and methodology/, then enable it.
  */

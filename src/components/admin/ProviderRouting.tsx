@@ -33,7 +33,8 @@ function Flow({ routing }: { routing: RoutingConfig }) {
 }
 
 /** Admin › Models › AI vendors: choose which vendor serves model calls first and whether the other one backs it up. */
-export function ProviderRouting({ keys, usage, gatewayIds }: { keys: Record<ProviderId, boolean>; usage: ProviderUsage; gatewayIds: string[] | null }) {
+export function ProviderRouting({ keyStatus, usage, gatewayIds }: { keyStatus: Record<ProviderId, { set: boolean; env: string }>; usage: ProviderUsage; gatewayIds: string[] | null }) {
+  const keys = { venice: keyStatus.venice.set, gateway: keyStatus.gateway.set };
   const t = useTranslations('admin.models.routing');
   const format = useFormatter();
   const { draft, initial, update, setBlocker } = useEditor();
@@ -44,8 +45,8 @@ export function ProviderRouting({ keys, usage, gatewayIds }: { keys: Record<Prov
   // Without a Venice key the whole app runs in demo mode, so only a Gateway primary without its key is a real problem.
   const gatewayKeyMissing = current.primary === 'gateway' && !keys.gateway;
   useEffect(() => {
-    setBlocker('routing', changed && gatewayKeyMissing ? t('blockMissingKey', { vendor: NAME.gateway, env: 'AI_GATEWAY_API_KEY' }) : null);
-  }, [changed, gatewayKeyMissing, setBlocker, t]);
+    setBlocker('routing', changed && gatewayKeyMissing ? t('blockMissingKey', { vendor: NAME.gateway, env: keyStatus.gateway.env }) : null);
+  }, [changed, gatewayKeyMissing, keyStatus.gateway.env, setBlocker, t]);
 
   const choose = (r: RoutingConfig) => {
     if (r.primary !== current.primary) update('routing.primary', r.primary);
@@ -110,7 +111,7 @@ export function ProviderRouting({ keys, usage, gatewayIds }: { keys: Record<Prov
                 <strong>{p === 'venice' ? 'Venice' : 'Vercel AI Gateway'}</strong>
                 <span className="chip text-xs">{role}</span>
               </p>
-              <p className="mt-1 text-sm">{keys[p] ? `✓ ${t('keySet')}` : `✗ ${t('keyMissing', { env: p === 'venice' ? 'VENICE_API_KEY' : 'AI_GATEWAY_API_KEY' })}`}</p>
+              <p className="mt-1 text-sm">{keys[p] ? `✓ ${t('keySet')}` : `✗ ${t('keyMissing', { env: keyStatus[p].env })}`}</p>
               <p className="text-sm muted">{t('usage', { hours: usage.hours, served: n(u.served), failed: n(u.failed), backup: n(u.asBackup) })}</p>
             </li>
           );

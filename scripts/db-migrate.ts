@@ -1,5 +1,5 @@
 /**
- * `pnpm db:migrate` (every build, see vercel.json) and `pnpm db:check` (CI, or by hand against any database).
+ * `pnpm db:migrate` (every build, see vercel.json) and `pnpm db:check` (part of `pnpm check:all`, or by hand against any database).
  *
  * 1. Drift: fails if src/lib/db/schema.ts has changes no migration covers (someone forgot `pnpm db:generate`).
  * 2. Lint: every migration must be safe for the version that is live while it runs (see src/lib/db/migrate-safe.ts).
@@ -144,7 +144,7 @@ async function main() {
 
   const hasDatabase = Boolean(process.env.DATABASE_URL || process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL_NON_POOLING);
   if (checkOnly && !hasDatabase) {
-    log('No DATABASE_URL: skipped the database status (CI).');
+    log('No DATABASE_URL: skipped the database status.');
     return;
   }
 

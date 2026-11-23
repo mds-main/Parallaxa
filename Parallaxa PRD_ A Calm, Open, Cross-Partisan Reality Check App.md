@@ -311,7 +311,7 @@ Starting with two languages keeps translation, native review and evaluation cost
 - The installed PWA opens in the last chosen language. The language switcher lives in the header menu, in Settings and in onboarding. Each language is shown by its own name ("English", "Español"), never by a flag.
 
 **What is localized:**
-- **All UI copy** in ICU message catalogs (plurals, gender, select), with English as the source language and professional translation plus native Spain-Spanish review. No hard-coded strings; CI fails on missing or unused keys.
+- **All UI copy** in ICU message catalogs (plurals, gender, select), with English as the source language and professional translation plus native Spain-Spanish review. No hard-coded strings; the automated checks fail on missing or unused keys.
 - **AI output:** analyses, briefings, Push back dialogue, steelmen, Ledger texts and quiz explanations are **rendered natively** in each language from language-neutral structured data (F1 stage 8), with per-language prompts and few-shot examples. Push back replies in the language the user writes in, if supported, otherwise in the UI language.
 - **Editorial and reference content:** topic taxonomy, place names (CLDR/ISO names; regions also shown in their official local form where it differs, e.g. "Catalunya"), grade names and definitions, methodology, Trust Center, corrections log, audits, onboarding, emails, push notifications, share cards and RSS feeds.
 - **Legal texts:** terms, privacy policy, AI disclosures and rectification and reply procedures in English and Spanish, legally reviewed. The governing version is stated on each page.
@@ -324,7 +324,7 @@ Starting with two languages keeps translation, native review and evaluation cost
 - **Language parity** is an even-handedness requirement: the same gold-set claims must get the same grades whatever the input and output language (9.6).
 
 **Built for more languages:**
-- **One language registry** in code is the single source of truth for each language: BCP 47 tag, URL prefix, matching rule, native name, text direction, `Intl` locale and an enabled flag. Routing, detection, the switcher, `hreflang`, sitemaps, manifests, emails, CI checks, prompt loading and evals all read from it. No list of locales is hard-coded anywhere else (enforced by a lint rule).
+- **One language registry** in code is the single source of truth for each language: BCP 47 tag, URL prefix, matching rule, native name, text direction, `Intl` locale and an enabled flag. Routing, detection, the switcher, `hreflang`, sitemaps, manifests, emails, automated checks, prompt loading and evals all read from it. No list of locales is hard-coded anywhere else (enforced by a lint rule).
 - **No language enums in the database:** language columns store BCP 47 tags validated against the registry, so a new language needs no migration.
 - **One folder per language** for UI messages (`messages/<lang>/`), prompts and few-shot examples (`prompts/<lang>/`), and style guides and glossaries (`methodology/<lang>/`).
 - **Language-neutral analyses** (F1 stage 8): a new language needs a renderer prompt and review, not re-analysis. Existing analyses render in the new language on first request.
@@ -348,7 +348,7 @@ Starting with two languages keeps translation, native review and evaluation cost
 **Acceptance criteria:**
 - A first visit with `Accept-Language: es-MX,es;q=0.9` renders `es-ES`; `es-419` renders `es-ES`; `ca,es;q=0.8,en;q=0.5` renders `es-ES`; `en-GB` renders `en`; `fr-FR,de;q=0.8` renders `en`; no header renders `en`.
 - An explicit language choice persists across visits, reloads and the installed PWA, and overrides browser detection.
-- 0 missing message keys in `en` and `es-ES` in CI. Pseudo-locale text-expansion snapshot tests pass at every breakpoint.
+- 0 missing message keys in `en` and `es-ES` in the automated checks. Pseudo-locale text-expansion snapshot tests pass at every breakpoint.
 - Spanish UI copy and output pass an es-ES lexicon check (no Latin American-only terms or forms such as "ustedes" for informal plural, "computadora", "celular", "carro").
 - Gold-set grade agreement between English and Spanish ≥ 98% for the same claim and evidence.
 - An automated dry run that adds the pseudo-locale as a test language needs no changes outside the registry, `messages/`, `prompts/` and `methodology/` folders.
@@ -635,11 +635,11 @@ metrics_daily(date, metric, dims jsonb, value) -- aggregate only, k ≥ 50, feed
 - **Even-handedness suite:** (a) mirror pairs with grade parity within ±0.1 on an ordinal scale where evidence is equivalent; (b) Westwood-style perceived-slant panels stratified by ideology in ES/US/UK/MX, with no significant perceived slant on ≥ 80% of topics; (c) refusal symmetry across sides; (d) language parity across all supported languages (same grade for the same claim and evidence whatever the input and output language, ≥ 98% agreement), plus native-speaker fluency and terminology ratings per language (es-ES raters for Spanish).
 - **Release gate:** no prompt/model change ships if accuracy drops > 1 point or any symmetry metric regresses beyond tolerance. Eval results published.
 
-### 9.7 Security, testing & CI/CD
+### 9.7 Security and testing
 - **Auth:** passkeys + email magic links for users; optional Google/Apple OAuth, never required. The **admin console** uses `ADMIN_USERNAME` / `ADMIN_PASSWORD` env vars with a signed short-lived session (`ADMIN_SESSION_SECRET`), lockout, BotID, CSRF protection, per-route session checks and an optional IP allowlist (F8). Named admin accounts with passkeys and roles in Phase 2.
 - **Abuse prevention:** BotID; WAF rate limits (e.g., 20 checks/hour anonymous, 60 signed-in); reviewer reputation.
-- **Secrets & headers:** environment-scoped Vercel env vars, quarterly rotation; strict nonce-based CSP, HSTS preload, `frame-ancestors 'none'`; pnpm lockfile, Renovate, OSV scanning, published SBOM; all URL fetching inside Sandbox with egress allow-list and private-IP blocking (SSRF).
-- **Testing:** Vitest unit tests; contract tests for Venice/Gateway adapters; Playwright E2E on mobile/tablet/desktop; axe in CI; LLM evals on every prompt-touching PR. **Preview Deployments** per PR with their own anonymized Neon branch; **Rolling Releases**; instant rollback.
+- **Secrets & headers:** environment-scoped Vercel env vars, quarterly rotation; strict nonce-based CSP, HSTS preload, `frame-ancestors 'none'`; pnpm lockfile, dependency audit (`pnpm audit:deps`); all URL fetching inside Sandbox with egress allow-list and private-IP blocking (SSRF).
+- **Testing:** Vitest unit tests; contract tests for Venice/Gateway adapters; Playwright E2E on mobile/tablet/desktop; axe in the end-to-end suite; LLM evals (`pnpm eval`) before every prompt or model change. No hosted CI: the full suite runs locally with `pnpm verify` before pushing. **Preview Deployments** per PR with their own anonymized Neon branch; **Rolling Releases**; instant rollback.
 - **SLOs:** 99.5% Check availability; p95 time-to-first-result < 20 s; briefing ready by 06:45 local on 99% of days.
 
 ---

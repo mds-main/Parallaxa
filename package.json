@@ -25,7 +25,9 @@
     "check:all": "pnpm typecheck && pnpm lint && pnpm i18n:check && pnpm db:check && pnpm test",
     "check:secrets": "tsx scripts/check-client-secrets.ts",
     "icons": "tsx scripts/generate-icons.ts",
-    "db:check": "tsx scripts/db-migrate.ts --check"
+    "db:check": "tsx scripts/db-migrate.ts --check",
+    "verify": "pnpm check:all && pnpm e2e && pnpm check:secrets",
+    "audit:deps": "pnpm audit --prod --audit-level high"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.17",

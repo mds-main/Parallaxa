@@ -1,5 +1,5 @@
 /**
- * i18n CI check (TODO 4.8): loops over the language registry and fails on missing or extra keys,
+ * i18n check (TODO 4.8, part of `pnpm check:all`): loops over the language registry and fails on missing or extra keys,
  * invalid ICU placeholders, or a mismatch in placeholder names between English and each language.
  */
 import fs from 'node:fs';

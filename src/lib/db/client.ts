@@ -17,7 +17,7 @@ async function create(): Promise<Db> {
   if (process.env.DATABASE_URL) {
     const { Pool } = await import('@neondatabase/serverless');
     const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    // Neon migrations run in CI/deploy via `pnpm db:migrate`, not on request paths.
+    // Neon migrations run at deploy via `pnpm db:migrate`, not on request paths.
     return drizzleNeon({ client: pool, schema }) as unknown as Db;
   }
   const { PGlite } = await import('@electric-sql/pglite');

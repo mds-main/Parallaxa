@@ -1,5 +1,5 @@
 /**
- * Safe database migrations, run on every build (`pnpm db:migrate`, see vercel.json) and checked in CI (`pnpm db:check`).
+ * Safe database migrations, run on every build (`pnpm db:migrate`, see vercel.json) and checked by `pnpm db:check` (part of `check:all`).
  *
  * Guarantees:
  * - All-or-nothing: pending migrations, their bookkeeping and a schema verification run in ONE transaction.

@@ -15,14 +15,17 @@ export default async function ModelsPage() {
   const t = await getTranslations('admin.models');
   const [{ config }, catalog, slotStats, versions, monthly, usage, gatewayIds] = await Promise.all([getActiveConfig(), getCatalog(), getSlotStats(7), listConfigVersions(30), monthlyFreshAnalyses(), getProviderUsage(24), getGatewayModelIds()]);
   // Only whether each key is set reaches the page, never the key itself.
-  const keys = { venice: Boolean(process.env.VENICE_API_KEY), gateway: Boolean(process.env.AI_GATEWAY_API_KEY) };
+  const keyStatus = {
+    venice: { set: Boolean(process.env.VENICE_API_KEY), env: 'VENICE_API_KEY' },
+    gateway: { set: Boolean(process.env.AI_GATEWAY_API_KEY), env: 'AI_GATEWAY_API_KEY' },
+  };
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
       <p className="max-w-3xl muted">{t('intro')}</p>
       <EditorWithCost initial={config} catalog={catalog} monthlyAnalyses={monthly}>
         <div className="mb-4">
-          <ProviderRouting keys={keys} usage={usage} gatewayIds={gatewayIds} />
+          <ProviderRouting keyStatus={keyStatus} usage={usage} gatewayIds={gatewayIds} />
         </div>
         <ModelsManager
           catalog={catalog}
