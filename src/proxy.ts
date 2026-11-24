@@ -60,8 +60,7 @@ export function proxy(request: NextRequest) {
   request.headers.set('x-nonce', nonce);
   request.headers.set('Content-Security-Policy', csp);
   const res = intl(request);
-  // A/B bucketing (TODO 25.2): a random bucket 0–99, no identifiers, used only with opt-in research consent.
-  if (!request.cookies.get('plx_ab')) res.cookies.set('plx_ab', String(Math.floor(Math.random() * 100)), { maxAge: 60 * 60 * 24 * 180, sameSite: 'lax', path: '/' });
+  // A/B bucketing (plx_ab) is assigned client-side (ServiceWorker.tsx) so public responses never emit Set-Cookie and stay CDN-cacheable.
   res.headers.set('X-Robots-Tag', rest.startsWith('/admin') ? 'noindex, nofollow' : 'all');
   return withCsp(res, csp);
 }

@@ -70,22 +70,40 @@ async function gradeItem(item: GoldItem, slots: SlotConfig[], config: AppConfig,
   return { agg: aggregateVerdicts(verdicts, config.pipeline), verdicts };
 }
 
-export async function runEval(opts: { config: AppConfig; configVersionId?: number; kind: 'nightly' | 'post_swap' | 'harness_check' | 'shadow'; limit?: number; persist?: boolean }): Promise<EvalMetrics & { runId?: string }> {
+const EVAL_CONCURRENCY = 5;
+
+export async function runEval(opts: {
+  config: AppConfig;
+  configVersionId?: number;
+  kind: 'nightly' | 'post_swap' | 'harness_check' | 'shadow';
+  limit?: number;
+  persist?: boolean;
+  concurrency?: number;
+}): Promise<EvalMetrics & { runId?: string }> {
   const gold = loadGoldSet().slice(0, opts.limit ?? 50);
   const slots = opts.config.slots.filter((s) => s.enabled);
   const got = new Map<string, { grade: Grade; confidence: 'high' | 'medium' | 'low' }>();
   const refusals: Record<string, number> = {};
-  for (const item of gold) {
-    if (isDemoMode()) {
+  const demo = isDemoMode();
+  if (demo) {
+    for (const item of gold) {
       // Demo mode cannot investigate; it scores the simulated grades so the plumbing stays testable.
       got.set(item.id, { grade: item.expected === 'well_supported' || item.expected === 'contradicted' ? item.expected : demoGradeFor(item.claim), confidence: 'medium' });
-      continue;
     }
-    const { agg, verdicts } = await gradeItem(item, slots, opts.config);
-    for (const v of verdicts) if (v.abstained) refusals[v.slot] = (refusals[v.slot] ?? 0) + 1;
-    got.set(item.id, { grade: agg.grade, confidence: agg.confidence });
+  } else if (gold.length) {
+    const concurrency = Math.max(1, Math.min(opts.concurrency ?? EVAL_CONCURRENCY, gold.length));
+    let cursor = 0;
+    const worker = async () => {
+      while (cursor < gold.length) {
+        const item = gold[cursor++]!;
+        const { agg, verdicts } = await gradeItem(item, slots, opts.config);
+        for (const v of verdicts) if (v.abstained) refusals[v.slot] = (refusals[v.slot] ?? 0) + 1;
+        got.set(item.id, { grade: agg.grade, confidence: agg.confidence });
+      }
+    };
+    await Promise.all(Array.from({ length: concurrency }, () => worker()));
   }
-  const metrics: EvalMetrics = { ...scoreResults(gold, got), refusalsBySlot: refusals, demo: isDemoMode() };
+  const metrics: EvalMetrics = { ...scoreResults(gold, got), refusalsBySlot: refusals, demo };
   if (opts.persist !== false) {
     const db = await getDb();
     const [row] = await db

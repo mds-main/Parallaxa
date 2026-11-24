@@ -12,20 +12,25 @@ export async function runRetention(now = new Date()) {
     select to_char(date_trunc('day', created_at), 'YYYY-MM-DD'), 'llm_cost_usd', provider, sum(cost_usd)
     from llm_calls where created_at < ${days(90)} group by 1, 3
     on conflict (date, metric, dims) do update set value = excluded.value`);
-  const results = {
-    llmCalls: (await db.delete(s.llmCalls).where(lt(s.llmCalls.createdAt, days(90))).returning({ id: s.llmCalls.id })).length,
-    rateCounters: (await db.delete(s.rateCounters).where(lt(s.rateCounters.windowStart, Math.floor(days(2).getTime() / 1000))).returning({ k: s.rateCounters.key })).length,
-    loginAttempts: (await db.delete(s.adminLoginAttempts).where(lt(s.adminLoginAttempts.at, days(7))).returning({ id: s.adminLoginAttempts.id })).length,
-    sessions: (await db.delete(s.adminSessions).where(lt(s.adminSessions.expiresAt, days(7))).returning({ id: s.adminSessions.id })).length,
-    usageEvents: (await db.delete(s.usageEvents).where(lt(s.usageEvents.at, days(400))).returning({ id: s.usageEvents.id })).length,
+  const [llmCalls, rateCounters, loginAttempts, sessions, usageEvents, unansweredChecks] = await Promise.all([
+    db.delete(s.llmCalls).where(lt(s.llmCalls.createdAt, days(90))).returning({ id: s.llmCalls.id }),
+    db.delete(s.rateCounters).where(lt(s.rateCounters.windowStart, Math.floor(days(2).getTime() / 1000))).returning({ k: s.rateCounters.key }),
+    db.delete(s.adminLoginAttempts).where(lt(s.adminLoginAttempts.at, days(7))).returning({ id: s.adminLoginAttempts.id }),
+    db.delete(s.adminSessions).where(lt(s.adminSessions.expiresAt, days(7))).returning({ id: s.adminSessions.id }),
+    db.delete(s.usageEvents).where(lt(s.usageEvents.at, days(400))).returning({ id: s.usageEvents.id }),
     // Checks still waiting for the reader to choose a place after a day: drop the saved claim and close them.
-    unansweredChecks: (
-      await db
-        .update(s.analyses)
-        .set({ status: 'failed', error: 'expired: no place was chosen', pending: null })
-        .where(and(eq(s.analyses.status, 'needs_input'), lt(s.analyses.createdAt, days(1))))
-        .returning({ id: s.analyses.id })
-    ).length,
+    db
+      .update(s.analyses)
+      .set({ status: 'failed', error: 'expired: no place was chosen', pending: null })
+      .where(and(eq(s.analyses.status, 'needs_input'), lt(s.analyses.createdAt, days(1))))
+      .returning({ id: s.analyses.id }),
+  ]);
+  return {
+    llmCalls: llmCalls.length,
+    rateCounters: rateCounters.length,
+    loginAttempts: loginAttempts.length,
+    sessions: sessions.length,
+    usageEvents: usageEvents.length,
+    unansweredChecks: unansweredChecks.length,
   };
-  return results;
 }

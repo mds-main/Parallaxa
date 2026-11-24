@@ -12,6 +12,14 @@ export function ServiceWorker({ prefix }: { prefix: string }) {
     } catch {
       /* ignore */
     }
+    try {
+      // A/B bucketing (TODO 26.2): random bucket 0–99, no identifiers, set client-side so server responses stay CDN-cacheable.
+      if (!/(?:^|;\s*)plx_ab=/.test(document.cookie)) {
+        document.cookie = `plx_ab=${Math.floor(Math.random() * 100)}; path=/; max-age=15552000; samesite=lax`;
+      }
+    } catch {
+      /* ignore */
+    }
   }, [prefix]);
   return null;
 }

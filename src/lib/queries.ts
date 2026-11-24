@@ -1,17 +1,36 @@
 /** Read-side queries shared by pages and API routes. */
+import { unstable_cache } from 'next/cache';
 import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import { getDb } from './db/client';
 import * as s from './db/schema';
 
-export async function getPlaces() {
+const CACHE_TTL_SECONDS = 300;
+
+function cachedQuery<T>(fn: () => Promise<T>, keyParts: string[], tags: string[], revalidate = CACHE_TTL_SECONDS): () => Promise<T> {
+  const cached = unstable_cache(fn, keyParts, { revalidate, tags });
+  return async () => {
+    try {
+      return await cached();
+    } catch (e) {
+      // Unit tests and CLI scripts run outside the Next.js server runtime (no incrementalCache).
+      if (e instanceof Error && e.message.includes('incrementalCache missing')) return fn();
+      throw e;
+    }
+  };
+}
+
+async function loadPlaces() {
   const db = await getDb();
   return db.select().from(s.places).where(eq(s.places.active, true));
 }
 
-export async function getTopics() {
+async function loadTopics() {
   const db = await getDb();
   return db.select().from(s.topics).where(eq(s.topics.active, true));
 }
+
+export const getPlaces = cachedQuery(loadPlaces, ['queries', 'places'], ['places']);
+export const getTopics = cachedQuery(loadTopics, ['queries', 'topics'], ['topics']);
 
 export async function getAnalysis(id: string) {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
@@ -33,7 +52,7 @@ export function todayIn(timezone: string, d = new Date()): string {
 }
 
 /** Published editions for each place's local "today" (falls back to the latest published edition within 2 days). */
-export async function getPublishedEditions() {
+async function loadPublishedEditions() {
   const db = await getDb();
   const editions = await db.select().from(s.briefingEditions).where(eq(s.briefingEditions.status, 'published')).orderBy(desc(s.briefingEditions.date)).limit(200);
   const latest = new Map<string, (typeof editions)[number]>();
@@ -74,6 +93,8 @@ export async function getPublishedEditions() {
       })),
   }));
 }
+
+export const getPublishedEditions = cachedQuery(loadPublishedEditions, ['queries', 'published-editions'], ['editions']);
 
 export async function countRecentChecks(hours: number) {
   const db = await getDb();

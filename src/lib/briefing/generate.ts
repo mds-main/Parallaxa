@@ -3,6 +3,7 @@
  * discovers candidate contested claims covered by outlets on both sides, analyzes each with the full
  * pipeline, ranks them by published salience rules and sends the edition to human review.
  */
+import { revalidateTag } from 'next/cache';
 import { and, eq } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import * as s from '../db/schema';
@@ -139,6 +140,13 @@ export async function generateEdition(placeId: string, opts: { force?: boolean }
   const autoPublish = isDemoMode() || process.env.BRIEFING_AUTO_PUBLISH === '1';
   const status = autoPublish ? 'published' : 'in_review';
   await db.update(s.briefingEditions).set({ status, publishedAt: autoPublish ? new Date() : null }).where(eq(s.briefingEditions.id, edition!.id));
+  if (status === 'published') {
+    try {
+      revalidateTag('editions', 'max');
+    } catch (e) {
+      if (!(e instanceof Error && e.message.includes('static generation store missing'))) throw e;
+    }
+  }
   if (!autoPublish) await db.insert(s.reviewTasks).values({ kind: 'briefing', refId: edition!.id, priority: 1, dueAt: new Date(Date.now() + 2 * 3600_000), notes: `${placeId} ${date}` });
   return { editionId: edition!.id, stories: rank, status };
 }

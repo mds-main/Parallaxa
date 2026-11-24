@@ -1,4 +1,5 @@
-/** Venice model catalog sync (TODO 10.2): capabilities, privacy, status and prices, refreshed every 15 minutes. */
+/** Venice model catalog sync (TODO 10.2): capabilities, privacy, status and prices, synced every 2 hours. */
+import { sql } from 'drizzle-orm';
 import { getDb } from '../db/client';
 import { modelCatalog } from '../db/schema';
 import type { CatalogModel } from '../config/models';
@@ -54,6 +55,34 @@ export function normalizeModel(m: VeniceModel): CatalogModel {
 let memory: { models: CatalogModel[]; at: number } | null = null;
 const TTL = 15 * 60_000;
 
+/** Key-order-independent comparison (Postgres jsonb reorders object keys). */
+export function sameCatalogModel(a: CatalogModel, b: CatalogModel): boolean {
+  const aEffort = a.capabilities?.reasoningEffortOptions ?? [];
+  const bEffort = b.capabilities?.reasoningEffortOptions ?? [];
+  return (
+    a.id === b.id &&
+    a.name === b.name &&
+    a.privacy === b.privacy &&
+    a.offline === b.offline &&
+    a.deprecated === b.deprecated &&
+    a.contextLength === b.contextLength &&
+    Boolean(a.capabilities?.functionCalling) === Boolean(b.capabilities?.functionCalling) &&
+    Boolean(a.capabilities?.responseSchema) === Boolean(b.capabilities?.responseSchema) &&
+    Boolean(a.capabilities?.webSearch) === Boolean(b.capabilities?.webSearch) &&
+    Boolean(a.capabilities?.xSearch) === Boolean(b.capabilities?.xSearch) &&
+    aEffort.length === bEffort.length &&
+    aEffort.every((v, i) => v === bEffort[i]) &&
+    a.pricing?.inputUsdPerM === b.pricing?.inputUsdPerM &&
+    a.pricing?.outputUsdPerM === b.pricing?.outputUsdPerM &&
+    (a.pricing?.cacheInputUsdPerM ?? null) === (b.pricing?.cacheInputUsdPerM ?? null)
+  );
+}
+
+/** Tests only: clear the in-memory catalog cache. */
+export function resetCatalogMemoryForTests() {
+  memory = null;
+}
+
 /** Fetches the live catalog (public endpoint; the API key tailors it to the account when present). */
 export async function syncCatalog(): Promise<{ count: number; changed: string[] }> {
   if (isDemoMode() && !process.env.VENICE_CATALOG_LIVE) {
@@ -69,15 +98,25 @@ export async function syncCatalog(): Promise<{ count: number; changed: string[] 
   const db = await getDb();
   const previous = new Map((await db.select().from(modelCatalog)).map((r) => [r.id, r.data as unknown as CatalogModel]));
   const changed: string[] = [];
+  const toUpsert: CatalogModel[] = [];
   for (const m of models) {
     const prev = previous.get(m.id);
     if (prev && (prev.offline !== m.offline || prev.deprecated !== m.deprecated || prev.pricing.inputUsdPerM !== m.pricing.inputUsdPerM || prev.pricing.outputUsdPerM !== m.pricing.outputUsdPerM)) {
       changed.push(m.id);
     }
+    if (!prev || !sameCatalogModel(prev, m)) {
+      toUpsert.push(m);
+    }
+  }
+  if (toUpsert.length) {
+    const now = new Date();
     await db
       .insert(modelCatalog)
-      .values({ id: m.id, data: m as unknown as Record<string, unknown>, fetchedAt: new Date() })
-      .onConflictDoUpdate({ target: modelCatalog.id, set: { data: m as unknown as Record<string, unknown>, fetchedAt: new Date() } });
+      .values(toUpsert.map((m) => ({ id: m.id, data: m as unknown as Record<string, unknown>, fetchedAt: now })))
+      .onConflictDoUpdate({
+        target: modelCatalog.id,
+        set: { data: sql`excluded.data`, fetchedAt: sql`excluded.fetched_at` },
+      });
   }
   memory = { models, at: Date.now() };
   return { count: models.length, changed };
@@ -93,8 +132,6 @@ export async function getCatalog(): Promise<CatalogModel[]> {
   const rows = await db.select().from(modelCatalog);
   if (rows.length) {
     memory = { models: rows.map((r) => r.data as unknown as CatalogModel), at: Date.now() };
-    const stale = rows.every((r) => Date.now() - r.fetchedAt.getTime() > TTL);
-    if (stale) syncCatalog().catch((e) => log.warn('catalog.sync_failed', { error: e, kept: 'stored catalog' }));
     return memory.models;
   }
   try {

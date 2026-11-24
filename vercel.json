@@ -5,18 +5,19 @@
     "fra1"
   ],
   "buildCommand": "pnpm db:migrate && pnpm build",
+  "ignoreCommand": "BASE=\"${VERCEL_GIT_PREVIOUS_SHA:-HEAD^}\"; git rev-parse --verify \"$BASE\" >/dev/null 2>&1 || BASE=HEAD^; git rev-parse --verify \"$BASE\" >/dev/null 2>&1 || exit 1; FILES=$(git -c core.quotepath=false diff --name-only \"$BASE\" HEAD); [ -n \"$FILES\" ] || exit 1; ! printf '%s\\n' \"$FILES\" | grep -qEv '^(docs/|e2e/|tests/|\\.github/|[^/]+\\.md$|LICENSE$|playwright\\.config\\.ts$|vitest\\.config\\.ts$|.*\\.test\\.tsx?$)'",
   "crons": [
     {
       "path": "/api/cron/catalog",
-      "schedule": "*/15 * * * *"
+      "schedule": "0 */2 * * *"
     },
     {
       "path": "/api/cron/health",
-      "schedule": "*/5 * * * *"
+      "schedule": "*/15 * * * *"
     },
     {
       "path": "/api/cron/briefing",
-      "schedule": "*/15 * * * *"
+      "schedule": "5 * * * *"
     },
     {
       "path": "/api/cron/push",

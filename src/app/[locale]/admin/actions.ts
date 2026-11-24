@@ -3,7 +3,7 @@
  * Admin server actions. Each one re-verifies the admin session (TODO 22.5); Next.js server actions
  * also reject cross-origin POSTs, and the session cookie is SameSite=Strict (CSRF protection).
  */
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { eq } from 'drizzle-orm';
@@ -113,6 +113,7 @@ export async function resolveReviewAction(taskId: string, decision: 'approve' | 
     }
   }
   await audit({ action: `review.${decision}`, target: `${task.kind}:${task.refId}`, after: { reviewer, notes }, ipHash: s.ipHash });
+  if (decision !== 'escalate') revalidateTag('editions', 'max');
   revalidatePath('/', 'layout');
 }
 
@@ -193,6 +194,7 @@ export async function publishCorrectionAction(analysisId: string, input: { grade
     await db.update(reviewTasks).set({ status: 'done', resolvedBy: input.reviewer.slice(0, 80), resolvedAt: new Date() }).where(eq(reviewTasks.id, input.taskId));
   }
   await audit({ action: 'analysis.correct', target: analysisId, after: { ...res, reviewer: input.reviewer, reason: input.reasonEn }, reason: input.reasonEn, ipHash: s.ipHash });
+  revalidateTag('editions', 'max');
   revalidatePath('/', 'layout');
   return res;
 }
